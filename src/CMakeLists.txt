@@ -1,0 +1,47 @@
+
+# Note that headers are optional, and do not affect add_library, but they will not
+# show up in IDEs unless they are listed in add_library.
+
+# Public header files
+set(HEADER_FOLDER "${PROJECT_SOURCE_DIR}/include/minesweeper")
+set(HEADER_LIST
+    "${HEADER_FOLDER}/Grid.h"
+    "${HEADER_FOLDER}/IRandom.h"
+    "${HEADER_FOLDER}/Random.h"
+)
+
+# Private header files
+set(PRIVATE_HEADER_FOLDER "minesweeper")
+set(PRIVATE_HEADER_LIST
+    "${PRIVATE_HEADER_FOLDER}/Cell.h"
+)
+
+# Source files
+set(SOURCE_FOLDER "minesweeper")
+set(SOURCE_LIST
+    "${SOURCE_FOLDER}/Cell.cpp"
+    "${SOURCE_FOLDER}/Grid.cpp"
+    "${SOURCE_FOLDER}/Random.cpp"
+)
+
+
+
+# Make an automatic library - will be static or dynamic based on user setting
+add_library(${LIBRARY_NAME}
+            ${HEADER_LIST}
+            ${PRIVATE_HEADER_LIST}
+            ${SOURCE_LIST}
+)
+
+# We need this directory, and users of our library will need it too
+target_include_directories(${LIBRARY_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/include")
+
+# We need this directory
+target_include_directories(${LIBRARY_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+
+# All users of this library will need at least C++11
+target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_11)
+
+# IDEs should put the headers in a nice place
+# (This might not work as intended)
+# source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})

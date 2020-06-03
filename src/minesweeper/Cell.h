@@ -1,5 +1,5 @@
-#ifndef CELL_H
-#define CELL_H
+#ifndef MINESWEEPER_CELL_H
+#define MINESWEEPER_CELL_H
 
 namespace Minesweeper {
 
@@ -35,4 +35,4 @@ namespace Minesweeper {
 
 }
 
-#endif
+#endif // MINESWEEPER_CELL_H

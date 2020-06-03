@@ -1,18 +1,23 @@
-#ifndef GRID_H
-#define GRID_H
+#ifndef MINESWEEPER_GRID_H
+#define MINESWEEPER_GRID_H
 
 #include <vector>
 #include <memory>
 #include <random>
 
-#include "Cell.h"
-
-extern std::mt19937 myRandomSeed;
+#include <minesweeper/IRandom.h>
 
 namespace Minesweeper {
 
+	// declaration of 'Cell' class, properly included in 'Grid.cpp' file
+	class Cell;
+
 	class Grid {
 	private:
+
+		// ---------------
+		// fields:
+		// ---------------
 
 		int gridHeight;
 		int gridWidth;
@@ -24,12 +29,20 @@ namespace Minesweeper {
 
 		std::vector< std::vector< std::unique_ptr<Cell> > > cells;
 
+		// field used to randomise vector of ints to choose locations of mines
+		IRandom* random;
+
+		// ---------------
+		// private methods:
+		// ---------------
 
 		int verifyNumOfMines(int numOfMines);
 
 		std::vector< std::vector< std::unique_ptr<Cell> > > initCells();
 
 		void chooseRandomMineCells(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const;
+
+		void randomizeMineVector(std::vector<int>& mineSpots) const;
 
 		void createMine(const int X, const int Y);
 
@@ -43,11 +56,23 @@ namespace Minesweeper {
 
 		bool checkedMine() const;
 
+		// static field used to randomise vector of ints to choose locations of mines
+		// only used if IRandom not specifically set for an instance
+		// set with setDefaultRandom(IRandom* random)
+		static IRandom* defaultRandom;
+
 	public:
 
-		Grid(int gridSize, int numOfMines);
+		// ---------------
+		// public methods:
+		// ---------------
 
-		Grid(int gridHeight, int gridWidth, int numOfMines);
+		Grid(int gridSize, int numOfMines, IRandom* random = nullptr);
+
+		Grid(int gridHeight, int gridWidth, int numOfMines, IRandom* random = nullptr);
+
+		// default
+		~Grid();
 
 		void createMinesAndNums(const int initChosenX, const int initChosenY);
 
@@ -73,6 +98,8 @@ namespace Minesweeper {
 		// static methods:
 		// ---------------
 
+		static void setDefaultRandom(IRandom* random);
+
 		static int maxNumOfMines(int gridHeight, int gridWidth);
 
 		static int minNumOfMines();
@@ -83,4 +110,4 @@ namespace Minesweeper {
 
 }
 
-#endif
+#endif // MINESWEEPER_GRID_H

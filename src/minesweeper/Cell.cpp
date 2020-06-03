@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include "Cell.h"
+#include <minesweeper/Cell.h>
 
 namespace Minesweeper {
 

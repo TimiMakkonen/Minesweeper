@@ -1,34 +1,39 @@
-# Basic Minesweeper game on console
+# Minesweeper game library
 
-The purpose of this program is to see/show/test if I can program a minesweeper game on my own.
-
----
-
-### Note:
-
-I have made sure not to look up codes of any other minesweeper programs prior making this program. Hence this program and the methods used in it to make it work are all mostly 'original'.
-Throughout making this program, I have only googled some methods, good practices, algorithms and syntax to make things work the way I want them to.
+C++ library containing the core logic of Minesweeper game.
 
 ---
 
-### Screenshots:
+### How to use:
 
+Minimum C++ version required: C++11.
 
-#### Random gameplay example:  
-![Random gameplay example](/Screenshots/MinesweeperCapture1.JPG "Random example")
+Use as part of your own CMake project as you desire.
 
-#### Start of a game:
-![Start of a game](/Screenshots/MinesweeperCapture3.JPG?raw=true "Start of a game")
+To use this Minesweeper game library, pass your implementation of provided 'IRandom' pure virtual class to 'Grid' class or alternatively pass it as an default option to the 'Grid' class statically, so that it can be used by all the instances of 'Grid' class.
 
-#### Example of progress after first move:
-![Example of progress after first move](/Screenshots/MinesweeperCapture2.JPG?raw=true "Example of first move")
+If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass 'Random' (provided implementation of 'IRandom' that uses 'std::mt19937') as instructed above.
 
-#### New game options:
-![New game options](/Screenshots/MinesweeperCapture4.JPG?raw=true "New game")
+You can check ['Minesweeper_Examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/Minesweeper_Examples.cpp) for more detailed usage explanation and ['Grid.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/Grid.h) for the main interface.
 
 ---
 
 ### Version History:
+
+#### Version 7.0.0:
+
+* Separated original Minesweeper game (on console) into: 'minesweeper' (game library) and ['console-minesweeper'](https://github.com/TimiMakkonen/console-minesweeper) (console version of the game which uses the aforementioned library).
+* Turned VS solution into CMake library.
+	* Added '(google)testing'. (Not implemented yet.)
+	* Added 'examples' executable to allow showcasing library.
+		* Added some usage instructions and examples.
+* New classes 'IRandom' and 'Random':
+	* Separating randomising part of creating mines from rest of the 'Grid'.
+	* IRandom is an abstract class which provides 'Grid' with ability to shuffle a vector of ints.
+	* You can create your own class which implements 'IRandom' or use provided 'Random' class for simplicity.
+	* You can pass 'IRandom' via constructor or set 'defaultRandom' static property. 
+					(Class field set by constructor has the priority.)
+* Slightly improved readability of code.
 
 #### Version 6.1.1:
 
@@ -106,14 +111,10 @@ Initial version of the game. Mostly in working condition.
 
 ### Fixes and features left to consider/implement:
 
-* Increasing current maximum gridsize from 99x99? Madness?
-* Making sure incorrect inputs are less likely to cause bugs.
-* Making the game look prettier.
-* Better losing screen.
-* Improve Win screen and winning conditions.
-* Improve HELP menu.
-* Edit input system overall.
 * Add an option to add mines by percentage, not by quantity.
-* Add an option to choose between 'normal' and 'condensed' grid.
-* Change solution screen. (Does not properly work with large grids atm.)
-
+* Add save/load (serialize/deserialize).
+* Change name of 'Grid' to 'Game' for clarity. (Might cause historical Inconsistencies, since original console version 														had a class with this name.)
+* Add method to reset game.
+* Add method to start new game.
+* Add method which returns a visual representation of the current state of the grid in short string form.
+* Remove public 'createMinesAndNums(const int initChosenX, const int initChosenY)' method.

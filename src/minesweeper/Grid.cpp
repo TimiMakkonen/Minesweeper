@@ -6,20 +6,40 @@
 #include <numeric>
 #include <assert.h>
 
-#include "Grid.h"
+#include <minesweeper/Grid.h>
+#include <minesweeper/Cell.h>
 
 namespace Minesweeper {
 
-	Grid::Grid(int gridSize, int numOfMines) : gridHeight(gridSize), gridWidth(gridSize), numOfMines(this->verifyNumOfMines(numOfMines)), cells(this->initCells()) {}
+	// initialisation of static fields:
+	IRandom* Grid::defaultRandom = nullptr;
 
-	Grid::Grid(int gridHeight, int gridWidth, int numOfMines) : gridHeight(gridHeight), gridWidth(gridWidth), numOfMines(this->verifyNumOfMines(numOfMines)), cells(this->initCells()) {}
 
+
+	Grid::Grid(int gridSize, int numOfMines, IRandom* random) : Grid(gridSize, gridSize, numOfMines, random) {}
+
+	Grid::Grid(int gridHeight, int gridWidth, int numOfMines, IRandom* random) 
+			: gridHeight(gridHeight), 
+				gridWidth(gridWidth), 
+				numOfMines(this->verifyNumOfMines(numOfMines)), 
+				random(random), 
+				cells(this->initCells()) {}
+
+
+	// required by to solve "error C2027: use of undefined type"
+	// in short, std::unique_ptr requires destructor to be defined here
+	// Check more info on this:
+	// https://stackoverflow.com/questions/40383395/use-of-undefined-type-with-unique-ptr-to-forward-declared-class-and-defaulted
+	// https://stackoverflow.com/questions/6012157/is-stdunique-ptrt-required-to-know-the-full-definition-of-t
+	// https://stackoverflow.com/questions/13414652/forward-declaration-with-unique-ptr
+	Grid::~Grid() = default;
 
 
 	int Grid::verifyNumOfMines(int numOfMines) {
 
 		if (numOfMines > maxNumOfMines(this->gridHeight, this->gridWidth) || numOfMines < minNumOfMines()) {
-			throw std::out_of_range("Grid::verifyNumOfMines(int numOfMines): Trying to create a grid with too few or many mines.");
+			throw std::out_of_range("Grid::verifyNumOfMines(int numOfMines): "
+									"Trying to create a grid with too few or many mines.");
 		}
 		return numOfMines;
 	}
@@ -68,7 +88,7 @@ namespace Minesweeper {
 		std::iota(mineSpots.begin(), mineSpots.end(), 0);
 
 		// to shuffle this vector
-		std::shuffle(mineSpots.begin(), mineSpots.end(), myRandomSeed);
+		this->randomizeMineVector(mineSpots);
 
 		// to remove bad gridspots (those on and around chosen initial spot)
 		mineSpots.erase(std::remove(mineSpots.begin(), mineSpots.end(),
@@ -108,6 +128,21 @@ namespace Minesweeper {
 	}
 
 	
+
+	void Grid::randomizeMineVector(std::vector<int>& mineSpots) const {
+		
+		if (this->random != nullptr) {
+			this->random->shuffleVector(mineSpots);
+		} else {
+			if (Grid::defaultRandom != nullptr) {
+				Grid::defaultRandom->shuffleVector(mineSpots);
+			} else {
+				throw std::exception("Grid::randomizeMineVector(std::vector<int>& mineSpots): "
+									 "Neither field 'random' nor static field 'defaultRandom' is initialised.");
+			}
+		}
+	}
+
 
 	void Grid::createMine(const int X, const int Y) {
 
@@ -151,7 +186,8 @@ namespace Minesweeper {
 	void Grid::markInputCoordinates(const int X, const int Y) {
 
 		if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
-			throw std::out_of_range("Grid::markInputCoordinates(const int X, const int Y): Trying to mark cell outside grid.");
+			throw std::out_of_range("Grid::markInputCoordinates(const int X, const int Y): "
+									"Trying to mark cell outside grid.");
 		}
 		else if (this->cells[Y][X]->isMarked()) {
 			this->cells[Y][X]->unmarkCell();
@@ -250,7 +286,8 @@ namespace Minesweeper {
 	void Grid::checkInputCoordinates(const int X, const int Y) {
 
 		if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
-			throw std::out_of_range("Grid::checkInputCoordinates(const int X, const int Y): Trying to check cell outside grid.");
+			throw std::out_of_range("Grid::checkInputCoordinates(const int X, const int Y): "
+									"Trying to check cell outside grid.");
 		}
 		else if (!(this->cells[Y][X]->isVisible()) && !(this->cells[Y][X]->isMarked())) {
 			this->cells[Y][X]->makeVisible();
@@ -296,6 +333,10 @@ namespace Minesweeper {
 		}
 	}
 
+	// static method
+	void Grid::setDefaultRandom(IRandom* defaultRandom) {
+		Grid::defaultRandom = defaultRandom;
+	}
 
 	// static method
 	int Grid::maxNumOfMines(int gridH, int gridW) {
