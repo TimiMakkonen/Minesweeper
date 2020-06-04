@@ -10,11 +10,11 @@ Minimum C++ version required: C++11.
 
 Use as part of your own CMake project as you desire.
 
-To use this Minesweeper game library, pass your implementation of provided 'IRandom' pure virtual class to 'Grid' class or alternatively pass it as an default option to the 'Grid' class statically, so that it can be used by all the instances of 'Grid' class.
+To use this Minesweeper game library, pass your implementation of provided 'IRandom' pure virtual class to 'Game' class or alternatively pass it as an default option to the 'Game' class statically, so that it can be used by all the instances of 'Game' class.
 
 If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass 'Random' (provided implementation of 'IRandom' that uses 'std::mt19937') as instructed above.
 
-You can check ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['grid.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/grid.h) for the main interface.
+You can check ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['game.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/game.h) for the main interface.
 
 ---
 
