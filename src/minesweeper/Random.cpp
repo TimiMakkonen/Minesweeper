@@ -1,6 +1,6 @@
-#include <minesweeper/Random.h>
+#include <minesweeper/random.h>
 
-namespace Minesweeper {
+namespace minesweeper {
 
 	Random::Random() {
 		this->uRng.seed(rd());

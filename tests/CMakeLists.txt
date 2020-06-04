@@ -1,6 +1,6 @@
 
 set(TEST_SOURCE_LIST
-	Minesweeper_Tests.cpp
+	minesweeper_tests.cpp
 )
 
 set(TEST_APP_NAME "MinesweeperTests")

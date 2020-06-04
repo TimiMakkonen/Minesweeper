@@ -1,18 +1,18 @@
-#ifndef MINESWEEPER_GRID_H
-#define MINESWEEPER_GRID_H
+#ifndef MINESWEEPER_GAME_H
+#define MINESWEEPER_GAME_H
 
 #include <vector>
 #include <memory>
 #include <random>
 
-#include <minesweeper/IRandom.h>
+#include <minesweeper/i_random.h>
 
-namespace Minesweeper {
+namespace minesweeper {
 
-	// declaration of 'Cell' class, properly included in 'Grid.cpp' file
+	// declaration of 'Cell' class, properly included in 'game.cpp' file
 	class Cell;
 
-	class Grid {
+	class Game {
 	private:
 
 		// ---------------
@@ -67,12 +67,12 @@ namespace Minesweeper {
 		// public methods:
 		// ---------------
 
-		Grid(int gridSize, int numOfMines, IRandom* random = nullptr);
+		Game(int gridSize, int numOfMines, IRandom* random = nullptr);
 
-		Grid(int gridHeight, int gridWidth, int numOfMines, IRandom* random = nullptr);
+		Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random = nullptr);
 
 		// default
-		~Grid();
+		~Game();
 
 		void createMinesAndNums(const int initChosenX, const int initChosenY);
 
@@ -110,4 +110,4 @@ namespace Minesweeper {
 
 }
 
-#endif // MINESWEEPER_GRID_H
+#endif // MINESWEEPER_GAME_H

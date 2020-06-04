@@ -5,23 +5,23 @@
 # Public header files
 set(HEADER_FOLDER "${PROJECT_SOURCE_DIR}/include/minesweeper")
 set(HEADER_LIST
-    "${HEADER_FOLDER}/Grid.h"
-    "${HEADER_FOLDER}/IRandom.h"
-    "${HEADER_FOLDER}/Random.h"
+    "${HEADER_FOLDER}/game.h"
+    "${HEADER_FOLDER}/i_random.h"
+    "${HEADER_FOLDER}/random.h"
 )
 
 # Private header files
 set(PRIVATE_HEADER_FOLDER "minesweeper")
 set(PRIVATE_HEADER_LIST
-    "${PRIVATE_HEADER_FOLDER}/Cell.h"
+    "${PRIVATE_HEADER_FOLDER}/cell.h"
 )
 
 # Source files
 set(SOURCE_FOLDER "minesweeper")
 set(SOURCE_LIST
-    "${SOURCE_FOLDER}/Cell.cpp"
-    "${SOURCE_FOLDER}/Grid.cpp"
-    "${SOURCE_FOLDER}/Random.cpp"
+    "${SOURCE_FOLDER}/cell.cpp"
+    "${SOURCE_FOLDER}/game.cpp"
+    "${SOURCE_FOLDER}/random.cpp"
 )
 
 

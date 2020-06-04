@@ -14,15 +14,27 @@ To use this Minesweeper game library, pass your implementation of provided 'IRan
 
 If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass 'Random' (provided implementation of 'IRandom' that uses 'std::mt19937') as instructed above.
 
-You can check ['Minesweeper_Examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/Minesweeper_Examples.cpp) for more detailed usage explanation and ['Grid.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/Grid.h) for the main interface.
+You can check ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['grid.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/grid.h) for the main interface.
 
 ---
 
 ### Version History:
 
+#### Version 8.0.0:
+
+* Renamed the 'Grid' class to 'Game'.
+	* Might cause historical inconsistencies and confusion, since the original console game version had a class with this name. (v6.1.1 and lower)
+	* Should increase clarity for further releases of this library.
+* Changed file naming convention from 'PascalCase' to 'snake_case'.
+* Changed namespace naming convention from 'PascalCase' to 'lowercase'.
+* Added missing '#include\<vector\>' to 'i_random.h'.
+* Slightly edited 'README.MD'
+
 #### Version 7.0.0:
 
-* Separated original Minesweeper game (on console) into: 'minesweeper' (game library) and ['console-minesweeper'](https://github.com/TimiMakkonen/console-minesweeper) (console version of the game which uses the aforementioned library).
+* Separated original Minesweeper game (on console) into:
+	* 'minesweeper' (game library) and
+	* ['console-minesweeper'](https://github.com/TimiMakkonen/console-minesweeper) (console version of the game which uses the aforementioned library).
 * Turned VS solution into CMake library.
 	* Added '(google)testing'. (Not implemented yet.)
 	* Added 'examples' executable to allow showcasing library.
@@ -113,7 +125,6 @@ Initial version of the game. Mostly in working condition.
 
 * Add an option to add mines by percentage, not by quantity.
 * Add save/load (serialize/deserialize).
-* Change name of 'Grid' to 'Game' for clarity. (Might cause historical Inconsistencies, since original console version 														had a class with this name.)
 * Add method to reset game.
 * Add method to start new game.
 * Add method which returns a visual representation of the current state of the grid in short string form.

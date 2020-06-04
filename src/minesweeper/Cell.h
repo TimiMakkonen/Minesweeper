@@ -1,7 +1,7 @@
 #ifndef MINESWEEPER_CELL_H
 #define MINESWEEPER_CELL_H
 
-namespace Minesweeper {
+namespace minesweeper {
 
 	class Cell {
 	private:

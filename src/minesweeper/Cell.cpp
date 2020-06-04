@@ -1,8 +1,8 @@
 #include <assert.h>
 
-#include <minesweeper/Cell.h>
+#include <minesweeper/cell.h>
 
-namespace Minesweeper {
+namespace minesweeper {
 
 	bool Cell::isVisible() const {
 

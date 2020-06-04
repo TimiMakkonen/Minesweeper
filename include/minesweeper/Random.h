@@ -2,10 +2,11 @@
 #define MINESWEEPER_RANDOM_H
 
 #include <random>
+#include <vector>
 
-#include <minesweeper/IRandom.h>
+#include <minesweeper/i_random.h>
 
-namespace Minesweeper {
+namespace minesweeper {
 
 	class Random : public IRandom {
 

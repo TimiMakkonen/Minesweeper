@@ -1,8 +1,9 @@
 
 #include <iostream>
 
-#include <minesweeper/Grid.h>
-#include <minesweeper/Random.h>
+#include <minesweeper/i_random.h>
+#include <minesweeper/random.h>
+#include <minesweeper/game.h>
 
 // Used for showing off the Minesweeper library and maybe writing some preliminary tests
 
@@ -47,24 +48,24 @@ void exampleOfSimplestSetup() {
 
 	// start by initialising instance of 'Random' class
 	// (can be initialised to stack or heap)
-	Minesweeper::Random myRandom;
+	minesweeper::Random myRandom;
 
 	// pass grid size (10x10), number of mines(20) and pointer to 'Random'(&myRandom)
 	// (can be initialised to stack or heap)
-	Minesweeper::Grid myGrid(10, 20, &myRandom);
+	minesweeper::Game myGame(10, 20, &myRandom);
 
 	// you can also seperately specify width and height of the grid:
 	// pass grid height (9), grid width (12), number of mines(22) and pointer to 'Random'(&myRandom)
-	Minesweeper::Grid myGrid2(9, 12, 22, &myRandom);
+	minesweeper::Game myGame2(9, 12, 22, &myRandom);
 
 
 
 
-	// alternatively you can initialise 'Random' or 'Grid' to heap:
-	Minesweeper::IRandom* myRandomPtr = new Minesweeper::Random();
-	Minesweeper::Grid* myGridPtr = new Minesweeper::Grid(10, 20, myRandomPtr);
+	// alternatively you can initialise 'Random' or 'Game' to heap:
+	minesweeper::IRandom* myRandomPtr = new minesweeper::Random();
+	minesweeper::Game* myGamePtr = new minesweeper::Game(10, 20, myRandomPtr);
 
-	delete myGridPtr;
+	delete myGamePtr;
 	delete myRandomPtr;
 
 
@@ -72,37 +73,37 @@ void exampleOfSimplestSetup() {
 
 	// or use better C++ 'std::unique_ptr' alternative to this: (takes care of garbage collection)
 
-	auto myRandomUniquePtr = std::make_unique<Minesweeper::Random>();
-	// std::unique_ptr<Minesweeper::IRandom> myRandomUniquePtr = std::make_unique<Minesweeper::Random>();
+	auto myRandomUniquePtr = std::make_unique<minesweeper::Random>();
+	// std::unique_ptr<minesweeper::IRandom> myRandomUniquePtr = std::make_unique<minesweeper::Random>();
 
-	auto myGridUniquePtr = std::make_unique<Minesweeper::Grid>(10, 20, myRandomUniquePtr.get());
-	// std::unique_ptr<Minesweeper::Grid> myGridUniquePtr 
-	//		= std::make_unique<Minesweeper::Grid>(10, 20, myRandomUniquePtr.get());
+	auto myGameUniquePtr = std::make_unique<minesweeper::Game>(10, 20, myRandomUniquePtr.get());
+	// std::unique_ptr<minesweeper::Game> myGameUniquePtr 
+	//		= std::make_unique<minesweeper::Game>(10, 20, myRandomUniquePtr.get());
 
 
-	// As of writing this, 'Grid' does not ( and hopefully never will) delete the 'IRandom' object it has a pointer for
+	// As of writing this, 'Game' does not ( and hopefully never will) delete the 'IRandom' object it has a pointer for
 	// but beware that exposing the raw pointer from 'std::unique_ptr' is still dangerous.
 	// So it might be advisable to use raw pointer for your 'Random' class instead.
 
 
 
-	// instead off assigning 'IRandom' for each instance of 'Grid', 
-	// you can assign a default 'Random' to all instances of 'Grid' class
+	// instead off assigning 'IRandom' for each instance of 'Game', 
+	// you can assign a default 'Random' to all instances of 'Game' class
 	// this gets used if it is not specifically set for an instance of 'Random' class
-	Minesweeper::Random myStaticRandom;
+	minesweeper::Random myStaticRandom;
 
-	Minesweeper::Grid::setDefaultRandom(&myStaticRandom);
+	minesweeper::Game::setDefaultRandom(&myStaticRandom);
 
-	// grid that uses static random:
-	Minesweeper::Grid myGridUsingStaticRandom(10, 20);
+	// game that uses static 'Random' class:
+	minesweeper::Game myGameUsingStaticRandom(10, 20);
 
-	// grid that manually overrides static random:
-	Minesweeper::Random myRandom2;
-	Minesweeper::Grid myGridOverridingStaticRandom(10, 20, &myRandom2);
+	// game that manually overrides static 'Random' class:
+	minesweeper::Random myRandom2;
+	minesweeper::Game myGameOverridingStaticRandom(10, 20, &myRandom2);
 
 
-	// be free to use any of these ways to setup your Minesweeper 'Grid'
-	// just make sure that 'Random' variable is alive throughout your usage of the Minesweeper 'Grid' :)
+	// be free to use any of these ways to setup your Minesweeper 'Game'
+	// just make sure that 'Random' variable is alive throughout your usage of the Minesweeper 'Game' :)
 }
 
 
@@ -125,7 +126,7 @@ void examplesOfRandomControllingSetup() {
 
 
 	// for example:
-	class MyRandomGen : public Minesweeper::IRandom {
+	class MyRandomGen : public minesweeper::IRandom {
 		public:
 			// just an example, shuffle properly in actual use
 			void shuffleVector(std::vector<int>& vec) {
@@ -134,7 +135,7 @@ void examplesOfRandomControllingSetup() {
 	};
 
 	MyRandomGen myRandomGen;
-	auto myGrid = std::make_unique<Minesweeper::Grid>(10, 20, &myRandomGen);
+	auto myGame = std::make_unique<minesweeper::Game>(10, 20, &myRandomGen);
 
 }
 
@@ -143,20 +144,20 @@ void examplesOfRandomControllingSetup() {
 void usageExamples() {
 
 	// Here we are going to present basic usage of the minesweeper library.
-	// For more detailed public interface, check 'Grid.h' file. (include/minesweeper/Grid.h as of writing this)
+	// For more detailed public interface, check 'game.h' file. (include/minesweeper/game.h as of writing this)
 
 	// Let us start with a basic setup of our Minesweeper game:
 	// (check exampleOfSimplestSetup() and examplesOfRandomControllingSetup() methods for more information on this)
 
-	Minesweeper::Random myRandom;
-	// Grid with: grid height (10), grid width (12), number of mines(22) and pointer to 'Random'(&myRandom)
-	auto myGrid = std::make_unique<Minesweeper::Grid>(10, 12, 22, &myRandom);
+	minesweeper::Random myRandom;
+	// Minsweeper game with: grid height (10), grid width (12), number of mines(22) and pointer to 'Random'(&myRandom)
+	auto myGame = std::make_unique<minesweeper::Game>(10, 12, 22, &myRandom);
 
 	// A minesweeper game is automatically initialised into an empty game of specialised size.
-	// However, the grid does not generate mines before the first move has been made.
+	// However, the game does not generate mines on the grid before the first move has been made.
 	// This is to make sure that the player cannot lose straight away.
 	
-	// The grid uses common programming coordinate system with: 
+	// The minesweeper grid uses common programming coordinate system with: 
 	//			top left corner (0, 0)
 	//			top right corner (gridWidth - 1, 0)
 	//			bottom left corner (0, gridHeight - 1)
@@ -165,33 +166,33 @@ void usageExamples() {
 	// When coordinates are needed as an argument to methods, 
 	// 	x-coordinate is always given first, followed by y-coordinate
 
-	// For reference, specific spots on the grid are known as 'Cells'.
+	// For reference, specific spots on the grid are known as 'Cell's.
 
 	// For now, (until this feature gets updated), creation of mines has to be done manually.
-	myGrid->createMinesAndNums(5, 6);
+	myGame->createMinesAndNums(5, 6);
 
 	// Player can check/click coordinates:
-	myGrid->checkInputCoordinates(5,6);
+	myGame->checkInputCoordinates(5,6);
 
 	// Player can mark coordinates:
-	myGrid->markInputCoordinates(3, 6);
+	myGame->markInputCoordinates(3, 6);
 
 
 	// We can do a number of checks: (to assist with visualisation of game etc.)
 	// Small macro to print method names and values:
 	#define PRINT_FUNC_RESULT(func) std::cout << #func << ": " << func << std::endl
 
-	PRINT_FUNC_RESULT(myGrid->playerHasWon());
-	PRINT_FUNC_RESULT(myGrid->playerHasLost());
-	PRINT_FUNC_RESULT(myGrid->isCellVisible(5, 6));
-	PRINT_FUNC_RESULT(myGrid->doesCellHaveMine(1, 3));
-	PRINT_FUNC_RESULT(myGrid->isCellMarked(3, 6));
-	PRINT_FUNC_RESULT(myGrid->numOfMinesAroundCell(4, 6));
+	PRINT_FUNC_RESULT(myGame->playerHasWon());
+	PRINT_FUNC_RESULT(myGame->playerHasLost());
+	PRINT_FUNC_RESULT(myGame->isCellVisible(5, 6));
+	PRINT_FUNC_RESULT(myGame->doesCellHaveMine(1, 3));
+	PRINT_FUNC_RESULT(myGame->isCellMarked(3, 6));
+	PRINT_FUNC_RESULT(myGame->numOfMinesAroundCell(4, 6));
 
 	#undef PRINT_FUNC_RESULT
 
 	// All of these are quite self-explanatory.
 	// There is quite a few improvements and additions on the way.
-	// Again, for more info, check 'Grid.h' file. (include/minesweeper/Grid.h as of writing this.
+	// Again, for more info, check 'game.h' file. (include/minesweeper/game.h as of writing this.
 }
 

@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include <minesweeper/Grid.h>
+#include <minesweeper/game.h>
 
 class MinesweeperTest : public ::testing::Test {
 protected:

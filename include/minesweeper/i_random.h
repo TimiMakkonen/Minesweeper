@@ -1,7 +1,9 @@
 #ifndef MINESWEEPER_I_RANDOM_H
 #define MINESWEEPER_I_RANDOM_H
 
-namespace Minesweeper {
+#include <vector>
+
+namespace minesweeper {
 
 	class IRandom {
 

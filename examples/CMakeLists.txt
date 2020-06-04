@@ -1,6 +1,6 @@
 
 set(EXAMPLE_SOURCE_LIST
-	Minesweeper_Examples.cpp
+	minesweeper_examples.cpp
 )
 
 set(EXAMPLE_APP_NAME "MinesweeperExamples")
