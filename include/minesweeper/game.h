@@ -26,35 +26,12 @@ namespace minesweeper {
 		int numOfWronglyMarkedMines = 0;
 		int numOfVisibleCells = 0;
 		bool _checkedMine = false;
+		bool minesHaveBeenSet = false;
 
 		std::vector< std::vector< std::unique_ptr<Cell> > > cells;
 
 		// field used to randomise vector of ints to choose locations of mines
 		IRandom* random;
-
-		// ---------------
-		// private methods:
-		// ---------------
-
-		int verifyNumOfMines(int numOfMines);
-
-		std::vector< std::vector< std::unique_ptr<Cell> > > initCells();
-
-		void chooseRandomMineCells(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const;
-
-		void randomizeMineVector(std::vector<int>& mineSpots) const;
-
-		void createMine(const int X, const int Y);
-
-		void incrNumsAroundMine(const int X, const int Y);
-
-		void checkAroundCoordinate(const int X, const int Y);
-
-		bool allMinesMarked() const;
-
-		bool allNonMinesVisible() const;
-
-		bool checkedMine() const;
 
 		// static field used to randomise vector of ints to choose locations of mines
 		// only used if IRandom not specifically set for an instance
@@ -71,9 +48,10 @@ namespace minesweeper {
 
 		Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random = nullptr);
 
-		// default
+		// default destructor
 		~Game();
 
+		// optional now, invoked by: 'checkInputCoordinates' (left public for legacy support)
 		void createMinesAndNums(const int initChosenX, const int initChosenY);
 
 		// to check user given coordinates, and make it visible
@@ -94,6 +72,12 @@ namespace minesweeper {
 
 		int numOfMinesAroundCell(const int X, const int Y) const;
 
+		int getGridHeight() const;
+
+		int getGridWidth() const;
+
+		int getNumOfMines() const;
+
 		// ---------------
 		// static methods:
 		// ---------------
@@ -105,6 +89,40 @@ namespace minesweeper {
 		static int minNumOfMines();
 
 		static int minNumOfMines(int gridHeight, int gridWidth);
+
+	private:
+
+		// ---------------
+		// private methods:
+		// ---------------
+
+		int verifyGridDimension(int gridDimension) const;
+
+		int verifyNumOfMines(int numOfMines) const;
+
+		std::vector< std::vector< std::unique_ptr<Cell> > > initCells();
+
+		void chooseRandomMineCells(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const;
+
+		void randomizeMineVector(std::vector<int>& mineSpots) const;
+
+		void createMine(const int X, const int Y);
+
+		void incrNumsAroundMine(const int X, const int Y);
+
+		void checkAroundCoordinate(const int X, const int Y);
+
+		bool allMinesMarked() const;
+
+		bool allNonMinesVisible() const;
+
+		bool checkedMine() const;
+
+		void makeCellVisible(const int X, const int Y);
+
+		void markCell(const int X, const int Y);
+
+		void unmarkCell(const int X, const int Y);
 
 	};
 

@@ -18,9 +18,9 @@ namespace minesweeper {
 	Game::Game(int gridSize, int numOfMines, IRandom* random) : Game(gridSize, gridSize, numOfMines, random) {}
 
 	Game::Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random) 
-			: gridHeight(gridHeight), 
-				gridWidth(gridWidth), 
-				numOfMines(this->verifyNumOfMines(numOfMines)), 
+			: gridHeight(this->verifyGridDimension(gridHeight)), // throws
+				gridWidth(this->verifyGridDimension(gridWidth)), // throws
+				numOfMines(this->verifyNumOfMines(numOfMines)), // throws
 				random(random), 
 				cells(this->initCells()) {}
 
@@ -32,20 +32,32 @@ namespace minesweeper {
 	// https://stackoverflow.com/questions/6012157/is-stdunique-ptrt-required-to-know-the-full-definition-of-t
 	// https://stackoverflow.com/questions/13414652/forward-declaration-with-unique-ptr
 	Game::~Game() = default;
+	
+	int Game::verifyGridDimension(int gridDimension) const {
 
+		if (gridDimension < 0) {
+			throw std::out_of_range("Game::verifyGridDimension(int gridDimension): "
+									"Trying to create a grid with negative grid dimension.");
+		}
+		return gridDimension;
+	}
 
-	int Game::verifyNumOfMines(int numOfMines) {
+	int Game::verifyNumOfMines(int numOfMines) const {
 
-		if (numOfMines > maxNumOfMines(this->gridHeight, this->gridWidth) || numOfMines < minNumOfMines()) {
+		int maxNumOfMinesForThisGrid = maxNumOfMines(this->gridHeight, this->gridWidth);
+		if (numOfMines > maxNumOfMinesForThisGrid) {
 			throw std::out_of_range("Game::verifyNumOfMines(int numOfMines): "
-									"Trying to create a grid with too few or many mines.");
+									"Trying to create a grid with too many mines.");
+		} else if(numOfMines < minNumOfMines()) {
+			throw std::out_of_range("Game::verifyNumOfMines(int numOfMines): "
+									"Trying to create a grid with too little mines.");
 		}
 		return numOfMines;
 	}
 
 
 
-	std::vector< std::vector< std::unique_ptr<typename Cell> > > Game::initCells() {
+	std::vector< std::vector< std::unique_ptr<Cell> > > Game::initCells() {
 
 		std::vector< std::vector< std::unique_ptr<Cell> > > initTempCells;
 		initTempCells.reserve(this->gridHeight);
@@ -77,6 +89,8 @@ namespace minesweeper {
 
 			this->incrNumsAroundMine(X, Y);
 		}
+		
+		this->minesHaveBeenSet = true;
 	}
 
 
@@ -136,7 +150,7 @@ namespace minesweeper {
 			if (Game::defaultRandom != nullptr) {
 				Game::defaultRandom->shuffleVector(mineSpots);
 			} else {
-				throw std::exception("Game::randomizeMineVector(std::vector<int>& mineSpots): "
+				throw std::invalid_argument("Game::randomizeMineVector(std::vector<int>& mineSpots): "
 									 "Neither field 'random' nor static field 'defaultRandom' is initialised.");
 			}
 		}
@@ -188,10 +202,20 @@ namespace minesweeper {
 			throw std::out_of_range("Game::markInputCoordinates(const int X, const int Y): "
 									"Trying to mark cell outside grid.");
 		}
-		else if (this->cells[Y][X]->isMarked()) {
-			this->cells[Y][X]->unmarkCell();
 
-			if (this->cells[Y][X]->hasMine()) {
+		if (!minesHaveBeenSet) {
+			throw std::invalid_argument("Game::markInputCoordinates(const int X, const int Y): "
+										"Trying to mark a cell before mines hava been initialised. " 
+										"(Initialise mines by calling: "
+										"createMinesAndNums(const int initChosenX, const int initChosenY) "
+										"or checkInputCoordinates(const int X, const int Y).)");
+		}
+
+
+		if (this->isCellMarked(X, Y)) {
+			this->unmarkCell(X, Y);
+
+			if (this->doesCellHaveMine(X, Y)) {
 				--(this->numOfMarkedMines);
 			}
 			else {
@@ -199,9 +223,9 @@ namespace minesweeper {
 			}
 		}
 		else {
-			this->cells[Y][X]->markCell();
+			this->markCell(X, Y);
 
-			if (this->cells[Y][X]->hasMine()) {
+			if (this->doesCellHaveMine(X, Y)) {
 				++(this->numOfMarkedMines);
 			}
 			else {
@@ -273,13 +297,21 @@ namespace minesweeper {
 		return this->cells[Y][X]->numOfMinesAround();
 	}
 
-	
-
 	bool Game::checkedMine() const {
 		return this->_checkedMine;
 	}
 
+	void Game::makeCellVisible(const int X, const int Y) {
+		this->cells[Y][X]->makeVisible();
+	}
 
+	void Game::markCell(const int X, const int Y) {
+		this->cells[Y][X]->markCell();
+	}
+
+	void Game::unmarkCell(const int X, const int Y) {
+		this->cells[Y][X]->unmarkCell();
+	}
 
 	// to check user given coordinates, and make it visible
 	void Game::checkInputCoordinates(const int X, const int Y) {
@@ -288,19 +320,23 @@ namespace minesweeper {
 			throw std::out_of_range("Game::checkInputCoordinates(const int X, const int Y): "
 									"Trying to check cell outside grid.");
 		}
-		else if (!(this->cells[Y][X]->isVisible()) && !(this->cells[Y][X]->isMarked())) {
-			this->cells[Y][X]->makeVisible();
+		
+		if (!minesHaveBeenSet) {
+			this->createMinesAndNums(X, Y);
+		}
+
+		if (!(this->isCellVisible(X, Y)) && !(this->isCellMarked(X, Y))) {
+			this->makeCellVisible(X, Y);
 			++(this->numOfVisibleCells);
 
-			if (this->cells[Y][X]->hasMine()) {
+			if (this->doesCellHaveMine(X, Y)) {
 				this->_checkedMine = true;
 			}
-			else if (this->cells[Y][X]->numOfMinesAround() == 0) {
+			else if (this->numOfMinesAroundCell(X, Y) == 0) {
 				this->checkAroundCoordinate(X, Y);
 			}
 		}
 	}
-
 
 	
 	void Game::checkAroundCoordinate(const int X, const int Y) {
@@ -332,6 +368,21 @@ namespace minesweeper {
 		}
 	}
 
+	int Game::getGridHeight() const {
+
+		return this->gridHeight;
+	}
+
+	int Game::getGridWidth() const {
+
+		return this->gridWidth;
+	}
+
+	int Game::getNumOfMines() const {
+
+		return this->numOfMines;
+	}
+
 	// static method
 	void Game::setDefaultRandom(IRandom* defaultRandom) {
 		Game::defaultRandom = defaultRandom;
@@ -340,19 +391,29 @@ namespace minesweeper {
 	// static method
 	int Game::maxNumOfMines(int gridH, int gridW) {
 
-		return gridH * gridW - 9;
+		if(gridH < 0 || gridW < 0) {
+			throw std::out_of_range("Game::maxNumOfMines(int gridH, int gridW): "
+									"Trying to check maximum number of mines for a negative sized grid.");
+		}
+		
+		return std::max(gridH * gridW - 9, 0);
 	}
 
 
 	// static method
 	int Game::minNumOfMines() {
 
-		return 1;
+		return 0;
 	}
 
 
 	// static method
 	int Game::minNumOfMines(int gridH, int gridW) {
+
+		if(gridH < 0 || gridW < 0) {
+			throw std::out_of_range("Game::minNumOfMines(int gridH, int gridW): "
+									"Trying to check minimum number of mines for a negative sized grid.");
+		}
 
 		return minNumOfMines();
 	}

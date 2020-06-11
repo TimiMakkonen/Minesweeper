@@ -4,7 +4,7 @@ C++ library containing the core logic of Minesweeper game.
 
 ---
 
-### How to use:
+## How to use
 
 Minimum C++ version required: C++11.
 
@@ -18,85 +18,97 @@ You can check ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/mines
 
 ---
 
-### Version History:
+## Version History
 
-#### Version 8.0.0:
+### Version 8.1.0
+
+* Made public 'createMinesAndNums(const int initChosenX, const int initChosenY)' redundant.
+  * Can still be called as before, but completely unnecessary (and not recommended) to do this manually from now on.
+* 'markInputCoordinates(const int X, const int Y)' now throws if 'checkInputCoordinates(const int X, const int Y)'
+  or 'createMinesAndNums(const int initChosenX, const int initChosenY)' has not been called before it.
+* Added getters for grid height, width and number of mines.
+* Added some tests.
+* Added verifications to some methods.
+* Updated ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp).
+* Slightly edited 'README.MD'.
+
+### Version 8.0.0
 
 * Renamed the 'Grid' class to 'Game'.
-	* Might cause historical inconsistencies and confusion, since the original console game version had a class with this name. (v6.1.1 and lower)
-	* Should increase clarity for further releases of this library.
+  * Might cause historical inconsistencies and confusion, since the original console game version had a class with this name. (v6.1.1 and lower)
+  * Should increase clarity for further releases of this library.
 * Changed file naming convention from 'PascalCase' to 'snake_case'.
 * Changed namespace naming convention from 'PascalCase' to 'lowercase'.
 * Added missing '#include\<vector\>' to 'i_random.h'.
-* Slightly edited 'README.MD'
+* Slightly edited 'README.MD'.
 
-#### Version 7.0.0:
+### Version 7.0.0
 
 * Separated original Minesweeper game (on console) into:
-	* 'minesweeper' (game library) and
-	* ['console-minesweeper'](https://github.com/TimiMakkonen/console-minesweeper) (console version of the game which uses the aforementioned library).
+  * 'minesweeper' (game library) and
+  * ['console-minesweeper'](https://github.com/TimiMakkonen/console-minesweeper) (console version of the game which uses the aforementioned library).
 * Turned VS solution into CMake library.
-	* Added '(google)testing'. (Not implemented yet.)
-	* Added 'examples' executable to allow showcasing library.
-		* Added some usage instructions and examples.
+  * Added '(google)testing'. (Not implemented yet.)
+  * Added 'examples' executable to allow showcasing library.
+    * Added some usage instructions and examples.
 * New classes 'IRandom' and 'Random':
-	* Separating randomising part of creating mines from rest of the 'Grid'.
-	* IRandom is an abstract class which provides 'Grid' with ability to shuffle a vector of ints.
-	* You can create your own class which implements 'IRandom' or use provided 'Random' class for simplicity.
-	* You can pass 'IRandom' via constructor or set 'defaultRandom' static property. 
-					(Class field set by constructor has the priority.)
+  * Separating randomising part of creating mines from rest of the 'Grid'.
+  * IRandom is an abstract class which provides 'Grid' with ability to shuffle a vector of ints.
+  * You can create your own class which implements 'IRandom' or use provided 'Random' class for simplicity.
+  * You can pass 'IRandom' via constructor or set 'defaultRandom' static property.
+    (Class field set by constructor has the priority.)
 * Slightly improved readability of code.
 
-#### Version 6.1.1:
+### Version 6.1.1
 
 * Added validity check for the number of mines in the constructor of 'Grid'.
 * Created static methods in 'Grid' class to tell the maximum and minimum number of mines allowed in a grid of given size.
 
-#### Version 6.1.0:
+### Version 6.1.0
 
 * Separated 'gridSize' into 'gridHeight' and 'gridWidth' to allow 'non-square' grids both in 'Grid' and 'Game'.
 
-#### Version 6.0:
+### Version 6.0
 
 * Moved print functionality from 'Grid' to 'Game'.
 * Changed cerr's into asserts and throws.
 * Moved and changed some of the game logic.
 
-#### Version 5.2:
+### Version 5.2
 
 * Slightly improved readability of the code and fixed minor things.
 * Changed minimum size of grid into 4x4 to stop softlock when choosing number of mines for smaller grids.
 
-#### Version 5.1:
+### Version 5.1
 
 * Added win condition (all non mines visible/checked).
 * Made impossible to mark a cell on the first turn.
 * Slightly improved readability of the code.
 
-#### Version 5.0:
+### Version 5.0
 
 * Updated program from C-style to OOP.
-	* New 'Game', 'Grid' and 'Cell' classes.
+  * New 'Game', 'Grid' and 'Cell' classes.
 * Improved readability and efficiency of some parts of code.
-	* Changed variable naming convention from pascal to camel and made names easier to understand.
+  * Changed variable naming convention from pascal to camel and made names easier to understand.
 * Changed pseudo-random number generator from 'rand' to 'std::mt19937' (Mersenne Twister 19937) to improve randomness.
 
-#### Version 4.0:
+### Version 4.0
 
 * Continued with improvements on the input system.
 * Increased maximum size of the grid up to 99x99. (I do not recommend grids larger than 50x50.)
 * Program now shows your last grid spot input.
 * Made function 'TryInputToCoordinates' mostly future proof.
-	* can handle grid sizes up to 675 (overkill tbh)
-	* able to give error messages and decide when new input is needed.
+  * can handle grid sizes up to 675 (overkill tbh)
+  * able to give error messages and decide when new input is needed.
 * Improved games structure for all the different possibilities.
 * Added and made HELP menu optional. (show up in the beginning and later upon request)
 * Improved instructions and other text output.
 * Added ability to play again.
 * Made sure that you cannot lose on the first turn.
-	* Creation of the grid has been moved to take into account players first choice, making sure player will make some progress.
+  * Creation of the grid has been moved to take into account players first choice, making sure player will make some progress.
 
-#### Version 3.0:
+### Version 3.0
 
 * Slightly improved readability of the code.
 * Started to deal with proper handling of wrong inputs.
@@ -104,28 +116,25 @@ You can check ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/mines
 * Ability to unmark grid spots by marking them again (in case you made a mistake).
 * Initial options/special input menu implemented.
 
+### Version 2.0
 
-#### Version 2.0:
-
-* Fixed some visual mistakes and made the game look prettier 
+* Fixed some visual mistakes and made the game look prettier.
 * Added automatic mine check for squares around, when choosing a grid location with no surrounding mines.
 * Fixes input for 2 digit numbers.
 * Initial losing screen.
 * More convenient input system.
 * \+ Background work to make next additions/fixes easier to implement.
 
-#### Version 1.0:
-
+### Version 1.0
 
 Initial version of the game. Mostly in working condition.
 
 ---
 
-### Fixes and features left to consider/implement:
+## Fixes and features left to consider/implement
 
 * Add an option to add mines by percentage, not by quantity.
 * Add save/load (serialize/deserialize).
 * Add method to reset game.
 * Add method to start new game.
 * Add method which returns a visual representation of the current state of the grid in short string form.
-* Remove public 'createMinesAndNums(const int initChosenX, const int initChosenY)' method.

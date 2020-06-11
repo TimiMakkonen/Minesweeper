@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <algorithm>
 
 #include <minesweeper/i_random.h>
 #include <minesweeper/random.h>
@@ -168,11 +169,14 @@ void usageExamples() {
 
 	// For reference, specific spots on the grid are known as 'Cell's.
 
-	// For now, (until this feature gets updated), creation of mines has to be done manually.
-	myGame->createMinesAndNums(5, 6);
+	// Creation of mines can be done manually (mostly for legacy reasons) by calling:
+	// 		myGame->createMinesAndNums(5, 6);
+	// but you can (and should) just ignore this.
+	// This method gets automatically called when you check/click coordinates.
+	
 
 	// Player can check/click coordinates:
-	myGame->checkInputCoordinates(5,6);
+	myGame->checkInputCoordinates(5, 6);
 
 	// Player can mark coordinates:
 	myGame->markInputCoordinates(3, 6);
