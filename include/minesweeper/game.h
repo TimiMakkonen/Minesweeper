@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <iostream>
 
 #include <minesweeper/i_random.h>
 
@@ -19,11 +20,11 @@ namespace minesweeper {
 		// fields:
 		// ---------------
 
-		int gridHeight;
-		int gridWidth;
-		int numOfMines;
+		int gridHeight = 0;
+		int gridWidth = 0;
+		int numOfMines = 0;
 		int numOfMarkedMines = 0;
-		int numOfWronglyMarkedMines = 0;
+		int numOfWronglyMarkedCells = 0;
 		int numOfVisibleCells = 0;
 		bool _checkedMine = false;
 		bool minesHaveBeenSet = false;
@@ -43,6 +44,8 @@ namespace minesweeper {
 		// ---------------
 		// public methods:
 		// ---------------
+
+		Game();
 
 		Game(int gridSize, int numOfMines, IRandom* random = nullptr);
 
@@ -78,6 +81,12 @@ namespace minesweeper {
 
 		int getNumOfMines() const;
 
+		// save game:
+		std::ostream& serialise(std::ostream& outStream) const;
+
+		// load game:
+		std::istream& deserialise(std::istream& inStream);
+
 		// ---------------
 		// static methods:
 		// ---------------
@@ -100,7 +109,15 @@ namespace minesweeper {
 
 		int verifyNumOfMines(int numOfMines) const;
 
+		int verifyNumOfMarkedMines(int numOfMarkedMines) const;
+
+		int Game::verifyNumOfVisibleCells(int numOfVisibleCells) const;
+
+		int verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells) const;
+
 		std::vector< std::vector< std::unique_ptr<Cell> > > initCells();
+
+		void resizeCells();
 
 		void chooseRandomMineCells(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const;
 
@@ -113,6 +130,8 @@ namespace minesweeper {
 		void checkAroundCoordinate(const int X, const int Y);
 
 		bool allMinesMarked() const;
+
+		bool noNonMinesMarked() const;
 
 		bool allNonMinesVisible() const;
 

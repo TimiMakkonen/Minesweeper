@@ -1,6 +1,10 @@
 #ifndef MINESWEEPER_CELL_H
 #define MINESWEEPER_CELL_H
 
+#include <iostream> // std::istream, std::ostream
+
+#include <nlohmann/json.hpp> // nlohmann::json
+
 namespace minesweeper {
 
 	class Cell {
@@ -30,6 +34,14 @@ namespace minesweeper {
 		void markCell();
 
 		void unmarkCell();
+
+		// save cell:
+		std::ostream& serialise(std::ostream& outStream) const;
+		nlohmann::json serialise() const;
+
+		// load cell:
+		std::istream& deserialise(std::istream& inStream);
+		void deserialise(nlohmann::json& j);
 
 	};
 

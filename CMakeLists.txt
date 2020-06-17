@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 project(Minesweeper 
-        VERSION 8.1.0
+        VERSION 8.2.0
         DESCRIPTION "Minesweeper library"
         LANGUAGES CXX)
 
@@ -87,6 +87,11 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     ##########################
 
 endif()
+
+
+
+# The external json library is here
+add_subdirectory(extern/nlohmann_json_cmake_fetchcontent)
 
 
 

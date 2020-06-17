@@ -1,0 +1,22 @@
+#ifndef TEST_CONFIG_H
+#define TEST_CONFIG_H
+
+// This file generates the file path to the binary folder so that it can be used to locate test data
+
+namespace minesweeper {
+
+    const char* TEST_DATA_DIR = "@BINARY_TEST_DATA_DIR@";
+
+    const char* TEST_DATA[] {
+        @TEST_DATA_FILES@
+    };
+
+    enum TEST_IDS {
+        @TEST_DATA_FILE_IDS@
+    };
+
+}
+
+
+
+#endif // TEST_CONFIG_H

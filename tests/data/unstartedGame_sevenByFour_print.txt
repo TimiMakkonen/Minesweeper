@@ -1,0 +1,24 @@
+
+Here is the visibility print of the game:
+
+     A B C D
+  1|        
+  2|        
+  3|        
+  4|        
+  5|        
+  6|        
+  7|        
+
+
+Here is the solution print of the game:
+
+     A B C D
+  1| . . . .
+  2| . . . .
+  3| . . . .
+  4| . . . .
+  5| . . . .
+  6| . . . .
+  7| . . . .
+

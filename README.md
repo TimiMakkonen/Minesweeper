@@ -1,24 +1,43 @@
 # Minesweeper game library
 
+[![GitHub License](https://img.shields.io/github/license/TimiMakkonen/minesweeper)](https://github.com/TimiMakkonen/minesweeper/LICENSE.MIT)
+![GitHub Latest Release Tag](https://img.shields.io/github/v/tag/TimiMakkonen/minesweeper)
+
 C++ library containing the core logic of Minesweeper game.
 
----
+## Installation
+
+If you want to clone this git repository, use
+
+```console
+git clone --recurse-submodules https://github.com/TimiMakkonen/minesweeper.git
+```
+
+or something similar to ensure that ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule gets cloned properly.
+
+Then you can use this library as part of your own CMake project as you desire.
 
 ## How to use
 
 Minimum C++ version required: C++11.
 
-Use as part of your own CMake project as you desire.
-
 To use this Minesweeper game library, pass your implementation of provided 'IRandom' pure virtual class to 'Game' class or alternatively pass it as an default option to the 'Game' class statically, so that it can be used by all the instances of 'Game' class.
 
 If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass 'Random' (provided implementation of 'IRandom' that uses 'std::mt19937') as instructed above.
 
-You can check ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['game.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/game.h) for the main interface.
-
----
+You can check 'examples' functions in ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['game.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/game.h) for the main interface.
 
 ## Version History
+
+### Version 8.2.0
+
+* Added serialisation and deserialisation methods.
+  * Using ['nlohmann/json'](https://github.com/nlohmann/json) header-only library to do this in 'json'-form.
+  * Added ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) as submodule to this project to implement this neatly in lightweight form.
+  * Already considering about using different (faster) 'JSON' library or different serialisation data
+    format since this current method is relatively slow for larger grids.
+* Added some tests.
+* Slightly edited 'README.MD'.
 
 ### Version 8.1.0
 
@@ -129,12 +148,11 @@ You can check ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/mines
 
 Initial version of the game. Mostly in working condition.
 
----
-
 ## Fixes and features left to consider/implement
 
 * Add an option to add mines by percentage, not by quantity.
-* Add save/load (serialize/deserialize).
 * Add method to reset game.
 * Add method to start new game.
 * Add method which returns a visual representation of the current state of the grid in short string form.
+* Add more serialisation options.
+* Add verifications to deserialisation methods to check validity of the given game.

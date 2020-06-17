@@ -39,6 +39,9 @@ target_include_directories("${LIBRARY_NAME}" PUBLIC "${PROJECT_SOURCE_DIR}/inclu
 # We need this directory
 target_include_directories("${LIBRARY_NAME}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 
+# We need this library for json (de)serialisation
+target_link_libraries("${LIBRARY_NAME}" PRIVATE nlohmann_json::nlohmann_json)
+
 # All users of this library will need at least C++11
 target_compile_features("${LIBRARY_NAME}" PUBLIC cxx_std_11)
 

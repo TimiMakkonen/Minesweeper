@@ -1,9 +1,14 @@
-#include <stdexcept>
-#include <vector>
-#include <algorithm>
-#include <memory>
-#include <numeric>
-#include <assert.h>
+#include <stdexcept> // std::out_of_range
+#include <vector> // std::vector
+#include <algorithm> // std::max
+#include <memory> // std::unique_ptr
+#include <numeric> // std::iota
+#include <assert.h> // assert
+#include <iomanip> // std::setw
+#include <sstream> // std::ostringstream
+#include <chrono> // std::chrono
+
+#include <nlohmann/json.hpp> // nlohmann::json
 
 #include <minesweeper/game.h>
 #include <minesweeper/cell.h>
@@ -14,6 +19,7 @@ namespace minesweeper {
 	IRandom* Game::defaultRandom = nullptr;
 
 
+	Game::Game() = default;
 
 	Game::Game(int gridSize, int numOfMines, IRandom* random) : Game(gridSize, gridSize, numOfMines, random) {}
 
@@ -37,7 +43,9 @@ namespace minesweeper {
 
 		if (gridDimension < 0) {
 			throw std::out_of_range("Game::verifyGridDimension(int gridDimension): "
-									"Trying to create a grid with negative grid dimension.");
+									"Trying to create a grid with negative ("
+									+ std::to_string(gridDimension) +
+									") grid dimension.");
 		}
 		return gridDimension;
 	}
@@ -47,16 +55,71 @@ namespace minesweeper {
 		int maxNumOfMinesForThisGrid = maxNumOfMines(this->gridHeight, this->gridWidth);
 		if (numOfMines > maxNumOfMinesForThisGrid) {
 			throw std::out_of_range("Game::verifyNumOfMines(int numOfMines): "
-									"Trying to create a grid with too many mines.");
+									"Trying to create a grid with too many ("
+									+ std::to_string(numOfMines) +
+									") mines.");
 		} else if(numOfMines < minNumOfMines()) {
 			throw std::out_of_range("Game::verifyNumOfMines(int numOfMines): "
-									"Trying to create a grid with too little mines.");
+									"Trying to create a grid with too few ("
+									+ std::to_string(numOfMines) +
+									") mines.");
 		}
 		return numOfMines;
 	}
 
 
+	int Game::verifyNumOfMarkedMines(int numOfMarkedMines) const {
 
+		if (numOfMarkedMines > this->numOfMines) {
+			throw std::out_of_range("Game::verifyNumOfMarkedMines(int numOfMarkedMines): "
+									"Trying to create a grid with too many ("
+									+ std::to_string(numOfMarkedMines) +
+									") marked mines.");
+		} else if(numOfMarkedMines < 0) {
+			throw std::out_of_range("Game::verifyNumOfMarkedMines(int numOfMarkedMines): "
+									"Trying to create a grid with too few ("
+									+ std::to_string(numOfMarkedMines) +
+									") marked mines.");
+		}
+		return numOfMarkedMines;
+	}
+
+
+	int Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells) const {
+		
+		int numOfMinelessCells = this->gridHeight * this->gridWidth - this->numOfMines;
+		if (numOfWronglyMarkedCells > numOfMinelessCells) {
+			throw std::out_of_range("Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells): "
+									"Trying to create a grid with too many ("
+									+ std::to_string(numOfWronglyMarkedCells) +
+									") wrongly marked cells.");
+		} else if(numOfWronglyMarkedCells < 0) {
+			throw std::out_of_range("Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells): "
+									"Trying to create a grid with too few ("
+									+ std::to_string(numOfWronglyMarkedCells) +
+									") wrongly marked cells.");
+		}
+		return numOfWronglyMarkedCells;
+	}
+
+
+	int Game::verifyNumOfVisibleCells(int numOfVisibleCells) const {
+
+		if (numOfVisibleCells > this->gridHeight * this->gridWidth) {
+			throw std::out_of_range("Game::verifyNumOfVisibleCells(int numOfVisibleCells): "
+									"Trying to create a grid with too many ("
+									+ std::to_string(numOfVisibleCells) +
+									") visible cells.");
+		} else if(numOfVisibleCells < 0) {
+			throw std::out_of_range("Game::verifyNumOfVisibleCells(int numOfVisibleCells): "
+									"Trying to create a grid with too few ("
+									+ std::to_string(numOfVisibleCells) +
+									") visible cells.");
+		}
+		return numOfVisibleCells;
+	}
+
+	// consider combining with Game::resizeCells()
 	std::vector< std::vector< std::unique_ptr<Cell> > > Game::initCells() {
 
 		std::vector< std::vector< std::unique_ptr<Cell> > > initTempCells;
@@ -70,6 +133,24 @@ namespace minesweeper {
 			initTempCells.emplace_back(std::move(tempVecOfCells));
 		}
 		return initTempCells;
+	}
+
+
+	// consider combining with Game::initCells()
+	void Game::resizeCells() {
+
+		this->cells.reserve(this->gridHeight);
+		this->cells.resize(this->gridHeight);
+		for (auto& cellRow : cells) {
+
+			cellRow.reserve(this->gridWidth);
+			if (cellRow.size() < this->gridWidth) {
+				for (size_t i = cellRow.size(); i < this->gridWidth; ++i) {
+					cellRow.emplace_back(std::make_unique<Cell>());
+				}
+			}
+			cellRow.resize(this->gridWidth);
+		}
 	}
 
 
@@ -219,7 +300,7 @@ namespace minesweeper {
 				--(this->numOfMarkedMines);
 			}
 			else {
-				--(this->numOfWronglyMarkedMines);
+				--(this->numOfWronglyMarkedCells);
 			}
 		}
 		else {
@@ -229,7 +310,7 @@ namespace minesweeper {
 				++(this->numOfMarkedMines);
 			}
 			else {
-				++(this->numOfWronglyMarkedMines);
+				++(this->numOfWronglyMarkedCells);
 			}
 		}
 	}
@@ -238,7 +319,16 @@ namespace minesweeper {
 
 	bool Game::allMinesMarked() const {
 
-		if (this->numOfMines == this->numOfMarkedMines && this->numOfWronglyMarkedMines == 0) {
+		if (this->numOfMines == this->numOfMarkedMines) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	bool Game::noNonMinesMarked() const {
+		if (this->numOfWronglyMarkedCells == 0) {
 			return true;
 		}
 		else {
@@ -258,12 +348,16 @@ namespace minesweeper {
 
 	bool Game::playerHasWon() const {
 
-		if (this->allNonMinesVisible() || this->allMinesMarked()) {
-			return true;
+		bool playerWon = false;
+
+		if (!this->playerHasLost()) {
+			if (this->allNonMinesVisible()) {
+				playerWon = true;
+			} else if (this->allMinesMarked() && this->noNonMinesMarked()) {
+				playerWon = true;
+			}
 		}
-		else {
-			return false;
-		}
+		return playerWon;
 	}
 
 	bool Game::playerHasLost() const {
@@ -276,6 +370,9 @@ namespace minesweeper {
 		}
 	}
 
+	bool Game::checkedMine() const {
+		return this->_checkedMine;
+	}
 
 	bool Game::isCellVisible(const int X, const int Y) const {
 
@@ -295,10 +392,6 @@ namespace minesweeper {
 	int Game::numOfMinesAroundCell(const int X, const int Y) const {
 
 		return this->cells[Y][X]->numOfMinesAround();
-	}
-
-	bool Game::checkedMine() const {
-		return this->_checkedMine;
 	}
 
 	void Game::makeCellVisible(const int X, const int Y) {
@@ -368,20 +461,136 @@ namespace minesweeper {
 		}
 	}
 
+
 	int Game::getGridHeight() const {
 
 		return this->gridHeight;
 	}
+
 
 	int Game::getGridWidth() const {
 
 		return this->gridWidth;
 	}
 
+
 	int Game::getNumOfMines() const {
 
 		return this->numOfMines;
 	}
+
+
+	std::ostream& Game::serialise(std::ostream& outStream) const {
+
+		nlohmann::json j;
+
+		// magic and version information:
+		j["magic"] = "Timi's Minesweeper";
+		j["version"] = "1.0";
+
+		// current game fields:
+		j["currentGame"]["gridHeight"] = this->gridHeight;
+		j["currentGame"]["gridWidth"] = this->gridWidth;
+		j["currentGame"]["numOfMines"] = this->numOfMines;
+		j["currentGame"]["numOfMarkedMines"] = this->numOfMarkedMines;
+		j["currentGame"]["numOfWronglyMarkedCells"] = this->numOfWronglyMarkedCells;
+		j["currentGame"]["numOfVisibleCells"] = this->numOfVisibleCells;
+		j["currentGame"]["_checkedMine"] = this->_checkedMine;
+		j["currentGame"]["minesHaveBeenSet"] = this->minesHaveBeenSet;
+
+		// cell data:
+		if (this->gridHeight != 0 && this->gridWidth != 0) {
+			for (int y = 0; y < this->gridHeight; ++y) {
+				
+				nlohmann::json jRowObject;
+				jRowObject["rowNumber"] = y;
+
+				for (int x = 0; x < this->gridWidth; ++x) {
+
+					nlohmann::json jCellObject;
+					jCellObject["columnNumber"] = x;
+
+					//std::stringstream outCellStream;
+					//cells[y][x]->serialise(outCellStream);
+					//jCellObject["cell"] = nlohmann::json::parse(outCellStream.str());
+					jCellObject["cell"] = cells[y][x]->serialise();
+
+					jRowObject["rowCells"].push_back(jCellObject);
+				}
+
+				j["currentGame"]["cells"].push_back(jRowObject);
+			}
+		}
+
+		outStream << std::setw(4) << j << std::endl;
+
+		return outStream;
+	}
+
+
+	std::istream& Game::deserialise(std::istream& inStream) {
+
+		try {
+		
+		nlohmann::json j;
+		inStream >> j;
+
+		if (j.at("magic") == "Timi's Minesweeper") {
+			if (j.at("version") == "1.0") {
+
+				// current game fields:
+				this->gridHeight = this->verifyGridDimension(j.at("currentGame").at("gridHeight"));
+				this->gridWidth = this->verifyGridDimension(j.at("currentGame").at("gridWidth"));
+				this->numOfMines = this->verifyNumOfMines(j.at("currentGame").at("numOfMines"));
+				this->numOfMarkedMines = this->verifyNumOfMarkedMines(j.at("currentGame").at("numOfMarkedMines"));
+				this->numOfWronglyMarkedCells = 
+					this->verifyNumOfWronglyMarkedCells(j.at("currentGame").at("numOfWronglyMarkedCells"));
+				this->numOfVisibleCells = this->verifyNumOfVisibleCells(j.at("currentGame").at("numOfVisibleCells"));
+				this->_checkedMine = j.at("currentGame").at("_checkedMine");
+				this->minesHaveBeenSet = j.at("currentGame").at("minesHaveBeenSet");
+
+				// resize cells/grid to accept their data
+				this->resizeCells();
+
+				// cell data:
+				if (this->gridHeight != 0 && this->gridWidth != 0) {
+					for (auto& jRowObject : j.at("currentGame").at("cells")) {
+						
+						const int y = jRowObject.at("rowNumber");
+
+						for (auto& jCellObject : jRowObject.at("rowCells")) {
+
+							const int x = jCellObject.at("columnNumber");
+
+							//std::stringstream inCellStream;
+							//inCellStream << jCellObject.at("cell");
+							cells[y][x]->deserialise(jCellObject.at("cell"));
+						}
+
+					}
+					int x = 1;
+				}
+
+			}
+		}
+
+		} catch (nlohmann::json::parse_error& ex) {
+			throw std::invalid_argument("Game::deserialise(std::istream& inStream): "
+								  "Argument is not valid JSON.\n\t"
+								  + std::string(ex.what()));
+		} catch (nlohmann::json::type_error& ex) {
+			throw std::invalid_argument("Game::deserialise(std::istream& inStream): "
+								  "Argument is not a JSON object.\n\t"
+								  + std::string(ex.what()));
+		} catch (nlohmann::json::out_of_range& ex) {
+			throw std::invalid_argument("Game::deserialise(std::istream& inStream): "
+								  "Argument key does not exist.\n\t"
+								  + std::string(ex.what()));
+		}
+
+		return inStream;
+	}
+
 
 	// static method
 	void Game::setDefaultRandom(IRandom* defaultRandom) {

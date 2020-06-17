@@ -1,6 +1,11 @@
 
-#include <iostream>
-#include <algorithm>
+#include <iostream> // std::cout
+#include <algorithm> // std::reverse, std::iter_swap
+#include <chrono> // std::chrono
+#include <sstream> // std::ostringstream
+#include <fstream> // std::ofstream
+#include <iomanip> // std::setw
+#include <iterator> // std::vector<int>::iterator
 
 #include <minesweeper/i_random.h>
 #include <minesweeper/random.h>
@@ -14,14 +19,25 @@ void examples();
 void exampleOfSimplestSetup();
 void examplesOfRandomControllingSetup();
 void usageExamples();
+void serialisationTest();
+void serialiseGameToFile(minesweeper::Game& gameToPrint, std::string gameSerPath, std::string gamePrintPath);
+void gamePrinter(std::ostream& outStream, minesweeper::Game* gameToPrint);
+void playGround1();
+void playGround2();
 
 
 // (This can be used as a playground to see and use this library in action.)
 void preliminaryTests() {
 
 	// You can write some preliminary tests here
+
+	serialisationTest();
+
+	//playGround1();
+	//playGround2();
 }
 
+// this method contains examples with some documentation
 void examples() {
 
 	// You can write some examples here
@@ -44,6 +60,10 @@ int main() {
 	return 0;
 }
 
+
+// +----------------------------------+
+// |  Examples / Usage Instructions:  |
+// +----------------------------------+
 
 void exampleOfSimplestSetup() {
 
@@ -198,5 +218,223 @@ void usageExamples() {
 	// All of these are quite self-explanatory.
 	// There is quite a few improvements and additions on the way.
 	// Again, for more info, check 'game.h' file. (include/minesweeper/game.h as of writing this.
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// +-----------------------------------+
+// |  Testing / Playground Functions:  |
+// +-----------------------------------+
+
+
+void serialisationTest() {
+	
+	// testing speed of serialisation
+
+	minesweeper::Random myRandom;
+	minesweeper::Game myGame(80, 200, &myRandom);
+	myGame.checkInputCoordinates(5, 6);
+
+
+	using clock = std::chrono::system_clock;
+	using sec = std::chrono::duration<double>;
+	// for milliseconds, use using ms = std::chrono::duration<double, std::milli>;
+
+	auto before = clock::now();
+
+	std::stringstream strStream;
+	myGame.serialise(strStream);
+	//myGame.serialise(std::cout);
+
+	sec duration = clock::now() - before;
+
+	std::cout << "It took " << duration.count() << "s to serialise." << std::endl;
+	std::cout << "NOTE: std::cout (printing on console) takes a long time!" << std::endl;
+
+	std::cout << "---------------------------------------------------------" << std::endl;
+	
+
+	// testing speed of deserialisation
+
+
+	before = clock::now();
+	
+	myGame.deserialise(strStream);
+	
+	duration = clock::now() - before;
+
+	std::cout << "It took " << duration.count() << "s to deserialise." << std::endl;
+}
+
+
+// used to output a game serialisation and print data in files
+void playGround1() {
+
+	// implementation of 'IRandom' class which allows determining minespots
+	// (until the method of doing this gets changed, 
+	//   minespots are the first 'numOfMines' elements of the vector)
+	class PutIntsToFrontRandom : public minesweeper::IRandom {
+		public:
+			// predetermined shuffle
+			// puts class member ints to front of vector parameter
+			// (at this moment first numbers of vector are the mines)
+			void shuffleVector(std::vector<int>& vec) {
+				auto toIt = vec.begin();
+				for (auto& num : intsToPutInFront) {
+
+					auto fromIt = std::find(vec.begin(), vec.end(), num);
+
+					std::iter_swap(toIt, fromIt);
+					++toIt;
+				}
+			}
+
+			PutIntsToFrontRandom(std::vector<int> intsToPutInFront) : intsToPutInFront(intsToPutInFront) {}
+
+		private:
+
+			const std::vector<int> intsToPutInFront;
+	};
+
+
+	PutIntsToFrontRandom myDeterminedRandom({1, 2, 10, 11, 15, 16, 25, 29});
+
+	// setting up game with predetermined random
+	minesweeper::Game myGame(4, 8, 8, &myDeterminedRandom);
+	myGame.checkInputCoordinates(5, 1);
+	myGame.checkInputCoordinates(7, 2);
+	myGame.checkInputCoordinates(3, 2);
+	myGame.markInputCoordinates(5, 3);
+	myGame.checkInputCoordinates(4, 3);
+	myGame.checkInputCoordinates(6, 3);
+	myGame.checkInputCoordinates(3, 3);
+	myGame.checkInputCoordinates(7, 3);
+	myGame.checkInputCoordinates(7, 0);
+	myGame.markInputCoordinates(3, 1);
+	myGame.checkInputCoordinates(3, 0);
+	myGame.markInputCoordinates(2, 0);
+	myGame.markInputCoordinates(2, 1);
+	myGame.checkInputCoordinates(1, 1);
+	myGame.checkInputCoordinates(1, 2);
+	myGame.checkInputCoordinates(0, 0);
+	myGame.checkInputCoordinates(0, 1);
+	myGame.checkInputCoordinates(0, 3);
+	serialiseGameToFile(myGame, "__game_serialisation1.json", "__game_print1.txt");
+
+}
+
+
+void playGround2() {
+
+	minesweeper::Random myRandom;
+	minesweeper::Game myGame(7, 4, 13, &myRandom);
+
+	serialiseGameToFile(myGame, "__game_serialisation2.json", "__game_print2.txt");
+
+}
+
+
+// simple printout of the game (for debugging/inspection purposes)
+// works only for column sizes of up to 26 (number of letters on the english alphabet)
+void gamePrinter(std::ostream& outStream, minesweeper::Game* gameToPrint) {
+
+	const char MINESYMBOL = '*';
+	const char NO_MINES_AROUND_SYMBOL = '.';
+	const char NOT_VISIBLE_SYMBOL = ' ';
+	const char MARKED_SYMBOL = '#';
+	
+
+	outStream << "Here is the visibility print of the game:\n" << std::endl;
+
+	// to print letters above the grid
+	outStream << std::setw(5);
+	for (int x = 0; x < gameToPrint->getGridWidth(); ++x) {
+		outStream << ' ' << char(65 + x);
+	}
+	
+	outStream << std::endl;
+
+	for (int y = 0; y < gameToPrint->getGridHeight(); ++y) {
+		outStream << std::setw(3) << y + 1 << '|';
+		for (int x = 0; x < gameToPrint->getGridWidth(); ++x) {
+			outStream << ' ';
+			if (gameToPrint->isCellMarked(x, y)) {
+				outStream << MARKED_SYMBOL;
+
+			} else if (!gameToPrint->isCellVisible(x, y)) {
+				outStream << NOT_VISIBLE_SYMBOL;
+
+			} else if (gameToPrint->doesCellHaveMine(x, y)) {
+				outStream << MINESYMBOL;
+
+			} else if (gameToPrint->numOfMinesAroundCell(x, y) == 0) {
+				outStream << NO_MINES_AROUND_SYMBOL;
+
+			} else {
+				outStream << gameToPrint->numOfMinesAroundCell(x, y);
+			}
+		}
+
+		outStream << std::endl;
+	}
+
+	outStream << "\n\nHere is the solution print of the game:\n" << std::endl;
+
+	// to print letters above solution grid
+	outStream << std::setw(5);
+	for (int x = 0; x < gameToPrint->getGridWidth(); ++x) {
+		outStream << ' ' << char(65 + x);
+	}
+	
+	outStream << std::endl;
+
+	for (int y = 0; y < gameToPrint->getGridHeight(); ++y) {
+		outStream << std::setw(3) << y + 1 << '|';
+		for (int x = 0; x < gameToPrint->getGridWidth(); ++x) {
+			if (gameToPrint->doesCellHaveMine(x, y)) {
+				outStream << ' ' << MINESYMBOL;
+			}
+			else if (gameToPrint->numOfMinesAroundCell(x, y) == 0) {
+				outStream << ' ' << NO_MINES_AROUND_SYMBOL;
+			}
+			else {
+				outStream << ' ' << gameToPrint->numOfMinesAroundCell(x, y);
+			}
+		}
+
+		outStream << std::endl;
+	}
+
+	outStream << std::endl;
+}
+
+
+void serialiseGameToFile(minesweeper::Game& gameToPrint, std::string gameSerPath, std::string gamePrintPath) {
+
+	// print game serialisation on file
+	std::ofstream outFile(gameSerPath);
+	gameToPrint.serialise(outFile);
+
+	// print game visualisation on file
+	std::ofstream gamePrintFile(gamePrintPath);
+	gamePrinter(gamePrintFile, &gameToPrint);
+
 }
 
