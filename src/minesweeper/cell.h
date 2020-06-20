@@ -7,46 +7,43 @@
 
 namespace minesweeper {
 
-	class Cell {
-		private:
+class Cell {
+  private:
+    bool _isVisible = false;
+    bool _hasMine = false;
+    bool _isMarked = false;
+    int _numOfMinesAround = 0;
 
-		bool _isVisible = false;
-		bool _hasMine = false;
-		bool _isMarked = false;
-		int _numOfMinesAround = 0;
+  public:
+    bool isVisible() const;
 
-	public:
+    bool hasMine() const;
 
-		bool isVisible() const;
+    bool isMarked() const;
 
-		bool hasMine() const;
+    int numOfMinesAround() const;
 
-		bool isMarked() const;
+    void incrNumOfMinesAround();
 
-		int numOfMinesAround() const;
+    void makeVisible();
 
-		void incrNumOfMinesAround();
+    void putMine();
 
-		void makeVisible();
+    void markCell();
 
-		void putMine();
+    void unmarkCell();
 
-		void markCell();
+    void reset(bool keepMineInformation);
 
-		void unmarkCell();
+    // save cell:
+    std::ostream& serialise(std::ostream& outStream) const;
+    nlohmann::json serialise() const;
 
-		void reset(bool keepMineInformation);
+    // load cell:
+    std::istream& deserialise(std::istream& inStream);
+    void deserialise(nlohmann::json& j);
+};
 
-		// save cell:
-		std::ostream& serialise(std::ostream& outStream) const;
-		nlohmann::json serialise() const;
-
-		// load cell:
-		std::istream& deserialise(std::istream& inStream);
-		void deserialise(nlohmann::json& j);
-
-	};
-
-}
+} // namespace minesweeper
 
 #endif // MINESWEEPER_CELL_H

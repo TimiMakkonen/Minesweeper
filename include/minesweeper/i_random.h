@@ -1,17 +1,15 @@
 #ifndef MINESWEEPER_I_RANDOM_H
 #define MINESWEEPER_I_RANDOM_H
 
-#include <vector>
+#include <vector> // std::vector
 
 namespace minesweeper {
 
-	class IRandom {
+class IRandom {
 
-	public:
-
-		virtual void shuffleVector(std::vector<int>& vec) = 0;
-
-	};
-}
+  public:
+    virtual void shuffleVector(std::vector<int>& vec) = 0;
+};
+} // namespace minesweeper
 
 #endif // MINESWEEPER_I_RANDOM_H

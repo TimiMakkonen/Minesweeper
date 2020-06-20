@@ -2,14 +2,8 @@
 
 namespace minesweeper {
 
-	Random::Random() {
-		this->uRng.seed(rd());
-	}
+Random::Random() { this->uRng.seed(rd()); }
 
-	void Random::shuffleVector(std::vector<int>& vec) {
+void Random::shuffleVector(std::vector<int>& vec) { std::shuffle(vec.begin(), vec.end(), this->uRng); }
 
-		std::shuffle(vec.begin(), vec.end(), this->uRng);
-
-	}
-
-}
+} // namespace minesweeper
