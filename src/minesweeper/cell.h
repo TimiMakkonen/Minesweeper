@@ -8,7 +8,7 @@
 namespace minesweeper {
 
 	class Cell {
-	private:
+		private:
 
 		bool _isVisible = false;
 		bool _hasMine = false;
@@ -34,6 +34,8 @@ namespace minesweeper {
 		void markCell();
 
 		void unmarkCell();
+
+		void reset(bool keepMineInformation);
 
 		// save cell:
 		std::ostream& serialise(std::ostream& outStream) const;

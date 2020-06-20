@@ -35,13 +35,11 @@ namespace minesweeper {
 	}
 
 
-
 	void Cell::incrNumOfMinesAround() {
 
 		++(this->_numOfMinesAround);
 		assert(this->_numOfMinesAround >= 0 && this->_numOfMinesAround < 9);
 	}
-
 
 
 	void Cell::makeVisible() {
@@ -50,12 +48,10 @@ namespace minesweeper {
 	}
 
 
-
 	void Cell::putMine() {
 
 		this->_hasMine = true;
 	}
-
 
 
 	void Cell::markCell() {
@@ -65,14 +61,22 @@ namespace minesweeper {
 	}
 
 
-
 	void Cell::unmarkCell() {
 
 		assert(this->_isMarked != false);
 		this->_isMarked = false;
 	}
 
+	void Cell::reset(bool keepMineInformation) {
 
+		bool _isVisible = false;
+		bool _isMarked = false;
+
+		if (!keepMineInformation) {
+			bool _hasMine = false;
+			int _numOfMinesAround = 0;
+		}
+	}
 
 	std::ostream& Cell::serialise(std::ostream& outStream) const {
 

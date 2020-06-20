@@ -29,6 +29,13 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version History
 
+### Version 8.3.0 (Develop)
+
+* Added reset and newGame methods.
+  * 'reset(bool keepCreatedMines = false)' method keeps current grid size and number of mines parameters and allows to keep currently set mines as well if argument 'keepCreatedMines' is set to true.
+  * 'newGame' methods start completely new game with different grid sizes and number of mines.
+
+
 ### Version 8.2.0
 
 * Added serialisation and deserialisation methods.
@@ -77,6 +84,8 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
   * You can pass 'IRandom' via constructor or set 'defaultRandom' static property.
     (Class field set by constructor has the priority.)
 * Slightly improved readability of code.
+
+## Pre Separaration Version History
 
 ### Version 6.1.1
 
@@ -151,8 +160,6 @@ Initial version of the game. Mostly in working condition.
 ## Fixes and features left to consider/implement
 
 * Add an option to add mines by percentage, not by quantity.
-* Add method to reset game.
-* Add method to start new game.
 * Add method which returns a visual representation of the current state of the grid in short string form.
 * Add more serialisation options.
 * Add verifications to deserialisation methods to check validity of the given game.

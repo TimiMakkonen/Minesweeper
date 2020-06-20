@@ -236,6 +236,20 @@ TEST_F(MinesweeperTest, CreateMinesAndNumsTest) { // TODO
 }
 
 
+TEST_F(MinesweeperTest, ResetTest) { // TODO
+
+	minesweeper::Game myGame(10, 20, &myRandom);
+
+}
+
+
+TEST_F(MinesweeperTest, NewGameTest) { // TODO
+
+	minesweeper::Game myGame(10, 20, &myRandom);
+
+}
+
+
 TEST_F(MinesweeperTest, CheckInputCoordinatesTest) { // TODO
 
 }
@@ -611,13 +625,6 @@ TEST_F(MinesweeperTest, SerialiseAndDeserialiseTest) { // TODO
 	EXPECT_EQ(emptyGame.playerHasLost(), emptyGameCopy.playerHasLost());
 	EXPECT_EQ(emptyGame.playerHasWon(), emptyGameCopy.playerHasWon());
 	EXPECT_EQ(emptyGameStr, emptyGameCopyStr);
-
-}
-
-
-TEST_F(MinesweeperTest, ResetTest) { // TODO
-
-	minesweeper::Game myGame(10, 20, &myRandom);
 
 }
 

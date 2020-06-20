@@ -57,6 +57,12 @@ namespace minesweeper {
 		// optional now, invoked by: 'checkInputCoordinates' (left public for legacy support)
 		void createMinesAndNums(const int initChosenX, const int initChosenY);
 
+		void reset(bool keepCreatedMines = false);
+
+		void newGame(int gridSize, int numOfMines);
+
+		void newGame(int gridHeight, int gridWidth, int numOfMines);
+
 		// to check user given coordinates, and make it visible
 		void checkInputCoordinates(const int X, const int Y);
 
@@ -117,7 +123,7 @@ namespace minesweeper {
 
 		std::vector< std::vector< std::unique_ptr<Cell> > > initCells();
 
-		void resizeCells();
+		void resizeCells(int gridH, int gridW);
 
 		void chooseRandomMineCells(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const;
 

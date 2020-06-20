@@ -6,7 +6,6 @@
 #include <assert.h> // assert
 #include <iomanip> // std::setw
 #include <sstream> // std::ostringstream
-#include <chrono> // std::chrono
 
 #include <nlohmann/json.hpp> // nlohmann::json
 
@@ -137,19 +136,19 @@ namespace minesweeper {
 
 
 	// consider combining with Game::initCells()
-	void Game::resizeCells() {
+	void Game::resizeCells(int gridH, int gridW) {
 
-		this->cells.reserve(this->gridHeight);
-		this->cells.resize(this->gridHeight);
+		this->cells.reserve(gridH);
+		this->cells.resize(gridH);
 		for (auto& cellRow : cells) {
 
-			cellRow.reserve(this->gridWidth);
-			if (cellRow.size() < this->gridWidth) {
-				for (size_t i = cellRow.size(); i < this->gridWidth; ++i) {
+			cellRow.reserve(gridW);
+			if (cellRow.size() < gridW) {
+				for (size_t i = cellRow.size(); i < gridW; ++i) {
 					cellRow.emplace_back(std::make_unique<Cell>());
 				}
 			}
-			cellRow.resize(this->gridWidth);
+			cellRow.resize(gridW);
 		}
 	}
 
@@ -273,6 +272,45 @@ namespace minesweeper {
 		if (Y < this->gridHeight - 1 && X < this->gridWidth - 1) {
 			this->cells[Y + 1][X + 1]->incrNumOfMinesAround();	// bottom right
 		}
+	}
+
+
+	void Game::reset(bool keepCreatedMines) {
+
+		// reset game fields
+		this->numOfMarkedMines = 0;
+		this->numOfWronglyMarkedCells = 0;
+		this->numOfVisibleCells = 0;
+		this->_checkedMine = false;
+
+		if (!keepCreatedMines) {
+			this->minesHaveBeenSet = false;
+		}
+
+
+		// reset cells
+		for (auto& cellRow : this->cells) {
+			for (auto& cell : cellRow) {
+
+				cell->reset(keepCreatedMines);
+			}
+		}
+	}
+	
+
+	void Game::newGame(int gridSize, int numOfMines) {
+
+		this->newGame(gridSize, gridSize, numOfMines);
+	}
+
+
+	void Game::newGame(int gridHeight, int gridWidth, int numOfMines) {
+
+		this->reset(false);
+		this->resizeCells(gridHeight, gridWidth);
+		this->gridHeight = gridHeight;
+		this->gridWidth = gridWidth;
+		this->numOfMines = numOfMines;
 	}
 
 
@@ -539,8 +577,10 @@ namespace minesweeper {
 			if (j.at("version") == "1.0") {
 
 				// current game fields:
-				this->gridHeight = this->verifyGridDimension(j.at("currentGame").at("gridHeight"));
-				this->gridWidth = this->verifyGridDimension(j.at("currentGame").at("gridWidth"));
+				int newGridHeight = this->verifyGridDimension(j.at("currentGame").at("gridHeight"));
+				this->gridHeight = newGridHeight;
+				int newGridWidth = this->verifyGridDimension(j.at("currentGame").at("gridWidth"));
+				this->gridWidth = newGridWidth;
 				this->numOfMines = this->verifyNumOfMines(j.at("currentGame").at("numOfMines"));
 				this->numOfMarkedMines = this->verifyNumOfMarkedMines(j.at("currentGame").at("numOfMarkedMines"));
 				this->numOfWronglyMarkedCells = 
@@ -550,7 +590,7 @@ namespace minesweeper {
 				this->minesHaveBeenSet = j.at("currentGame").at("minesHaveBeenSet");
 
 				// resize cells/grid to accept their data
-				this->resizeCells();
+				this->resizeCells(newGridHeight, newGridWidth);
 
 				// cell data:
 				if (this->gridHeight != 0 && this->gridWidth != 0) {
