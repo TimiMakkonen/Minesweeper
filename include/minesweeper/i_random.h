@@ -9,6 +9,8 @@ class IRandom {
 
   public:
     virtual void shuffleVector(std::vector<int>& vec) = 0;
+
+    virtual ~IRandom() {}
 };
 } // namespace minesweeper
 

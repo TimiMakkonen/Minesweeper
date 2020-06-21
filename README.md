@@ -35,6 +35,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
   * 'reset(bool keepCreatedMines = false)' method keeps current grid size and number of mines parameters and allows to keep currently set mines as well if argument 'keepCreatedMines' is set to true.
   * 'newGame' methods start completely new game with different grid sizes and number of mines.
 * Formatted code using ['clang-format'](https://clang.llvm.org/docs/ClangFormat.html).
+* Added virtual destructor to 'IRandom'.
 
 
 ### Version 8.2.0

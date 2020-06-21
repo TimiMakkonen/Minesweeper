@@ -113,7 +113,7 @@ class Game {
 
     int verifyNumOfMarkedMines(int numOfMarkedMines) const;
 
-    int Game::verifyNumOfVisibleCells(int numOfVisibleCells) const;
+    int verifyNumOfVisibleCells(int numOfVisibleCells) const;
 
     int verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells) const;
 
