@@ -9,6 +9,27 @@ project(Minesweeper
 
 set(LIBRARY_NAME "libminesweeper")
 
+
+option(MINESWEEPER_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." OFF)
+option(MINESWEEPER_CLANG_TIDY "Use 'clang-tidy' on project source files." OFF)
+option(MINESWEEPER_CLANG_TIDY_EXAMPLES "Use 'clang-tidy' on examples files." OFF)
+
+# Setting up clang-tidy if it is installed and enabled
+if(MINESWEEPER_CLANG_TIDY OR MINESWEEPER_CLANG_TIDY_EXAMPLES)
+find_program(CLANG_TIDY_EXE
+             NAMES "clang-tidy"
+             DOC "Path to clang-tidy executable"
+)
+
+if(NOT CLANG_TIDY_EXE)
+  message(STATUS "clang-tidy not found.")
+else()
+  message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+  # Allows to set clang-tidy for specific targets
+  set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}")
+endif()
+endif()
+
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
@@ -21,6 +42,17 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     # Let's nicely support folders in IDE's
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    
+
+    # https://medium.com/@alasher/colored-c-compiler-output-with-ninja-clang-gcc-10bfe7f2b949
+    if (${FORCE_COLORED_OUTPUT})
+        if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+          add_compile_options (-fdiagnostics-color=always)
+        elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+          add_compile_options (-fcolor-diagnostics)
+        endif ()
+    endif ()
+
 
     # Testing only available if this is the main app
     # Note this needs to be done in the main CMakeLists
@@ -104,7 +136,7 @@ add_subdirectory(src)
 # Emergency override MINESWEEPER_LIB_BUILD_TESTING provided as well
 # Use set(MINESWEEPER_LIB_BUILD_TESTING ON) in parent folder to enable testing in this project as well
 if(((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) OR MINESWEEPER_LIB_BUILD_TESTING) AND BUILD_TESTING)
-    add_subdirectory(tests)
+  add_subdirectory(tests)
 endif()
 
 
@@ -112,5 +144,5 @@ endif()
 # The examples executable code is here
 # Only available if this is the main app
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    add_subdirectory(examples)
+  add_subdirectory(examples)
 endif()

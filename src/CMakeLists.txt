@@ -45,6 +45,11 @@ target_link_libraries("${LIBRARY_NAME}" PRIVATE nlohmann_json::nlohmann_json)
 # All users of this library will need at least C++11
 target_compile_features("${LIBRARY_NAME}" PUBLIC cxx_std_11)
 
+# If CLANG_TIDY_EXE found and enabled, use it
+if(CLANG_TIDY_EXE AND MINESWEEPER_CLANG_TIDY)
+    set_target_properties("${LIBRARY_NAME}" PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}" )
+endif()
+
 # IDEs should put the headers in a nice place
 # (This might not work as intended)
 # source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})

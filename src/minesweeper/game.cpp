@@ -1,5 +1,5 @@
 #include <algorithm> // std::max
-#include <assert.h>  // assert
+#include <cassert>   // assert
 #include <iomanip>   // std::setw
 #include <memory>    // std::unique_ptr
 #include <numeric>   // std::iota
@@ -22,10 +22,10 @@ Game::Game() = default;
 Game::Game(int gridSize, int numOfMines, IRandom* random) : Game(gridSize, gridSize, numOfMines, random) {}
 
 Game::Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random)
-    : gridHeight(this->verifyGridDimension(gridHeight)), // throws
-      gridWidth(this->verifyGridDimension(gridWidth)),   // throws
-      numOfMines(this->verifyNumOfMines(numOfMines)),    // throws
-      random(random), cells(this->initCells()) {}
+    : gridHeight(verifyGridDimension(gridHeight)),                     // throws
+      gridWidth(verifyGridDimension(gridWidth)),                       // throws
+      numOfMines(verifyNumOfMines(numOfMines, gridHeight, gridWidth)), // throws
+      cells(this->initCells()), random(random) {}
 
 // required by to solve "error C2027: use of undefined type"
 // in short, std::unique_ptr requires destructor to be defined here
@@ -35,74 +35,94 @@ Game::Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random)
 // https://stackoverflow.com/questions/13414652/forward-declaration-with-unique-ptr
 Game::~Game() = default;
 
-int Game::verifyGridDimension(int gridDimension) const {
+// static method
+int Game::verifyGridDimension(int gridDimension) {
 
     if (gridDimension < 0) {
         throw std::out_of_range(
             "Game::verifyGridDimension(int gridDimension): Trying to create a grid with negative (" +
             std::to_string(gridDimension) + ") grid dimension.");
     }
+
     return gridDimension;
 }
 
-int Game::verifyNumOfMines(int numOfMines) const {
+// static method
+int Game::verifyNumOfMines(int numOfMines, int gridHeight, int gridWidth) {
 
-    int maxNumOfMinesForThisGrid = maxNumOfMines(this->gridHeight, this->gridWidth);
+    int maxNumOfMinesForThisGrid = maxNumOfMines(gridHeight, gridWidth);
+
     if (numOfMines > maxNumOfMinesForThisGrid) {
         throw std::out_of_range("Game::verifyNumOfMines(int numOfMines): Trying to create a grid with too many (" +
                                 std::to_string(numOfMines) + ") mines.");
-    } else if (numOfMines < minNumOfMines()) {
+    }
+
+    if (numOfMines < minNumOfMines()) {
         throw std::out_of_range("Game::verifyNumOfMines(int numOfMines): Trying to create a grid with too few (" +
                                 std::to_string(numOfMines) + ") mines.");
     }
+
     return numOfMines;
 }
 
-int Game::verifyNumOfMarkedMines(int numOfMarkedMines) const {
+// static method
+int Game::verifyNumOfMarkedMines(int numOfMarkedMines, int numOfMines) {
 
-    if (numOfMarkedMines > this->numOfMines) {
+    if (numOfMarkedMines > numOfMines) {
         throw std::out_of_range(
             "Game::verifyNumOfMarkedMines(int numOfMarkedMines):  Trying to create a grid with too many (" +
             std::to_string(numOfMarkedMines) + ") marked mines.");
-    } else if (numOfMarkedMines < 0) {
+    }
+
+    if (numOfMarkedMines < 0) {
         throw std::out_of_range(
             "Game::verifyNumOfMarkedMines(int numOfMarkedMines): Trying to create a grid with too few (" +
             std::to_string(numOfMarkedMines) + ") marked mines.");
     }
+
     return numOfMarkedMines;
 }
 
-int Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells) const {
+// static method
+int Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells, int gridHeight, int gridWidth, int numOfMines) {
 
-    int numOfMinelessCells = this->gridHeight * this->gridWidth - this->numOfMines;
+    int numOfMinelessCells = gridHeight * gridWidth - numOfMines;
+
     if (numOfWronglyMarkedCells > numOfMinelessCells) {
         throw std::out_of_range("Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells): "
                                 "Trying to create a grid with too many (" +
                                 std::to_string(numOfWronglyMarkedCells) + ") wrongly marked cells.");
-    } else if (numOfWronglyMarkedCells < 0) {
+    }
+
+    if (numOfWronglyMarkedCells < 0) {
         throw std::out_of_range(
             "Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells): Trying to create a grid with too few (" +
             std::to_string(numOfWronglyMarkedCells) + ") wrongly marked cells.");
     }
+
     return numOfWronglyMarkedCells;
 }
 
-int Game::verifyNumOfVisibleCells(int numOfVisibleCells) const {
+// static method
+int Game::verifyNumOfVisibleCells(int numOfVisibleCells, int gridHeight, int gridWidth) {
 
-    if (numOfVisibleCells > this->gridHeight * this->gridWidth) {
+    if (numOfVisibleCells > gridHeight * gridWidth) {
         throw std::out_of_range(
             "Game::verifyNumOfVisibleCells(int numOfVisibleCells): Trying to create a grid with too many (" +
             std::to_string(numOfVisibleCells) + ") visible cells.");
-    } else if (numOfVisibleCells < 0) {
+    }
+
+    if (numOfVisibleCells < 0) {
         throw std::out_of_range(
             "Game::verifyNumOfVisibleCells(int numOfVisibleCells): Trying to create a grid with too few (" +
             std::to_string(numOfVisibleCells) + ") visible cells.");
     }
+
     return numOfVisibleCells;
 }
 
 // consider combining with Game::resizeCells()
-std::vector<std::vector<std::unique_ptr<Cell>>> Game::initCells() {
+std::vector<std::vector<std::unique_ptr<Cell>>> Game::initCells() const {
 
     std::vector<std::vector<std::unique_ptr<Cell>>> initTempCells;
     initTempCells.reserve(this->gridHeight);
@@ -139,7 +159,8 @@ void Game::createMinesAndNums(const int initChosenX, const int initChosenY) {
     std::vector<int> mineSpots(this->gridWidth * this->gridHeight);
     this->chooseRandomMineCells(mineSpots, initChosenX, initChosenY);
 
-    int X, Y;
+    int X = 0;
+    int Y = 0;
     for (int i = 0; i < this->numOfMines; ++i) {
 
         X = mineSpots[i] % this->gridWidth;
@@ -322,30 +343,13 @@ void Game::markInputCoordinates(const int X, const int Y) {
     }
 }
 
-bool Game::allMinesMarked() const {
+bool Game::allMinesMarked() const { return this->numOfMines == this->numOfMarkedMines; }
 
-    if (this->numOfMines == this->numOfMarkedMines) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool Game::noNonMinesMarked() const {
-    if (this->numOfWronglyMarkedCells == 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
+bool Game::noNonMinesMarked() const { return this->numOfWronglyMarkedCells == 0; }
 
 bool Game::allNonMinesVisible() const {
 
-    if (this->numOfVisibleCells + this->numOfMines == this->gridWidth * this->gridHeight && !this->_checkedMine) {
-        return true;
-    } else {
-        return false;
-    }
+    return this->numOfVisibleCells + this->numOfMines == this->gridWidth * this->gridHeight && !this->_checkedMine;
 }
 
 bool Game::playerHasWon() const {
@@ -353,23 +357,14 @@ bool Game::playerHasWon() const {
     bool playerWon = false;
 
     if (!this->playerHasLost()) {
-        if (this->allNonMinesVisible()) {
-            playerWon = true;
-        } else if (this->allMinesMarked() && this->noNonMinesMarked()) {
+        if (this->allNonMinesVisible() || (this->allMinesMarked() && this->noNonMinesMarked())) {
             playerWon = true;
         }
     }
     return playerWon;
 }
 
-bool Game::playerHasLost() const {
-
-    if (this->checkedMine()) {
-        return true;
-    } else {
-        return false;
-    }
-}
+bool Game::playerHasLost() const { return this->checkedMine(); }
 
 bool Game::checkedMine() const { return this->_checkedMine; }
 
@@ -501,17 +496,26 @@ std::istream& Game::deserialise(std::istream& inStream) {
             if (j.at("version") == "1.0") {
 
                 // current game fields:
-                int newGridHeight = this->verifyGridDimension(j.at("currentGame").at("gridHeight"));
+                int newGridHeight = verifyGridDimension(j.at("currentGame").at("gridHeight"));
+                int newGridWidth = verifyGridDimension(j.at("currentGame").at("gridWidth"));
+                int newNumOfMines = verifyNumOfMines(j.at("currentGame").at("numOfMines"), newGridHeight, newGridWidth);
+                int newNumOfMarkedMines =
+                    verifyNumOfMarkedMines(j.at("currentGame").at("numOfMarkedMines"), newNumOfMines);
+                int newNumOfWronglyMarkedCells = verifyNumOfWronglyMarkedCells(
+                    j.at("currentGame").at("numOfWronglyMarkedCells"), newGridHeight, newGridWidth, newNumOfMines);
+                int newNumOfVisibleCells =
+                    verifyNumOfVisibleCells(j.at("currentGame").at("numOfVisibleCells"), newGridHeight, newGridWidth);
+                bool new_checkedMine = j.at("currentGame").at("_checkedMine");
+                bool newMinesHaveBeenSet = j.at("currentGame").at("minesHaveBeenSet");
+
                 this->gridHeight = newGridHeight;
-                int newGridWidth = this->verifyGridDimension(j.at("currentGame").at("gridWidth"));
                 this->gridWidth = newGridWidth;
-                this->numOfMines = this->verifyNumOfMines(j.at("currentGame").at("numOfMines"));
-                this->numOfMarkedMines = this->verifyNumOfMarkedMines(j.at("currentGame").at("numOfMarkedMines"));
-                this->numOfWronglyMarkedCells =
-                    this->verifyNumOfWronglyMarkedCells(j.at("currentGame").at("numOfWronglyMarkedCells"));
-                this->numOfVisibleCells = this->verifyNumOfVisibleCells(j.at("currentGame").at("numOfVisibleCells"));
-                this->_checkedMine = j.at("currentGame").at("_checkedMine");
-                this->minesHaveBeenSet = j.at("currentGame").at("minesHaveBeenSet");
+                this->numOfMines = newNumOfMines;
+                this->numOfMarkedMines = newNumOfMarkedMines;
+                this->numOfWronglyMarkedCells = newNumOfWronglyMarkedCells;
+                this->numOfVisibleCells = newNumOfVisibleCells;
+                this->_checkedMine = new_checkedMine;
+                this->minesHaveBeenSet = newMinesHaveBeenSet;
 
                 // resize cells/grid to accept their data
                 this->resizeCells(newGridHeight, newGridWidth);
@@ -529,7 +533,6 @@ std::istream& Game::deserialise(std::istream& inStream) {
                             cells[y][x]->deserialise(jCellObject.at("cell"));
                         }
                     }
-                    int x = 1;
                 }
             }
         }
@@ -559,7 +562,7 @@ int Game::maxNumOfMines(int gridH, int gridW) {
                                 "Trying to check maximum number of mines for a negative sized grid.");
     }
 
-    return std::max(gridH * gridW - 9, 0);
+    return std::max(gridH * gridW - MAX_NUMBER_OF_CELLS_AROUND_MINE - 1, 0);
 }
 
 // static method

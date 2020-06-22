@@ -7,11 +7,9 @@
 #include <iterator>  // std::vector<int>::iterator
 #include <sstream>   // std::ostringstream
 
-
 #include <minesweeper/game.h>
 #include <minesweeper/i_random.h>
 #include <minesweeper/random.h>
-
 
 // Used for showing off the Minesweeper library and maybe writing some preliminary tests
 
@@ -22,8 +20,9 @@ void exampleOfSimplestSetup();
 void examplesOfRandomControllingSetup();
 void usageExamples();
 void serialisationTest();
-void serialiseGameToFile(minesweeper::Game& gameToPrint, std::string gameSerPath, std::string gamePrintPath);
-void gamePrinter(std::ostream& outStream, minesweeper::Game* gameToPrint);
+void serialiseGameToFile(const minesweeper::Game& gameToPrint, const std::string& gameSerPath,
+                         const std::string& gamePrintPath);
+void gamePrinter(std::ostream& outStream, minesweeper::Game const* const gameToPrint);
 void playGround1();
 void playGround2();
 
@@ -134,7 +133,7 @@ void examplesOfRandomControllingSetup() {
     class MyRandomGen : public minesweeper::IRandom {
       public:
         // just an example, shuffle properly in actual use
-        void shuffleVector(std::vector<int>& vec) { std::reverse(vec.begin(), vec.end()); }
+        void shuffleVector(std::vector<int>& vec) override { std::reverse(vec.begin(), vec.end()); }
     };
 
     MyRandomGen myRandomGen;
@@ -181,7 +180,7 @@ void usageExamples() {
 
 // We can do a number of checks: (to assist with visualisation of game etc.)
 // Small macro to print method names and values:
-#define PRINT_FUNC_RESULT(func) std::cout << #func << ": " << func << std::endl
+#define PRINT_FUNC_RESULT(func) std::cout << #func << ": " << (func) << std::endl
 
     PRINT_FUNC_RESULT(myGame->playerHasWon());
     PRINT_FUNC_RESULT(myGame->playerHasLost());
@@ -248,9 +247,9 @@ void playGround1() {
         // predetermined shuffle
         // puts class member ints to front of vector parameter
         // (at this moment first numbers of vector are the mines)
-        void shuffleVector(std::vector<int>& vec) {
+        void shuffleVector(std::vector<int>& vec) override {
             auto toIt = vec.begin();
-            for (auto& num : intsToPutInFront) {
+            for (const auto& num : intsToPutInFront) {
 
                 auto fromIt = std::find(vec.begin(), vec.end(), num);
 
@@ -259,7 +258,8 @@ void playGround1() {
             }
         }
 
-        PutIntsToFrontRandom(std::vector<int> intsToPutInFront) : intsToPutInFront(intsToPutInFront) {}
+        explicit PutIntsToFrontRandom(std::vector<int> intsToPutInFront)
+            : intsToPutInFront(std::move(intsToPutInFront)) {}
 
       private:
         const std::vector<int> intsToPutInFront;
@@ -300,7 +300,7 @@ void playGround2() {
 
 // simple printout of the game (for debugging/inspection purposes)
 // works only for column sizes of up to 26 (number of letters on the english alphabet)
-void gamePrinter(std::ostream& outStream, minesweeper::Game* gameToPrint) {
+void gamePrinter(std::ostream& outStream, minesweeper::Game const* const gameToPrint) {
 
     const char MINESYMBOL = '*';
     const char NO_MINES_AROUND_SYMBOL = '.';
@@ -369,7 +369,8 @@ void gamePrinter(std::ostream& outStream, minesweeper::Game* gameToPrint) {
     outStream << std::endl;
 }
 
-void serialiseGameToFile(minesweeper::Game& gameToPrint, std::string gameSerPath, std::string gamePrintPath) {
+void serialiseGameToFile(const minesweeper::Game& gameToPrint, const std::string& gameSerPath,
+                         const std::string& gamePrintPath) {
 
     // print game serialisation on file
     std::ofstream outFile(gameSerPath);

@@ -36,7 +36,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
   * 'newGame' methods start completely new game with different grid sizes and number of mines.
 * Formatted code using ['clang-format'](https://clang.llvm.org/docs/ClangFormat.html).
 * Added virtual destructor to 'IRandom'.
-
+* Tidied code using ['clang-tidy'](https://clang.llvm.org/extra/clang-tidy/).
 
 ### Version 8.2.0
 

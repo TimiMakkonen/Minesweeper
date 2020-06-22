@@ -1,4 +1,4 @@
-#include <assert.h>  // assert
+#include <cassert>  // assert
 #include <iomanip>   // std::setw
 #include <stdexcept> // std::invalid_argument
 
@@ -40,12 +40,12 @@ void Cell::unmarkCell() {
 
 void Cell::reset(bool keepMineInformation) {
 
-    bool _isVisible = false;
-    bool _isMarked = false;
+    this->_isVisible = false;
+    this->_isMarked = false;
 
     if (!keepMineInformation) {
-        bool _hasMine = false;
-        int _numOfMinesAround = 0;
+        this->_hasMine = false;
+        this->_numOfMinesAround = 0;
     }
 }
 

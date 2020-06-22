@@ -20,13 +20,10 @@ class MinesweeperTest : public ::testing::Test {
     }
 
     // declarations:
-
-    int field1;
     minesweeper::Random myRandom;
     std::string startedFiveBySixGameStr;
 
     // utility methods
-
     std::string fileContentsToString(std::string filePath) {
 
         std::ifstream file(filePath);

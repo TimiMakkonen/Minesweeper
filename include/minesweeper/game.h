@@ -30,12 +30,14 @@ class Game {
     std::vector<std::vector<std::unique_ptr<Cell>>> cells;
 
     // field used to randomise vector of ints to choose locations of mines
-    IRandom* random;
+    IRandom* random = nullptr;
 
     // static field used to randomise vector of ints to choose locations of mines
     // only used if IRandom not specifically set for an instance
     // set with setDefaultRandom(IRandom* random)
     static IRandom* defaultRandom;
+
+    static const int MAX_NUMBER_OF_CELLS_AROUND_MINE = 8;
 
   public:
     // ---------------
@@ -90,9 +92,9 @@ class Game {
     // load game:
     std::istream& deserialise(std::istream& inStream);
 
-    // ---------------
-    // static methods:
-    // ---------------
+    // ----------------------
+    // public static methods:
+    // ----------------------
 
     static void setDefaultRandom(IRandom* random);
 
@@ -107,17 +109,7 @@ class Game {
     // private methods:
     // ---------------
 
-    int verifyGridDimension(int gridDimension) const;
-
-    int verifyNumOfMines(int numOfMines) const;
-
-    int verifyNumOfMarkedMines(int numOfMarkedMines) const;
-
-    int verifyNumOfVisibleCells(int numOfVisibleCells) const;
-
-    int verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells) const;
-
-    std::vector<std::vector<std::unique_ptr<Cell>>> initCells();
+    std::vector<std::vector<std::unique_ptr<Cell>>> initCells() const;
 
     void resizeCells(int gridH, int gridW);
 
@@ -144,6 +136,21 @@ class Game {
     void markCell(const int X, const int Y);
 
     void unmarkCell(const int X, const int Y);
+
+    // -----------------------
+    // private static methods:
+    // -----------------------
+
+    static int verifyGridDimension(int gridDimension);
+
+    static int verifyNumOfMines(int numOfMines, int gridHeight, int gridWidth);
+
+    static int verifyNumOfMarkedMines(int numOfMarkedMines, int numOfMines);
+
+    static int verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells, int gridHeight, int gridWidth,
+                                             int numOfMines);
+
+    static int verifyNumOfVisibleCells(int numOfVisibleCells, int gridHeight, int gridWidth);
 };
 
 } // namespace minesweeper

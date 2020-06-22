@@ -1,0 +1,9 @@
+---
+Checks: '*,
+        -modernize-use-trailing-return-type,
+        -fuchsia-default-arguments-calls'
+
+WarningsAsErrors: '*'
+
+# not needed for now at least (remove if not used later)
+#HeaderFilterRegex: '(include|extern)/.*\.(h|hpp)$'
