@@ -68,6 +68,8 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "fstream": "cpp",
-        "*.in": "cpp"
+        "*.in": "cpp",
+        "deque": "cpp",
+        "unordered_set": "cpp"
     }
 }

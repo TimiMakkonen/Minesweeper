@@ -1,0 +1,151 @@
+{
+    "currentGame": {
+        "_checkedMine": false,
+        "cells": [
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    }
+                ],
+                "rowNumber": 0
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    }
+                ],
+                "rowNumber": 1
+            },
+            
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    }
+                ],
+                "rowNumber": 2
+            }
+        ],
+        "gridHeight": 3,
+        "gridWidth": 4,
+        "minesHaveBeenSet": true,
+        "numOfMarkedMines": 0,
+        "numOfMines": 2,
+        "numOfVisibleCells": 9,
+        "numOfWronglyMarkedCells": 0
+    },
+    "magic": "Timi's Minesweeper",
+    "version": "1.0"
+}

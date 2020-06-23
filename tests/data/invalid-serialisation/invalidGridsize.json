@@ -1,0 +1,14 @@
+{
+    "currentGame": {
+        "_checkedMine": false,
+        "gridHeight": 5,
+        "gridWidth": 3,
+        "minesHaveBeenSet": false,
+        "numOfMarkedMines": 0,
+        "numOfMines": 0,
+        "numOfVisibleCells": 0,
+        "numOfWronglyMarkedCells": 0
+    },
+    "magic": "Timi's Minesweeper",
+    "version": "1.0"
+}

@@ -34,9 +34,11 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 * Added reset and newGame methods.
   * 'reset(bool keepCreatedMines = false)' method keeps current grid size and number of mines parameters and allows to keep currently set mines as well if argument 'keepCreatedMines' is set to true.
   * 'newGame' methods start completely new game with different grid sizes and number of mines.
+* Added argument verifications to various methods and made them throw.
 * Formatted code using ['clang-format'](https://clang.llvm.org/docs/ClangFormat.html).
 * Added virtual destructor to 'IRandom'.
 * Tidied code using ['clang-tidy'](https://clang.llvm.org/extra/clang-tidy/).
+* Added some tests.
 
 ### Version 8.2.0
 
@@ -165,3 +167,5 @@ Initial version of the game. Mostly in working condition.
 * Add method which returns a visual representation of the current state of the grid in short string form.
 * Add more serialisation options.
 * Add verifications to deserialisation methods to check validity of the given game.
+* Make "Game's" deserialise method safer by guaranteeing that 'Game' is left in valid condition even if if throws.
+* Add more tests.

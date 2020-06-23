@@ -140,6 +140,8 @@ std::vector<std::vector<std::unique_ptr<Cell>>> Game::initCells() const {
 // consider combining with Game::initCells()
 void Game::resizeCells(int gridH, int gridW) {
 
+    assert(gridH >= 0 && gridW >= 0);
+
     this->cells.reserve(gridH);
     this->cells.resize(gridH);
     for (auto& cellRow : cells) {
@@ -155,6 +157,16 @@ void Game::resizeCells(int gridH, int gridW) {
 }
 
 void Game::createMinesAndNums(const int initChosenX, const int initChosenY) {
+
+    if (initChosenX < 0 || initChosenY < 0 || initChosenX >= this->gridWidth || initChosenY >= this->gridHeight) {
+        throw std::out_of_range("Game::createMinesAndNums(const int initChosenX, const int initChosenY): "
+                                "Trying to use initial cell (initChosenX, initChosenX) outside grid.");
+    }
+
+    if (minesHaveBeenSet) {
+        throw std::invalid_argument("Game::createMinesAndNums(const int initChosenX, const int initChosenY): "
+                                    "Trying to create mines and numbers for a grid that already has them created.");
+    }
 
     std::vector<int> mineSpots(this->gridWidth * this->gridHeight);
     this->chooseRandomMineCells(mineSpots, initChosenX, initChosenY);
@@ -368,19 +380,56 @@ bool Game::playerHasLost() const { return this->checkedMine(); }
 
 bool Game::checkedMine() const { return this->_checkedMine; }
 
-bool Game::isCellVisible(const int X, const int Y) const { return this->cells[Y][X]->isVisible(); }
+bool Game::isCellVisible(const int X, const int Y) const {
 
-bool Game::doesCellHaveMine(const int X, const int Y) const { return this->cells[Y][X]->hasMine(); }
+    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+        throw std::out_of_range(
+            "Game::isCellVisible(const int X, const int Y): Trying to check if a cell outside the grid is visible.");
+    }
+    return this->cells[Y][X]->isVisible();
+}
 
-bool Game::isCellMarked(const int X, const int Y) const { return this->cells[Y][X]->isMarked(); }
+bool Game::doesCellHaveMine(const int X, const int Y) const {
 
-int Game::numOfMinesAroundCell(const int X, const int Y) const { return this->cells[Y][X]->numOfMinesAround(); }
+    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+        throw std::out_of_range(
+            "Game::doesCellHaveMine(const int X, const int Y): Trying to check if a cell outside the grid has a mine.");
+    }
+    return this->cells[Y][X]->hasMine();
+}
 
-void Game::makeCellVisible(const int X, const int Y) { this->cells[Y][X]->makeVisible(); }
+bool Game::isCellMarked(const int X, const int Y) const {
 
-void Game::markCell(const int X, const int Y) { this->cells[Y][X]->markCell(); }
+    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+        throw std::out_of_range(
+            "Game::isCellMarked(const int X, const int Y): Trying to check if a cell outside the grid is marked.");
+    }
+    return this->cells[Y][X]->isMarked();
+}
 
-void Game::unmarkCell(const int X, const int Y) { this->cells[Y][X]->unmarkCell(); }
+int Game::numOfMinesAroundCell(const int X, const int Y) const {
+
+    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+        throw std::out_of_range("Game::numOfMinesAroundCell(const int X, const int Y): "
+                                "Trying to check number of mines around a cell outside the grid.");
+    }
+    return this->cells[Y][X]->numOfMinesAround();
+}
+
+void Game::makeCellVisible(const int X, const int Y) {
+    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    this->cells[Y][X]->makeVisible();
+}
+
+void Game::markCell(const int X, const int Y) {
+    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    this->cells[Y][X]->markCell();
+}
+
+void Game::unmarkCell(const int X, const int Y) {
+    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    this->cells[Y][X]->unmarkCell();
+}
 
 // to check user given coordinates, and make it visible
 void Game::checkInputCoordinates(const int X, const int Y) {
@@ -487,6 +536,9 @@ std::ostream& Game::serialise(std::ostream& outStream) const {
 
 std::istream& Game::deserialise(std::istream& inStream) {
 
+    // this method assigns field straight away,
+    // hence it cannot be trusted to leave Game in valid state if and error occurs.
+
     try {
 
         nlohmann::json j;
@@ -534,7 +586,13 @@ std::istream& Game::deserialise(std::istream& inStream) {
                         }
                     }
                 }
+            } else {
+                throw std::invalid_argument("Game::deserialise(std::istream& inStream): Invalid version number: " +
+                                            j.at("version").get<std::string>());
             }
+        } else {
+            throw std::invalid_argument("Game::deserialise(std::istream& inStream): Invalid magic: " +
+                                        j.at("magic").get<std::string>());
         }
 
     } catch (nlohmann::json::parse_error& ex) {

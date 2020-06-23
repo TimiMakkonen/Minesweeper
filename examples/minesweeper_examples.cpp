@@ -265,27 +265,17 @@ void playGround1() {
         const std::vector<int> intsToPutInFront;
     };
 
-    PutIntsToFrontRandom myDeterminedRandom({1, 2, 10, 11, 15, 16, 25, 29});
+    PutIntsToFrontRandom myDeterminedRandom({3, 8, 9, 12, 13, 14});
 
     // setting up game with predetermined random
-    minesweeper::Game myGame(4, 8, 8, &myDeterminedRandom);
-    myGame.checkInputCoordinates(5, 1);
-    myGame.checkInputCoordinates(7, 2);
-    myGame.checkInputCoordinates(3, 2);
-    myGame.markInputCoordinates(5, 3);
-    myGame.checkInputCoordinates(4, 3);
-    myGame.checkInputCoordinates(6, 3);
-    myGame.checkInputCoordinates(3, 3);
-    myGame.checkInputCoordinates(7, 3);
-    myGame.checkInputCoordinates(7, 0);
-    myGame.markInputCoordinates(3, 1);
-    myGame.checkInputCoordinates(3, 0);
-    myGame.markInputCoordinates(2, 0);
-    myGame.markInputCoordinates(2, 1);
-    myGame.checkInputCoordinates(1, 1);
+    minesweeper::Game myGame(5, 3, 6, &myDeterminedRandom);
+    myGame.checkInputCoordinates(2, 0);
+    myGame.checkInputCoordinates(0, 2);
     myGame.checkInputCoordinates(1, 2);
+    myGame.markInputCoordinates(2,2);
     myGame.checkInputCoordinates(0, 0);
-    myGame.checkInputCoordinates(0, 1);
+    myGame.markInputCoordinates(0,1);
+    myGame.checkInputCoordinates(2, 3);
     myGame.checkInputCoordinates(0, 3);
     serialiseGameToFile(myGame, "__game_serialisation1.json", "__game_print1.txt");
 }
@@ -293,7 +283,8 @@ void playGround1() {
 void playGround2() {
 
     minesweeper::Random myRandom;
-    minesweeper::Game myGame(7, 4, 13, &myRandom);
+    minesweeper::Game myGame(4, 7, 10, &myRandom);
+    myGame.checkInputCoordinates(4, 2);
 
     serialiseGameToFile(myGame, "__game_serialisation2.json", "__game_print2.txt");
 }

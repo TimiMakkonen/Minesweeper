@@ -1,17 +1,28 @@
 
 
-
 set(SOURCE_TEST_DATA_DIR "${PROJECT_SOURCE_DIR}/tests/data")
 set(BINARY_TEST_DATA_DIR "${PROJECT_BINARY_DIR}/tests/data")
 
 # Add test data files here to use in test
 # (gets added to 'minesweeper::TEST_DATA' array in 'test_config.h' in next few steps)
 set(TEST_DATA_FILE_LIST
+	# valid serialisations
 	"emptyGame_serialisation.json"
 	"unstartedGame_sevenByFour_serialisation.json"
 	"startedGame_fiveBySix_serialisation.json"
 	"markedWinGame_fiveByFour_serialisation.json"
 	"checkedWinGame_fourByEight_serialisation.json"
+	"lossGame_fiveByThree_serialisation.json"
+	"startedGame_sixByEight_serialisation.json"
+	# invalid serialisations
+	"invalid-serialisation/invalidGridsize.json"
+	"invalid-serialisation/invalidJsonMissingBrace.json"
+	"invalid-serialisation/invalidJsonMissingCellTag.json"
+	"invalid-serialisation/invalidJsonMissingCommaInCell.json"
+	"invalid-serialisation/invalidMagic.json"
+	"invalid-serialisation/invalidNumOfMines.json"
+	"invalid-serialisation/invalidVersion.json"
+
 )
 
 
