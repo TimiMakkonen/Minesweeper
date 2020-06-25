@@ -1,0 +1,23 @@
+Here is the visibility print of the game:
+
+     A B C D E F G
+  1|              
+  2|     3 2 1    
+  3| 1 2 # 2 1 2  
+  4| . 1 2 # 1 2  
+  5| . . 1 1 2 3  
+  6| 1 1 . 1 2    
+  7| # 1 . 1      
+
+
+Here is the solution print of the game:
+
+     A B C D E F G
+  1| * 2 2 * 1 1 *
+  2| 2 * 3 2 1 2 2
+  3| 1 2 * 2 1 2 *
+  4| . 1 2 * 1 2 *
+  5| . . 1 1 2 3 3
+  6| 1 1 . 1 2 * *
+  7| * 1 . 1 * 4 *
+

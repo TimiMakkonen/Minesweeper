@@ -22,10 +22,10 @@ Game::Game() = default;
 Game::Game(int gridSize, int numOfMines, IRandom* random) : Game(gridSize, gridSize, numOfMines, random) {}
 
 Game::Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random)
-    : gridHeight(verifyGridDimension(gridHeight)),                     // throws
-      gridWidth(verifyGridDimension(gridWidth)),                       // throws
-      numOfMines(verifyNumOfMines(numOfMines, gridHeight, gridWidth)), // throws
-      cells(this->initCells()), random(random) {}
+    : gridHeight{verifyGridDimension(gridHeight)},                     // throws
+      gridWidth{verifyGridDimension(gridWidth)},                       // throws
+      numOfMines{verifyNumOfMines(numOfMines, gridHeight, gridWidth)}, // throws
+      cells{this->initCells()}, random{random} {}
 
 // required by to solve "error C2027: use of undefined type"
 // in short, std::unique_ptr requires destructor to be defined here
@@ -313,6 +313,11 @@ void Game::newGame(int gridSize, int numOfMines) { this->newGame(gridSize, gridS
 
 void Game::newGame(int gridHeight, int gridWidth, int numOfMines) {
 
+    // parameter verification
+    verifyGridDimension(gridHeight);
+    verifyGridDimension(gridWidth);
+    verifyNumOfMines(numOfMines, gridHeight, gridWidth);
+
     this->reset(false);
     this->resizeCells(gridHeight, gridWidth);
     this->gridHeight = gridHeight;
@@ -335,22 +340,26 @@ void Game::markInputCoordinates(const int X, const int Y) {
                                     "createMinesAndNums(const int initChosenX, const int initChosenY) or "
                                     "checkInputCoordinates(const int X, const int Y).)");
     }
+    if (!this->isCellVisible(X, Y)) {
+        if (this->isCellMarked(X, Y)) {
+            this->unmarkCell(X, Y);
 
-    if (this->isCellMarked(X, Y)) {
-        this->unmarkCell(X, Y);
-
-        if (this->doesCellHaveMine(X, Y)) {
-            --(this->numOfMarkedMines);
+            if (this->doesCellHaveMine(X, Y)) {
+                --(this->numOfMarkedMines);
+            } else {
+                --(this->numOfWronglyMarkedCells);
+            }
         } else {
-            --(this->numOfWronglyMarkedCells);
-        }
-    } else {
-        this->markCell(X, Y);
+            if (!this->isCellVisible(X, Y)) {
 
-        if (this->doesCellHaveMine(X, Y)) {
-            ++(this->numOfMarkedMines);
-        } else {
-            ++(this->numOfWronglyMarkedCells);
+                this->markCell(X, Y);
+
+                if (this->doesCellHaveMine(X, Y)) {
+                    ++(this->numOfMarkedMines);
+                } else {
+                    ++(this->numOfWronglyMarkedCells);
+                }
+            }
         }
     }
 }

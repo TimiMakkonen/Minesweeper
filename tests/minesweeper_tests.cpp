@@ -26,6 +26,12 @@ class MinesweeperTest : public ::testing::Test {
 
         lossFiveByThreeGameStr =
             fileContentsToString(minesweeper::TEST_DATA[minesweeper::lossGame_fiveByThree_serialisation____json]);
+
+        checkedWinFourByEightGameStr =
+            fileContentsToString(minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json]);
+
+        unfinishedSevenBySevenGameStr = fileContentsToString(
+            minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json]);
     }
 
     // declarations:
@@ -34,6 +40,8 @@ class MinesweeperTest : public ::testing::Test {
     std::string startedSixByEightGameStr;
     std::string markedWinFiveByFourGameStr;
     std::string lossFiveByThreeGameStr;
+    std::string checkedWinFourByEightGameStr;
+    std::string unfinishedSevenBySevenGameStr;
 
     // utility methods
     std::string fileContentsToString(const std::string& filePath) const {
@@ -533,9 +541,163 @@ TEST_F(MinesweeperTest, ResetTest) {
     EXPECT_FALSE(premadeRemoveMinesAfterLossGame.playerHasLost());
 }
 
-TEST_F(MinesweeperTest, NewGameTest) { // TODO
+TEST_F(MinesweeperTest, NewGameTest) {
 
-    minesweeper::Game myGame(10, 20, &myRandom);
+    // unstarted game should not change after newGame with same gridsize and number of mines
+    minesweeper::Game unstartedGame(9, 12, 26, &myRandom);
+    std::string unstartedGameStr = serialiseToString(unstartedGame);
+    unstartedGame.newGame(9, 12, 26);
+    std::string unstartedGameAfterNewGameStr = serialiseToString(unstartedGame);
+    EXPECT_EQ(unstartedGameStr, unstartedGameAfterNewGameStr);
+
+    // unstarted game should not change after newGame with same gridsize and number of mines
+    minesweeper::Game unstartedGame2(15, 15, 57, &myRandom);
+    std::string unstartedGame2Str = serialiseToString(unstartedGame2);
+    unstartedGame2.newGame(15, 57);
+    std::string unstartedGame2AfterNewGameStr = serialiseToString(unstartedGame2);
+    EXPECT_EQ(unstartedGame2Str, unstartedGame2AfterNewGameStr);
+
+    // +----------------+
+    // | Throwing Tests |
+    // +----------------+
+
+    // negative grid sizes should throw
+    // negative x
+    minesweeper::Game newNegativeXGame(10, 18, 28, &myRandom);
+    EXPECT_THROW(newNegativeXGame.newGame(-2, 30, 10), std::out_of_range);
+    // negative y
+    minesweeper::Game newNegativeYGame(8, 20, 50, &myRandom);
+    EXPECT_THROW(newNegativeYGame.newGame(15, -10, 34), std::out_of_range);
+    // negative x and y
+    minesweeper::Game newNegativeXandYGame(32, 24, 148, &myRandom);
+    EXPECT_THROW(newNegativeXandYGame.newGame(-7, -24, 0), std::out_of_range);
+
+    // invalid number of mines should throw
+    // too many mines
+    minesweeper::Game newTooManyMinesGame(27, 32, 258, &myRandom);
+    EXPECT_THROW(newTooManyMinesGame.newGame(85, 42, 3'612), std::out_of_range);
+
+    // too many mines
+    minesweeper::Game newTooManyMinesGame2(26, 7, 75, &myRandom);
+    EXPECT_THROW(newTooManyMinesGame2.newGame(8, 19, 144), std::out_of_range);
+
+    // negative number of mines
+    minesweeper::Game newNegativeMinesGame(15, 6, 40, &myRandom);
+    EXPECT_THROW(newNegativeMinesGame.newGame(21, 18, -8), std::out_of_range);
+
+    // +------------------------------------+
+    // | new game after simple started game |
+    // +------------------------------------+
+
+    // premade started 5x6 game, remove mines reset
+    minesweeper::Game premadeGame;
+    ASSERT_NO_THROW(deserialiseFromFile(
+        minesweeper::TEST_DATA[minesweeper::startedGame_fiveBySix_serialisation____json], premadeGame));
+    EXPECT_NE(startedFiveBySixGameStr, "");
+    // does cell have mine
+    EXPECT_TRUE(premadeGame.doesCellHaveMine(0, 1));
+    EXPECT_FALSE(premadeGame.doesCellHaveMine(3, 2));
+    // is cell visible
+    EXPECT_FALSE(premadeGame.isCellVisible(4, 3));
+    EXPECT_TRUE(premadeGame.isCellVisible(1, 2));
+    // num of mines around cell
+    EXPECT_EQ(premadeGame.numOfMinesAroundCell(3, 3), 3);
+    EXPECT_EQ(premadeGame.numOfMinesAroundCell(2, 2), 1);
+    // game fields
+    EXPECT_EQ(premadeGame.getGridHeight(), 5);
+    EXPECT_EQ(premadeGame.getGridWidth(), 6);
+    EXPECT_EQ(premadeGame.getNumOfMines(), 8);
+    // NEW GAME
+    premadeGame.newGame(7, 9, 21);
+    // serialisation comparisons
+    std::string premadeGameStr = serialiseToString(premadeGame);
+    EXPECT_NE(premadeGameStr, "");
+    EXPECT_NE(premadeGameStr, startedSixByEightGameStr);
+    // does cell have mine
+    EXPECT_FALSE(premadeGame.doesCellHaveMine(0, 1));
+    EXPECT_FALSE(premadeGame.doesCellHaveMine(3, 2));
+    // is cell visible
+    EXPECT_FALSE(premadeGame.isCellVisible(4, 3));
+    EXPECT_FALSE(premadeGame.isCellVisible(1, 2));
+    // num of mines around cell
+    EXPECT_EQ(premadeGame.numOfMinesAroundCell(3, 3), 0);
+    EXPECT_EQ(premadeGame.numOfMinesAroundCell(2, 2), 0);
+    // game fields
+    EXPECT_EQ(premadeGame.getGridHeight(), 7);
+    EXPECT_EQ(premadeGame.getGridWidth(), 9);
+    EXPECT_EQ(premadeGame.getNumOfMines(), 21);
+
+    // +--------------------+
+    // | multiple new games |
+    // +--------------------+
+
+    // gridHeight: 12, gridWidth: 7, numOfMines: 30
+    minesweeper::Game multipleNewGamesGame(12, 7, 30, &myRandom);
+    std::string multipleNewGamesGameStr1 = serialiseToString(multipleNewGamesGame);
+    EXPECT_NE(multipleNewGamesGameStr1, "");
+
+    // gridHeight: 10, gridWidth: 10, numOfMines: 23
+    EXPECT_NO_THROW(multipleNewGamesGame.newGame(10, 23));
+    std::string multipleNewGamesGameStr2 = serialiseToString(multipleNewGamesGame);
+    EXPECT_NE(multipleNewGamesGameStr2, "");
+    EXPECT_NE(multipleNewGamesGameStr2, multipleNewGamesGameStr1);
+
+    // gridHeight: 12, gridWidth: 7, numOfMines: 33
+    EXPECT_NO_THROW(multipleNewGamesGame.newGame(12, 7, 33));
+    std::string multipleNewGamesGameStr3 = serialiseToString(multipleNewGamesGame);
+    EXPECT_NE(multipleNewGamesGameStr3, "");
+    EXPECT_NE(multipleNewGamesGameStr3, multipleNewGamesGameStr1);
+    EXPECT_NE(multipleNewGamesGameStr3, multipleNewGamesGameStr2);
+
+    // gridHeight: 10, gridWidth: 10, numOfMines: 23
+    EXPECT_NO_THROW(multipleNewGamesGame.newGame(10, 10, 23));
+    std::string multipleNewGamesGameStr4 = serialiseToString(multipleNewGamesGame);
+    EXPECT_NE(multipleNewGamesGameStr4, "");
+    EXPECT_NE(multipleNewGamesGameStr4, multipleNewGamesGameStr1);
+    EXPECT_EQ(multipleNewGamesGameStr4, multipleNewGamesGameStr2);
+    EXPECT_NE(multipleNewGamesGameStr4, multipleNewGamesGameStr3);
+
+    // gridHeight: 12, gridWidth: 7, numOfMines: 30 (AFTER CHECKING CELL!)
+    EXPECT_NO_THROW(multipleNewGamesGame.newGame(12, 7, 30));
+    EXPECT_NO_THROW(multipleNewGamesGame.checkInputCoordinates(5, 4));
+    std::string multipleNewGamesGameStr5 = serialiseToString(multipleNewGamesGame);
+    EXPECT_NE(multipleNewGamesGameStr5, "");
+    EXPECT_NE(multipleNewGamesGameStr5, multipleNewGamesGameStr1);
+    EXPECT_NE(multipleNewGamesGameStr5, multipleNewGamesGameStr2);
+    EXPECT_NE(multipleNewGamesGameStr5, multipleNewGamesGameStr3);
+    EXPECT_NE(multipleNewGamesGameStr5, multipleNewGamesGameStr4);
+
+    // +---------------------------------------------------------------------------------------+
+    // | 'newGame' with same gridsize and number of mines should be equivalent to reset(false) |
+    // +---------------------------------------------------------------------------------------+
+
+    // already won 4x8 game
+    minesweeper::Game premadeWonGameToReset;
+    ASSERT_NO_THROW(deserialiseFromFile(
+        minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json], premadeWonGameToReset));
+    EXPECT_NE(checkedWinFourByEightGameStr, "");
+    std::string premadeWonGameToResetStr = serialiseToString(premadeWonGameToReset);
+
+    // already won 4x8 game copy
+    minesweeper::Game premadeWonGameToNewGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json],
+                            premadeWonGameToNewGame));
+    std::string premadeWonGameToNewGameStr = serialiseToString(premadeWonGameToNewGame);
+    EXPECT_EQ(premadeWonGameToNewGameStr, checkedWinFourByEightGameStr);
+
+    // RESET already won 4x8 game
+    premadeWonGameToReset.reset(false);
+    std::string premadeWonGameAfterResetStr = serialiseToString(premadeWonGameToReset);
+    EXPECT_NE(premadeWonGameAfterResetStr, "");
+    EXPECT_NE(premadeWonGameAfterResetStr, premadeWonGameToResetStr);
+
+    // NEW GAME already won 4x8 game
+    premadeWonGameToNewGame.newGame(4, 8, 8);
+    std::string premadeWonGameAfterNewGameStr = serialiseToString(premadeWonGameToNewGame);
+    EXPECT_NE(premadeWonGameAfterNewGameStr, "");
+    EXPECT_NE(premadeWonGameAfterNewGameStr, premadeWonGameToNewGameStr);
+    EXPECT_EQ(premadeWonGameAfterNewGameStr, premadeWonGameAfterResetStr);
 }
 
 TEST_F(MinesweeperTest, CheckInputCoordinatesTest) {
@@ -638,7 +800,9 @@ TEST_F(MinesweeperTest, MarkInputCoordinatesTest) {
     UnmarkMarkInputCoordsGame.checkInputCoordinates(20, 7);
     EXPECT_FALSE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
     EXPECT_NO_THROW(UnmarkMarkInputCoordsGame.markInputCoordinates(18, 10));
-    EXPECT_TRUE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
+    if (!UnmarkMarkInputCoordsGame.isCellVisible(18, 10)) {
+        EXPECT_TRUE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
+    }
     EXPECT_NO_THROW(UnmarkMarkInputCoordsGame.markInputCoordinates(18, 10));
     EXPECT_FALSE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
 }
@@ -842,11 +1006,9 @@ TEST_F(MinesweeperTest, PlayerHasLostTest) {
         {1, 11, 2, 7, 0},  {48, 50, 47, 28, 39}, {13, 9, 10, 8, 7},    {45, 46, 38, 24, 32}, {6, 19, 20, 15, 4},
         {8, 16, 25, 4, 3}, {2, 22, 25, 20, 1},   {45, 37, 33, 30, 27}, {44, 31, 26, 23, 2},  {4, 7, 11, 3, 1}};
 
-    for (auto gameParas : gameParameterSet) {
-
+    for (const auto& gameParas : gameParameterSet) {
         minesweeper::Game notFirstMoveLossGame(gameParas.gridHeight, gameParas.gridWidth, gameParas.numOfMines,
                                                &myRandom);
-
         EXPECT_FALSE(notFirstMoveLossGame.playerHasLost());
         notFirstMoveLossGame.checkInputCoordinates(gameParas.initialX, gameParas.initialY);
         EXPECT_FALSE(notFirstMoveLossGame.playerHasLost());
@@ -898,7 +1060,7 @@ TEST_F(MinesweeperTest, PlayerHasLostTest) {
     EXPECT_TRUE(presetLossGame.playerHasLost());
 }
 
-TEST_F(MinesweeperTest, IsCellVisibleTest) { // TODO
+TEST_F(MinesweeperTest, IsCellVisibleTest) {
 
     // unstarted game should have no visible cells
     minesweeper::Game unstartedGame(5, 9, 20, &myRandom);
@@ -907,9 +1069,70 @@ TEST_F(MinesweeperTest, IsCellVisibleTest) { // TODO
     EXPECT_FALSE(unstartedGame.isCellVisible(3, 1));
     EXPECT_FALSE(unstartedGame.isCellVisible(1, 2));
     EXPECT_FALSE(unstartedGame.isCellVisible(1, 0));
+
+    // simple game
+    minesweeper::Game simpleGame(11, 14, 34, &myRandom);
+    EXPECT_FALSE(simpleGame.isCellVisible(0, 1));
+    simpleGame.checkInputCoordinates(0, 1);
+    EXPECT_TRUE(simpleGame.isCellVisible(0, 1));
+
+    simpleGame.checkInputCoordinates(4, 5);
+    EXPECT_TRUE(simpleGame.isCellVisible(4, 5));
+    simpleGame.checkInputCoordinates(4, 5);
+    EXPECT_TRUE(simpleGame.isCellVisible(4, 5));
+
+    simpleGame.checkInputCoordinates(10, 8);
+    EXPECT_TRUE(simpleGame.isCellVisible(10, 8));
+
+    simpleGame.checkInputCoordinates(7, 7);
+    EXPECT_TRUE(simpleGame.isCellVisible(7, 7));
+
+    // premade started 6x8 game
+    minesweeper::Game premadeSixByEightGame;
+    ASSERT_NO_THROW(deserialiseFromFile(
+        minesweeper::TEST_DATA[minesweeper::startedGame_sixByEight_serialisation____json], premadeSixByEightGame));
+    EXPECT_NE(startedSixByEightGameStr, "");
+    EXPECT_FALSE(premadeSixByEightGame.isCellVisible(2, 3));
+    EXPECT_FALSE(premadeSixByEightGame.isCellVisible(0, 5));
+    EXPECT_FALSE(premadeSixByEightGame.isCellVisible(7, 1));
+    EXPECT_FALSE(premadeSixByEightGame.isCellVisible(1, 0));
+    EXPECT_TRUE(premadeSixByEightGame.isCellVisible(5, 2));
+    EXPECT_TRUE(premadeSixByEightGame.isCellVisible(6, 3));
+    EXPECT_TRUE(premadeSixByEightGame.isCellVisible(5, 5));
+    EXPECT_TRUE(premadeSixByEightGame.isCellVisible(7, 4));
+
+    // premade unfinished 7x7 game
+    minesweeper::Game premadeSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeSevenBySevenGame));
+    EXPECT_NE(unfinishedSevenBySevenGameStr, "");
+    EXPECT_TRUE(premadeSevenBySevenGame.isCellVisible(0, 2));
+    EXPECT_TRUE(premadeSevenBySevenGame.isCellVisible(1, 2));
+    EXPECT_TRUE(premadeSevenBySevenGame.isCellVisible(5, 4));
+    EXPECT_TRUE(premadeSevenBySevenGame.isCellVisible(2, 6));
+    EXPECT_TRUE(premadeSevenBySevenGame.isCellVisible(3, 5));
+    EXPECT_TRUE(premadeSevenBySevenGame.isCellVisible(3, 4));
+    EXPECT_FALSE(premadeSevenBySevenGame.isCellVisible(5, 0));
+    EXPECT_FALSE(premadeSevenBySevenGame.isCellVisible(6, 3));
+    EXPECT_FALSE(premadeSevenBySevenGame.isCellVisible(0, 1));
+    EXPECT_FALSE(premadeSevenBySevenGame.isCellVisible(4, 0));
+
+    // premade lost 5x3 game
+    minesweeper::Game premadeFiveByThreeLossGame;
+    ASSERT_NO_THROW(deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::lossGame_fiveByThree_serialisation____json],
+                                        premadeFiveByThreeLossGame));
+    EXPECT_NE(lossFiveByThreeGameStr, "");
+    EXPECT_FALSE(premadeFiveByThreeLossGame.isCellVisible(0, 4));
+    EXPECT_TRUE(premadeFiveByThreeLossGame.isCellVisible(2, 0));
+    EXPECT_TRUE(premadeFiveByThreeLossGame.isCellVisible(1, 2));
+    EXPECT_FALSE(premadeFiveByThreeLossGame.isCellVisible(1, 4));
+    EXPECT_TRUE(premadeFiveByThreeLossGame.isCellVisible(2, 3));
+    EXPECT_FALSE(premadeFiveByThreeLossGame.isCellVisible(2, 4));
+    EXPECT_FALSE(premadeFiveByThreeLossGame.isCellVisible(0, 1));
 }
 
-TEST_F(MinesweeperTest, DoesCellHaveMineTest) { // TODO
+TEST_F(MinesweeperTest, DoesCellHaveMineTest) {
 
     // unstarted game should have no mines
     minesweeper::Game unstartedGame(14, 7, 28, &myRandom);
@@ -918,9 +1141,68 @@ TEST_F(MinesweeperTest, DoesCellHaveMineTest) { // TODO
     EXPECT_FALSE(unstartedGame.doesCellHaveMine(5, 2));
     EXPECT_FALSE(unstartedGame.doesCellHaveMine(3, 10));
     EXPECT_FALSE(unstartedGame.doesCellHaveMine(4, 7));
+
+    // predetermined random game
+    PreSetMinesRandom predeterminedRandom({35, 37, 41, 31, 3, 9, 56, 52, 65, 69, 76, 66, 39, 7, 13, 29});
+    minesweeper::Game predeterminedRandomGame(10, 8, 16, &predeterminedRandom);
+    predeterminedRandomGame.checkInputCoordinates(4, 7);
+    EXPECT_FALSE(predeterminedRandomGame.doesCellHaveMine(6, 5));
+    EXPECT_FALSE(predeterminedRandomGame.doesCellHaveMine(0, 3));
+    EXPECT_FALSE(predeterminedRandomGame.doesCellHaveMine(2, 9));
+    EXPECT_FALSE(predeterminedRandomGame.doesCellHaveMine(4, 3));
+    EXPECT_FALSE(predeterminedRandomGame.doesCellHaveMine(5, 7));
+    EXPECT_TRUE(predeterminedRandomGame.doesCellHaveMine(1, 2));
+    EXPECT_TRUE(predeterminedRandomGame.doesCellHaveMine(7, 0));
+    EXPECT_TRUE(predeterminedRandomGame.doesCellHaveMine(5, 4));
+    EXPECT_TRUE(predeterminedRandomGame.doesCellHaveMine(0, 7));
+
+    // premade started 5x6 game
+    minesweeper::Game premadeFiveBySixGame;
+    ASSERT_NO_THROW(deserialiseFromFile(
+        minesweeper::TEST_DATA[minesweeper::startedGame_fiveBySix_serialisation____json], premadeFiveBySixGame));
+    EXPECT_NE(startedFiveBySixGameStr, "");
+    EXPECT_FALSE(premadeFiveBySixGame.doesCellHaveMine(0, 0));
+    EXPECT_FALSE(premadeFiveBySixGame.doesCellHaveMine(1, 1));
+    EXPECT_FALSE(premadeFiveBySixGame.doesCellHaveMine(5, 1));
+    EXPECT_FALSE(premadeFiveBySixGame.doesCellHaveMine(3, 3));
+    EXPECT_FALSE(premadeFiveBySixGame.doesCellHaveMine(2, 2));
+    EXPECT_FALSE(premadeFiveBySixGame.doesCellHaveMine(3, 0));
+    EXPECT_TRUE(premadeFiveBySixGame.doesCellHaveMine(3, 4));
+    EXPECT_TRUE(premadeFiveBySixGame.doesCellHaveMine(0, 4));
+    EXPECT_TRUE(premadeFiveBySixGame.doesCellHaveMine(4, 1));
+    EXPECT_TRUE(premadeFiveBySixGame.doesCellHaveMine(4, 4));
+    EXPECT_FALSE(premadeFiveBySixGame.doesCellHaveMine(3, 0));
+
+    // premade won 5x4 game
+    minesweeper::Game premadeFiveByFourWonGame;
+    ASSERT_NO_THROW(deserialiseFromFile(
+        minesweeper::TEST_DATA[minesweeper::markedWinGame_fiveByFour_serialisation____json], premadeFiveByFourWonGame));
+    EXPECT_NE(markedWinFiveByFourGameStr, "");
+    EXPECT_TRUE(premadeFiveByFourWonGame.doesCellHaveMine(0, 4));
+    EXPECT_FALSE(premadeFiveByFourWonGame.doesCellHaveMine(3, 3));
+    EXPECT_TRUE(premadeFiveByFourWonGame.doesCellHaveMine(1, 4));
+    EXPECT_FALSE(premadeFiveByFourWonGame.doesCellHaveMine(2, 2));
+    EXPECT_TRUE(premadeFiveByFourWonGame.doesCellHaveMine(0, 0));
+    EXPECT_FALSE(premadeFiveByFourWonGame.doesCellHaveMine(3, 1));
+    EXPECT_TRUE(premadeFiveByFourWonGame.doesCellHaveMine(1, 1));
+
+    // unfinished 7x7 game
+    minesweeper::Game premadeUnfinishedSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeUnfinishedSevenBySevenGame));
+    EXPECT_NE(unfinishedSevenBySevenGameStr, "");
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(6, 1));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(0, 6));
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(5, 2));
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(2, 6));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(3, 3));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(3, 0));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(4, 6));
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(0, 1));
 }
 
-TEST_F(MinesweeperTest, IsCellMarkedTest) { // TODO
+TEST_F(MinesweeperTest, IsCellMarkedTest) {
 
     // unstarted game should have no marked cells
     minesweeper::Game unstartedGame(11, 16, 40, &myRandom);
@@ -929,9 +1211,95 @@ TEST_F(MinesweeperTest, IsCellMarkedTest) { // TODO
     EXPECT_FALSE(unstartedGame.isCellMarked(11, 10));
     EXPECT_FALSE(unstartedGame.isCellMarked(2, 8));
     EXPECT_FALSE(unstartedGame.isCellMarked(0, 1));
+
+    // simple game
+    minesweeper::Game simpleGame(10, 91, &myRandom);
+    simpleGame.checkInputCoordinates(6, 4);
+
+    EXPECT_FALSE(simpleGame.isCellMarked(0, 1));
+    simpleGame.markInputCoordinates(0, 1);
+    EXPECT_TRUE(simpleGame.isCellMarked(0, 1));
+
+    EXPECT_FALSE(simpleGame.isCellMarked(4, 3));
+    simpleGame.markInputCoordinates(4, 3);
+    EXPECT_TRUE(simpleGame.isCellMarked(4, 3));
+
+    EXPECT_FALSE(simpleGame.isCellMarked(1, 3));
+    simpleGame.markInputCoordinates(1, 3);
+    EXPECT_TRUE(simpleGame.isCellMarked(1, 3));
+    simpleGame.markInputCoordinates(1, 3);
+    EXPECT_FALSE(simpleGame.isCellMarked(1, 3));
+
+    EXPECT_FALSE(simpleGame.isCellMarked(2, 8));
+    simpleGame.markInputCoordinates(2, 8);
+    EXPECT_TRUE(simpleGame.isCellMarked(2, 8));
+
+    EXPECT_FALSE(simpleGame.isCellMarked(9, 5));
+    simpleGame.markInputCoordinates(9, 5);
+    EXPECT_TRUE(simpleGame.isCellMarked(9, 5));
+    simpleGame.markInputCoordinates(9, 5);
+    EXPECT_FALSE(simpleGame.isCellMarked(9, 5));
+    simpleGame.markInputCoordinates(9, 5);
+    EXPECT_TRUE(simpleGame.isCellMarked(9, 5));
+
+    EXPECT_TRUE(simpleGame.isCellMarked(4, 3));
+    simpleGame.markInputCoordinates(4, 3);
+    EXPECT_FALSE(simpleGame.isCellMarked(4, 3));
+
+    EXPECT_FALSE(simpleGame.isCellMarked(2, 9));
+    simpleGame.markInputCoordinates(2, 9);
+    EXPECT_TRUE(simpleGame.isCellMarked(2, 9));
+
+    // premade 7x7 unfinished game
+    minesweeper::Game premadeUnfinishedSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeUnfinishedSevenBySevenGame));
+    EXPECT_NE(unfinishedSevenBySevenGameStr, "");
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(0, 1));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellMarked(2, 2));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellMarked(0, 6));
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(4, 2));
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(5, 0));
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(2, 4));
+
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(4, 6));
+    premadeUnfinishedSevenBySevenGame.markInputCoordinates(4, 6);
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellMarked(4, 6));
+
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellMarked(3, 3));
+    premadeUnfinishedSevenBySevenGame.markInputCoordinates(3, 3);
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(3, 3));
+    premadeUnfinishedSevenBySevenGame.markInputCoordinates(3, 3);
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellMarked(3, 3));
+
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(6, 0));
+    premadeUnfinishedSevenBySevenGame.markInputCoordinates(6, 0);
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellMarked(6, 0));
+    premadeUnfinishedSevenBySevenGame.markInputCoordinates(6, 0);
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellMarked(6, 0));
+
+    // premade 4x8 checked win game
+    minesweeper::Game premadeFourByEightWonGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json],
+                            premadeFourByEightWonGame));
+    EXPECT_NE(checkedWinFourByEightGameStr, "");
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(5, 0));
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(7, 2));
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(1, 1));
+    EXPECT_TRUE(premadeFourByEightWonGame.isCellMarked(3, 1));
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(3, 2));
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(1, 3));
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(0, 3));
+    EXPECT_TRUE(premadeFourByEightWonGame.isCellMarked(5, 3));
+
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(5, 1));
+    premadeFourByEightWonGame.markInputCoordinates(5, 1);
+    EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(5, 1));
 }
 
-TEST_F(MinesweeperTest, NumOfMinesAroundCellTest) { // TODO
+TEST_F(MinesweeperTest, NumOfMinesAroundCellTest) {
 
     // unstarted game should have no mines around
     minesweeper::Game unstartedGame(5, 10, 13, &myRandom);
@@ -940,6 +1308,58 @@ TEST_F(MinesweeperTest, NumOfMinesAroundCellTest) { // TODO
     EXPECT_EQ(unstartedGame.numOfMinesAroundCell(3, 0), 0);
     EXPECT_EQ(unstartedGame.numOfMinesAroundCell(7, 1), 0);
     EXPECT_EQ(unstartedGame.numOfMinesAroundCell(2, 3), 0);
+
+    // premade 7x7 unfinished game
+    minesweeper::Game premadeUnfinishedSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeUnfinishedSevenBySevenGame));
+    EXPECT_NE(unfinishedSevenBySevenGameStr, "");
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(3, 0), 0);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(0, 2), 1);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(2, 5), 0);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(6, 3), 1);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(5, 6), 4);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(5, 0), 1);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(1, 4), 0);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(0, 4), 0);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(4, 0), 1);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(5, 1), 2);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.numOfMinesAroundCell(2, 2), 2);
+
+    // premade 5x4 marked win game
+    minesweeper::Game premadeFiveByFourLostGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::markedWinGame_fiveByFour_serialisation____json],
+                            premadeFiveByFourLostGame));
+    EXPECT_NE(markedWinFiveByFourGameStr, "");
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(3, 0), 0);
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(3, 3), 0);
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(0, 4), 1);
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(1, 2), 1);
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(3, 1), 1);
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(1, 3), 2);
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(2, 2), 1);
+    EXPECT_EQ(premadeFiveByFourLostGame.numOfMinesAroundCell(0, 1), 3);
+
+    // first checked cell should always have 0 mines around
+    struct gameParameters {
+        int gridHeight;
+        int gridWidth;
+        int numOfMines;
+        int initialX;
+        int initialY;
+    };
+    gameParameters gameParameterSet[] = {{10, 21, 33, 8, 7},   {14, 45, 300, 34, 11}, {4, 7, 10, 0, 0},
+                                         {16, 25, 50, 21, 11}, {31, 45, 500, 44, 10}, {7, 15, 40, 0, 5},
+                                         {16, 31, 140, 15, 8}};
+    for (const auto& gameParas : gameParameterSet) {
+        minesweeper::Game noMinesAroundFirstCheckGame(gameParas.gridHeight, gameParas.gridWidth, gameParas.numOfMines,
+                                                      &myRandom);
+        EXPECT_EQ(noMinesAroundFirstCheckGame.numOfMinesAroundCell(gameParas.initialX, gameParas.initialY), 0);
+        noMinesAroundFirstCheckGame.checkInputCoordinates(gameParas.initialX, gameParas.initialY);
+        EXPECT_EQ(noMinesAroundFirstCheckGame.numOfMinesAroundCell(gameParas.initialX, gameParas.initialY), 0);
+    }
 }
 
 TEST_F(MinesweeperTest, SerialiseTest) {
@@ -1175,7 +1595,7 @@ TEST(MinesweeperStaticTest, MaxNumOfMinesMethodTest) {
     // large grid
     EXPECT_EQ(minesweeper::Game::maxNumOfMines(114, 129), 14'697);
 
-    // very large grid (this test takes relatively long, consider removing)
+    // very large grid
     EXPECT_EQ(minesweeper::Game::maxNumOfMines(10'020, 20'458), 204'989'151);
 }
 

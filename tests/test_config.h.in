@@ -1,5 +1,5 @@
-#ifndef TEST_CONFIG_H
-#define TEST_CONFIG_H
+#ifndef MINESWEEPER_TEST_CONFIG_H
+#define MINESWEEPER_TEST_CONFIG_H
 
 // This file generates the file path to the binary folder so that it can be used to locate test data
 
@@ -19,4 +19,4 @@ namespace minesweeper {
 
 
 
-#endif // TEST_CONFIG_H
+#endif // MINESWEEPER_TEST_CONFIG_H

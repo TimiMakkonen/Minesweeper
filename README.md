@@ -29,16 +29,17 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version History
 
-### Version 8.3.0 (Develop)
+### Version 8.3.0
 
 * Added reset and newGame methods.
   * 'reset(bool keepCreatedMines = false)' method keeps current grid size and number of mines parameters and allows to keep currently set mines as well if argument 'keepCreatedMines' is set to true.
   * 'newGame' methods start completely new game with different grid sizes and number of mines.
+* Disabled cell marking for already visible cells. (no throw, just nothing happens)
 * Added argument verifications to various methods and made them throw.
-* Formatted code using ['clang-format'](https://clang.llvm.org/docs/ClangFormat.html).
 * Added virtual destructor to 'IRandom'.
+* Formatted code using ['clang-format'](https://clang.llvm.org/docs/ClangFormat.html).
 * Tidied code using ['clang-tidy'](https://clang.llvm.org/extra/clang-tidy/).
-* Added some tests.
+* Added some tests and test data.
 
 ### Version 8.2.0
 
