@@ -782,14 +782,18 @@ TEST_F(MinesweeperTest, MarkInputCoordinatesTest) {
     validMarkInputCoordsGame.checkInputCoordinates(5, 7);
     EXPECT_FALSE(validMarkInputCoordsGame.isCellMarked(8, 2));
     EXPECT_NO_THROW(validMarkInputCoordsGame.markInputCoordinates(8, 2));
-    EXPECT_TRUE(validMarkInputCoordsGame.isCellMarked(8, 2));
+    if (!validMarkInputCoordsGame.isCellVisible(8, 2)) {
+        EXPECT_TRUE(validMarkInputCoordsGame.isCellMarked(8, 2));
+    }
 
     // valid 'createMinesAndNums' set mark
     minesweeper::Game validCreateMinesAndNumsYMarkInputCoordsGame(47, 35, 700, &myRandom);
     validCreateMinesAndNumsYMarkInputCoordsGame.createMinesAndNums(25, 35);
     EXPECT_FALSE(validCreateMinesAndNumsYMarkInputCoordsGame.isCellMarked(30, 42));
     EXPECT_NO_THROW(validCreateMinesAndNumsYMarkInputCoordsGame.markInputCoordinates(30, 42));
-    EXPECT_TRUE(validCreateMinesAndNumsYMarkInputCoordsGame.isCellMarked(30, 42));
+    if (!validCreateMinesAndNumsYMarkInputCoordsGame.isCellVisible(30, 42)) {
+        EXPECT_TRUE(validCreateMinesAndNumsYMarkInputCoordsGame.isCellMarked(30, 42));
+    }
 
     // not set mark
     minesweeper::Game notSetMinesMarkInputCoordsGame(110, 3000, &myRandom);
