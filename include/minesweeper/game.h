@@ -1,11 +1,14 @@
 #ifndef MINESWEEPER_GAME_H
 #define MINESWEEPER_GAME_H
 
-#include <iostream> // std::istream, std::ostream
-#include <memory>   // std::unique_ptr
-#include <vector>   // std::vector
+#include <iostream>    // std::istream, std::ostream
+#include <memory>      // std::unique_ptr
+#include <type_traits> // std::enable_if
+#include <vector>      // std::vector
 
 #include <minesweeper/i_random.h>
+#include <minesweeper/type_traits.h>
+#include <minesweeper/visual_minesweeper_cell.h>
 
 namespace minesweeper {
 
@@ -92,6 +95,17 @@ class Game {
     // load game:
     std::istream& deserialise(std::istream& inStream);
 
+    // get visual information of each cell
+    template <class Container,
+              typename std::enable_if<is_expandable_1D_sequence_container<Container>::value, int>::type = 0>
+    Container visualise() const;
+    template <class Container,
+              typename std::enable_if<is_expandable_2D_sequence_container<Container>::value, int>::type = 0>
+    Container visualise() const;
+
+    template <class T = VisualMinesweeperCell>
+    T visualiseCell(const int X, const int Y) const;
+
     // ----------------------
     // public static methods:
     // ----------------------
@@ -137,6 +151,9 @@ class Game {
 
     void unmarkCell(const int X, const int Y);
 
+    template <class T = VisualMinesweeperCell>
+    T visualiseCell_(const int X, const int Y) const;
+
     // -----------------------
     // private static methods:
     // -----------------------
@@ -154,5 +171,7 @@ class Game {
 };
 
 } // namespace minesweeper
+
+#include "game.tpp"
 
 #endif // MINESWEEPER_GAME_H

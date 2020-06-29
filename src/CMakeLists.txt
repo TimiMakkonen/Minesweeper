@@ -8,6 +8,8 @@ set(HEADER_LIST
     "${HEADER_FOLDER}/game.h"
     "${HEADER_FOLDER}/i_random.h"
     "${HEADER_FOLDER}/random.h"
+    "${HEADER_FOLDER}/visual_minesweeper_cell.h"
+    "${HEADER_FOLDER}/type_traits.h"
 )
 
 # Private header files
@@ -24,13 +26,18 @@ set(SOURCE_LIST
     "${SOURCE_FOLDER}/random.cpp"
 )
 
-
+# Template source files
+set(TEMPLATE_SOURCE_FOLDER "${PROJECT_SOURCE_DIR}/include/minesweeper")
+set(TEMPLATE_SOURCE_LIST
+"${TEMPLATE_SOURCE_FOLDER}/game.tpp"
+)
 
 # Make an automatic library - will be static or dynamic based on user setting
 add_library("${LIBRARY_NAME}"
             ${HEADER_LIST}
             ${PRIVATE_HEADER_LIST}
             ${SOURCE_LIST}
+            ${TEMPLATE_SOURCE_LIST}
 )
 
 # We need this directory, and users of our library will need it too

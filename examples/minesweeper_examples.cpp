@@ -25,6 +25,7 @@ void serialiseGameToFile(const minesweeper::Game& gameToPrint, const std::string
 void gamePrinter(std::ostream& outStream, minesweeper::Game const* const gameToPrint);
 void playGround1();
 void playGround2();
+void playGround3();
 
 // (This can be used as a playground to see and use this library in action.)
 void preliminaryTests() {
@@ -35,6 +36,7 @@ void preliminaryTests() {
 
     // playGround1();
     // playGround2();
+    // playGround3();
 }
 
 // this method contains examples with some documentation
@@ -279,6 +281,31 @@ void playGround2() {
     myGame.checkInputCoordinates(4, 2);
 
     serialiseGameToFile(myGame, "__game_serialisation2.json", "__game_print2.txt");
+}
+
+void playGround3() {
+    minesweeper::Random myRandom;
+    minesweeper::Game myGame(10, 20, &myRandom);
+    myGame.checkInputCoordinates(5, 5);
+
+    std::cout << "1D output:" << std::endl;
+    auto myVisualCells = myGame.visualise<std::vector<int>>();
+    for (const auto& visualCell : myVisualCells) {
+        std::cout << visualCell;
+    }
+    std::cout << std::endl;
+
+    std::cout << "2D output:" << std::endl;
+    auto my2DVisualCell = myGame.visualise<std::vector<std::vector<int>>>();
+    for (const auto& visualCellRow : my2DVisualCell) {
+        for (const auto& visualCell : visualCellRow) {
+            std::cout << std::setw(2) << visualCell;
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    serialiseGameToFile(myGame, "__game_serialisation3.json", "__game_print3.json");
 }
 
 // simple printout of the game (for debugging/inspection purposes)

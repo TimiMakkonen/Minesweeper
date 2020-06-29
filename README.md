@@ -29,6 +29,29 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version History
 
+### Version DEVELOP
+
+* Added 'VisualMinesweeperCell' enum class to represent the visual state
+  of a cell.
+* Added 'visualise' template method to help with getting information
+  needed to visually express the 'Game'.
+  * Uses 'VisualMinesweeperCell' as the underlying information type.
+  * Works with any 1D or 2D container which:
+    * has 'size' and 'push_back' methods, and
+    * uses 'value_type' that supports conversion from
+      'VisualMinesweeperCell' enum class. (eg. 'int')
+  * Works for example with: 'std::vector\<VisualMinesweeperCell\>',
+    'std::vector\<int\>',
+    'std::vector\<std::vector\<VisualMinesweeperCell\>\>' and
+    'std::vector\<std::vector\<int\>\>'.
+* Added 'visualiseCell' template method to help with getting information
+  needed to visually express a cell.
+  * Uses 'VisualMinesweeperCell' as the underlying information type.
+  * Works with any type that supports conversion from
+    'VisualMinesweeperCell' enum class. (eg. 'int')
+* Added 'type_traits' to help with template type checking at
+  compile-time.
+
 ### Version 8.3.0
 
 * Added reset and newGame methods.
