@@ -51,6 +51,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
     'VisualMinesweeperCell' enum class. (eg. 'int')
 * Added 'type_traits' to help with template type checking at
   compile-time.
+* Added some tests.
 
 ### Version 8.3.0
 

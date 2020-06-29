@@ -50,7 +50,7 @@ T Game::visualiseCell(const int X, const int Y) const {
             "Game::visualiseCell(const int X, const int Y): Trying to visualise a cell outside the grid.");
     }
 
-    return static_cast<T>(this->visualiseCell_<T>(X, Y));
+    return static_cast<T>(this->visualiseCell_(X, Y));
 }
 
 } // namespace minesweeper

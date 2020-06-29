@@ -1,5 +1,8 @@
 #include <fstream> // std::ifstream
+#include <list>    // std::list
 #include <sstream> // std::stringstream
+#include <string>  // std::string
+#include <vector>  // std::vector
 
 #include <gtest/gtest.h>
 
@@ -7,6 +10,7 @@
 
 #include <minesweeper/game.h>
 #include <minesweeper/random.h>
+#include <minesweeper/visual_minesweeper_cell.h>
 
 class MinesweeperTest : public ::testing::Test {
   protected:
@@ -1523,6 +1527,129 @@ TEST_F(MinesweeperTest, SerialiseAndDeserialiseTest) {
     EXPECT_EQ(simpleGame.playerHasLost(), simpleGameCopy.playerHasLost());
     EXPECT_EQ(simpleGame.playerHasWon(), simpleGameCopy.playerHasWon());
     EXPECT_EQ(simpleGameStr, simpleGameCopyStr);
+}
+
+TEST_F(MinesweeperTest, VisualiseCell) {
+
+    // negative x and y
+    minesweeper::Game negativeXandYCheckInputCoordsGame(13, 15, 50, &myRandom);
+    EXPECT_THROW(negativeXandYCheckInputCoordsGame.visualiseCell(-8, -3), std::out_of_range);
+
+    // negative x
+    minesweeper::Game negativeXCheckInputCoordsGame(18, 7, 65, &myRandom);
+    EXPECT_THROW(negativeXCheckInputCoordsGame.visualiseCell(-2, 8), std::out_of_range);
+
+    // negative y
+    minesweeper::Game negativeYCheckInputCoordsGame(22, 98, &myRandom);
+    EXPECT_THROW(negativeYCheckInputCoordsGame.visualiseCell(11, -8), std::out_of_range);
+
+    // too large x and y
+    minesweeper::Game tooLargeXandYCheckInputCoordsGame(123, 3'514, &myRandom);
+    EXPECT_THROW(tooLargeXandYCheckInputCoordsGame.visualiseCell(140, 132), std::out_of_range);
+
+    // too large x
+    minesweeper::Game tooLargeXCheckInputCoordsGame(44, 18, 652, &myRandom);
+    EXPECT_THROW(tooLargeXCheckInputCoordsGame.visualiseCell(18, 23), std::out_of_range);
+
+    // too large y
+    minesweeper::Game tooLargeYCheckInputCoordsGame(54, 617, &myRandom);
+    EXPECT_THROW(tooLargeYCheckInputCoordsGame.visualiseCell(13, 261), std::out_of_range);
+
+    // too large x and negative y
+    minesweeper::Game tooLargeXandNegativeYCheckInputCoordsGame(23, 12, 94, &myRandom);
+    EXPECT_THROW(tooLargeXandNegativeYCheckInputCoordsGame.visualiseCell(15, -2), std::out_of_range);
+
+    // valid/expected template types
+    minesweeper::Game validTemplateTypes(12, 32, &myRandom);
+    validTemplateTypes.checkInputCoordinates(5, 6);
+    validTemplateTypes.visualiseCell<minesweeper::VisualMinesweeperCell>(4, 6);
+    validTemplateTypes.visualiseCell<int>(4, 6);
+    validTemplateTypes.visualiseCell<char>(4, 6);
+
+    // custom template type
+    class VisualTestCell {
+      public:
+        VisualTestCell(minesweeper::VisualMinesweeperCell x) {}
+    };
+    validTemplateTypes.visualiseCell<VisualTestCell>(4, 6);
+
+    // unfinished 7x7 game
+    minesweeper::Game premadeUnfinishedSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeUnfinishedSevenBySevenGame));
+    EXPECT_NE(unfinishedSevenBySevenGameStr, "");
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCell(1, 3), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCell(0, 0), minesweeper::VisualMinesweeperCell::UNCHECKED);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCell(1, 4), minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCell(5, 4), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCell(3, 3), minesweeper::VisualMinesweeperCell::MARKED);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCell(3, 1), minesweeper::VisualMinesweeperCell::TWO);
+
+    // premade lost 5x3 game
+    minesweeper::Game premadeFiveByThreeLossGame;
+    ASSERT_NO_THROW(deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::lossGame_fiveByThree_serialisation____json],
+                                        premadeFiveByThreeLossGame));
+    EXPECT_NE(lossFiveByThreeGameStr, "");
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(0, 0), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(2, 2), minesweeper::VisualMinesweeperCell::MARKED);
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(2, 0), minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(1, 2), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(0, 3), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(1, 1), minesweeper::VisualMinesweeperCell::TWO);
+}
+
+TEST_F(MinesweeperTest, Visualise) {
+
+    // valid/expected template types
+    minesweeper::Game validTemplateTypes(13, 8, 48, &myRandom);
+    validTemplateTypes.checkInputCoordinates(2, 7);
+    validTemplateTypes.visualise<std::vector<minesweeper::VisualMinesweeperCell>>();
+    validTemplateTypes.visualise<std::vector<std::vector<minesweeper::VisualMinesweeperCell>>>();
+    validTemplateTypes.visualise<std::vector<int>>();
+    validTemplateTypes.visualise<std::vector<std::vector<int>>>();
+    validTemplateTypes.visualise<std::string>();
+    validTemplateTypes.visualise<std::vector<std::string>>();
+    validTemplateTypes.visualise<std::list<int>>();
+    validTemplateTypes.visualise<std::list<minesweeper::VisualMinesweeperCell>>();
+    validTemplateTypes.visualise<std::vector<std::list<int>>>();
+    validTemplateTypes.visualise<std::list<std::vector<minesweeper::VisualMinesweeperCell>>>();
+
+    // custom template type (with minimal requirements)
+    class CustomExpandSeqContainer {
+      public:
+        // needed to deduce type of values to cast from minesweeper::VisualMinesweeperCell
+        using value_type = int;
+
+        // needed to push_back values
+        void push_back(value_type x) {}
+
+        // not needed for anything, but expected for any serious container
+        size_t size() { return 0; }
+    };
+    validTemplateTypes.visualise<CustomExpandSeqContainer>();
+
+    // premade lost 5x3 game
+    minesweeper::Game premadeFiveByThreeLossGame;
+    ASSERT_NO_THROW(deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::lossGame_fiveByThree_serialisation____json],
+                                        premadeFiveByThreeLossGame));
+    EXPECT_NE(lossFiveByThreeGameStr, "");
+    std::vector<std::vector<int>> premadeFiveByThreeVisualMatrixExpected{
+        {1, 1, 0}, {10, 2, 1}, {2, 3, 10}, {9, -1, 3}, {-1, -1, -1}};
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualise<std::vector<std::vector<int>>>(),
+              premadeFiveByThreeVisualMatrixExpected);
+    std::vector<int> premadeFiveByThreVvisualVectorExpected{1, 1, 0, 10, 2, 1, 2, 3, 10, 9, -1, 3, -1, -1, -1};
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualise<std::vector<int>>(), premadeFiveByThreVvisualVectorExpected);
+
+    // empty and unstarted 8x4 game
+    minesweeper::Game emptyGame(8, 4, 12, &myRandom);
+    std::list<minesweeper::VisualMinesweeperCell> emptyVisualListExpected(
+        32, minesweeper::VisualMinesweeperCell::UNCHECKED);
+    EXPECT_EQ(emptyGame.visualise<std::list<minesweeper::VisualMinesweeperCell>>(), emptyVisualListExpected);
+    std::vector<std::list<minesweeper::VisualMinesweeperCell>> emptyVisualVectorListExpected(
+        8, std::list<minesweeper::VisualMinesweeperCell>(4, minesweeper::VisualMinesweeperCell::UNCHECKED));
+    EXPECT_EQ(emptyGame.visualise<std::vector<std::list<minesweeper::VisualMinesweeperCell>>>(),
+              emptyVisualVectorListExpected);
 }
 
 TEST_F(MinesweeperTest, DefaultRandomTest) {
