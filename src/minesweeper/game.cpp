@@ -11,6 +11,7 @@
 
 #include <minesweeper/cell.h>
 #include <minesweeper/game.h>
+#include <minesweeper/visual_minesweeper_cell.h>
 
 namespace minesweeper {
 
@@ -438,6 +439,11 @@ void Game::markCell(const int X, const int Y) {
 void Game::unmarkCell(const int X, const int Y) {
     assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
     this->cells[Y][X]->unmarkCell();
+}
+
+VisualMinesweeperCell Game::visualiseCell_(const int X, const int Y) const {
+    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    return this->cells[Y][X]->visualise();
 }
 
 // to check user given coordinates, and make it visible

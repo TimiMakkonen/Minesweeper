@@ -5,6 +5,8 @@
 
 #include <nlohmann/json.hpp> // nlohmann::json
 
+#include <minesweeper/visual_minesweeper_cell.h>
+
 namespace minesweeper {
 
 class Cell {
@@ -42,6 +44,9 @@ class Cell {
     // load cell:
     std::istream& deserialise(std::istream& inStream);
     void deserialise(nlohmann::json& j);
+
+    // visualise to 'VisualMinesweeperCell' method
+    VisualMinesweeperCell visualise() const;
 };
 
 } // namespace minesweeper

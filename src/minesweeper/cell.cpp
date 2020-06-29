@@ -1,10 +1,12 @@
-#include <cassert>  // assert
+#include <cassert>   // assert
 #include <iomanip>   // std::setw
+#include <iostream>  // std::istream, std::ostream
 #include <stdexcept> // std::invalid_argument
 
 #include <nlohmann/json.hpp> // nlohmann::json
 
 #include <minesweeper/cell.h>
+#include <minesweeper/visual_minesweeper_cell.h>
 
 namespace minesweeper {
 
@@ -122,6 +124,24 @@ void Cell::deserialise(nlohmann::json& j) {
         this->_isMarked = j.at("_isMarked");
         this->_numOfMinesAround = j.at("_numOfMinesAround");
     }
+}
+
+VisualMinesweeperCell Cell::visualise() const {
+
+    VisualMinesweeperCell output;
+    if (this->_isMarked) {
+        output = VisualMinesweeperCell::MARKED;
+    } else if (!this->_isVisible) {
+        output = VisualMinesweeperCell::UNCHECKED;
+    } else {
+        if (this->_hasMine) {
+            output = VisualMinesweeperCell::MINE;
+        } else {
+            output = static_cast<VisualMinesweeperCell>(this->_numOfMinesAround);
+        }
+    }
+
+    return output;
 }
 
 } // namespace minesweeper

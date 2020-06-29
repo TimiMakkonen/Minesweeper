@@ -151,8 +151,7 @@ class Game {
 
     void unmarkCell(const int X, const int Y);
 
-    template <class T = VisualMinesweeperCell>
-    T visualiseCell_(const int X, const int Y) const;
+    VisualMinesweeperCell visualiseCell_(const int X, const int Y) const;
 
     // -----------------------
     // private static methods:

@@ -15,8 +15,8 @@ Container Game::visualise() const {
 
     for (int y = 0; y < this->gridHeight; ++y) {
         for (int x = 0; x < this->gridWidth; ++x) {
-            
-            output.push_back(this->visualiseCell_<output_cell_data_type>(x, y));
+
+            output.push_back(static_cast<output_cell_data_type>(this->visualiseCell_(x, y)));
         }
     }
 
@@ -33,7 +33,7 @@ Container Game::visualise() const {
         typename Container::value_type outputRow;
         for (int x = 0; x < this->gridWidth; ++x) {
 
-            outputRow.push_back(this->visualiseCell_<output_cell_data_type>(x, y));
+            outputRow.push_back(static_cast<output_cell_data_type>(this->visualiseCell_(x, y)));
         }
 
         output.push_back(outputRow);
@@ -45,30 +45,12 @@ Container Game::visualise() const {
 template <class T>
 T Game::visualiseCell(const int X, const int Y) const {
 
-    return this->visualiseCell_<T>(X, Y);
-}
-
-template <class T>
-T Game::visualiseCell_(const int X, const int Y) const {
-
-    T output;
-
-    VisualMinesweeperCell cellVisual;
-    if (this->isCellMarked(X, Y)) {
-        cellVisual = VisualMinesweeperCell::MARKED;
-    } else if (!this->isCellVisible(X, Y)) {
-        cellVisual = VisualMinesweeperCell::UNCHECKED;
-    } else {
-        if (this->doesCellHaveMine(X, Y)) {
-            cellVisual = VisualMinesweeperCell::MINE;
-        } else {
-            cellVisual = static_cast<VisualMinesweeperCell>(this->numOfMinesAroundCell(X, Y));
-        }
+    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+        throw std::out_of_range(
+            "Game::visualiseCell(const int X, const int Y): Trying to visualise a cell outside the grid.");
     }
 
-    output = static_cast<T>(cellVisual);
-
-    return output;
+    return static_cast<T>(this->visualiseCell_<T>(X, Y));
 }
 
 } // namespace minesweeper
