@@ -1070,6 +1070,42 @@ TEST_F(MinesweeperTest, PlayerHasLostTest) {
 
 TEST_F(MinesweeperTest, IsCellVisibleTest) {
 
+    // +------------------------+
+    // | Invalid Argument Tests |
+    // +------------------------+
+
+    // negative X and Y
+    minesweeper::Game negativeXandYGame(18, 92, &myRandom);
+    EXPECT_THROW(negativeXandYGame.isCellVisible(-3, -4), std::out_of_range);
+
+    // negative X
+    minesweeper::Game negativeXGame(10, 16, 47, &myRandom);
+    EXPECT_THROW(negativeXGame.isCellVisible(-2, 8), std::out_of_range);
+
+    // negative Y
+    minesweeper::Game negativeYGame(17, 42, &myRandom);
+    EXPECT_THROW(negativeYGame.isCellVisible(14, -1), std::out_of_range);
+
+    // too large X and Y
+    minesweeper::Game tooLargeXandYGame(19, 84, &myRandom);
+    EXPECT_THROW(tooLargeXandYGame.isCellVisible(28, 72), std::out_of_range);
+
+    // too large X
+    minesweeper::Game tooLargeXGame(44, 24, 214, &myRandom);
+    EXPECT_THROW(tooLargeXGame.isCellVisible(34, 0), std::out_of_range);
+
+    // too large Y
+    minesweeper::Game tooLargeYGame(28, 167, &myRandom);
+    EXPECT_THROW(tooLargeYGame.isCellVisible(0, 28), std::out_of_range);
+
+    // too large X and negative Y
+    minesweeper::Game tooLargeXandNegativeYGame(27, 18, 134, &myRandom);
+    EXPECT_THROW(tooLargeXandNegativeYGame.isCellVisible(19, -4), std::out_of_range);
+
+    // +-------------------+
+    // | Valid Usage Tests |
+    // +-------------------+
+
     // unstarted game should have no visible cells
     minesweeper::Game unstartedGame(5, 9, 20, &myRandom);
     EXPECT_FALSE(unstartedGame.isCellVisible(5, 4));
@@ -1142,6 +1178,42 @@ TEST_F(MinesweeperTest, IsCellVisibleTest) {
 
 TEST_F(MinesweeperTest, DoesCellHaveMineTest) {
 
+    // +------------------------+
+    // | Invalid Argument Tests |
+    // +------------------------+
+
+    // negative X and Y
+    minesweeper::Game negativeXandYGame(51, 49, 744, &myRandom);
+    EXPECT_THROW(negativeXandYGame.doesCellHaveMine(-10, -40), std::out_of_range);
+
+    // negative X
+    minesweeper::Game negativeXGame(144, 11'720, &myRandom);
+    EXPECT_THROW(negativeXGame.doesCellHaveMine(-1, 124), std::out_of_range);
+
+    // negative Y
+    minesweeper::Game negativeYGame(151, 13, 108, &myRandom);
+    EXPECT_THROW(negativeYGame.doesCellHaveMine(5, -3), std::out_of_range);
+
+    // too large X and Y
+    minesweeper::Game tooLargeXandYGame(80, 67, 4'011, &myRandom);
+    EXPECT_THROW(tooLargeXandYGame.doesCellHaveMine(72, 90), std::out_of_range);
+
+    // too large X
+    minesweeper::Game tooLargeXGame(91, 1'136, &myRandom);
+    EXPECT_THROW(tooLargeXGame.doesCellHaveMine(99, 0), std::out_of_range);
+
+    // too large Y
+    minesweeper::Game tooLargeYGame(127, 131, 10'882, &myRandom);
+    EXPECT_THROW(tooLargeYGame.doesCellHaveMine(75, 127), std::out_of_range);
+
+    // negative X and too large Y
+    minesweeper::Game negativeXandTooLargeYGame(73, 407, &myRandom);
+    EXPECT_THROW(negativeXandTooLargeYGame.doesCellHaveMine(-2, 75), std::out_of_range);
+
+    // +-------------------+
+    // | Valid Usage Tests |
+    // +-------------------+
+
     // unstarted game should have no mines
     minesweeper::Game unstartedGame(14, 7, 28, &myRandom);
     EXPECT_FALSE(unstartedGame.doesCellHaveMine(6, 11));
@@ -1211,6 +1283,42 @@ TEST_F(MinesweeperTest, DoesCellHaveMineTest) {
 }
 
 TEST_F(MinesweeperTest, IsCellMarkedTest) {
+
+    // +------------------------+
+    // | Invalid Argument Tests |
+    // +------------------------+
+
+    // negative X and Y
+    minesweeper::Game negativeXandYGame(150, 14'232, &myRandom);
+    EXPECT_THROW(negativeXandYGame.isCellMarked(-125, -25), std::out_of_range);
+
+    // negative X
+    minesweeper::Game negativeXGame(42, 24, 588, &myRandom);
+    EXPECT_THROW(negativeXGame.isCellMarked(-1, 20), std::out_of_range);
+
+    // negative Y
+    minesweeper::Game negativeYGame(105, 86, 1'650, &myRandom);
+    EXPECT_THROW(negativeYGame.isCellMarked(54, -8), std::out_of_range);
+
+    // too large X and Y
+    minesweeper::Game tooLargeXandYGame(183, 35, 3'556, &myRandom);
+    EXPECT_THROW(tooLargeXandYGame.isCellMarked(40, 201), std::out_of_range);
+
+    // too large X
+    minesweeper::Game tooLargeXGame(13, 30, &myRandom);
+    EXPECT_THROW(tooLargeXGame.isCellMarked(14, 8), std::out_of_range);
+
+    // too large Y
+    minesweeper::Game tooLargeYGame(101, 6'146, &myRandom);
+    EXPECT_THROW(tooLargeYGame.isCellMarked(82, 101), std::out_of_range);
+
+    // negative X and too large Y
+    minesweeper::Game negativeXandTooLargeYGame(17, 15, 129, &myRandom);
+    EXPECT_THROW(negativeXandTooLargeYGame.isCellMarked(-4, 24), std::out_of_range);
+
+    // +-------------------+
+    // | Valid Usage Tests |
+    // +-------------------+
 
     // unstarted game should have no marked cells
     minesweeper::Game unstartedGame(11, 16, 40, &myRandom);
@@ -1308,6 +1416,42 @@ TEST_F(MinesweeperTest, IsCellMarkedTest) {
 }
 
 TEST_F(MinesweeperTest, NumOfMinesAroundCellTest) {
+
+    // +------------------------+
+    // | Invalid Argument Tests |
+    // +------------------------+
+
+    // negative X and Y
+    minesweeper::Game negativeXandYGame(48, 1809, &myRandom);
+    EXPECT_THROW(negativeXandYGame.numOfMinesAroundCell(-8, -89), std::out_of_range);
+
+    // negative X
+    minesweeper::Game negativeXGame(12, 84, 784, &myRandom);
+    EXPECT_THROW(negativeXGame.numOfMinesAroundCell(-4, 4), std::out_of_range);
+
+    // negative Y
+    minesweeper::Game negativeYGame(90, 2563, &myRandom);
+    EXPECT_THROW(negativeYGame.numOfMinesAroundCell(120, -17), std::out_of_range);
+
+    // too large X and Y
+    minesweeper::Game tooLargeXandYGame(60, 105, 3165, &myRandom);
+    EXPECT_THROW(tooLargeXandYGame.numOfMinesAroundCell(111, 75), std::out_of_range);
+
+    // too large X
+    minesweeper::Game tooLargeXGame(119, 41, 3942, &myRandom);
+    EXPECT_THROW(tooLargeXGame.numOfMinesAroundCell(41, 5), std::out_of_range);
+
+    // too large Y
+    minesweeper::Game tooLargeYGame(60, 2975, &myRandom);
+    EXPECT_THROW(tooLargeYGame.numOfMinesAroundCell(157, 78), std::out_of_range);
+
+    // too large X and negative Y
+    minesweeper::Game tooLargeXandNegativeYGame(78, 874, &myRandom);
+    EXPECT_THROW(tooLargeXandNegativeYGame.numOfMinesAroundCell(945, -26), std::out_of_range);
+
+    // +-------------------+
+    // | Valid Usage Tests |
+    // +-------------------+
 
     // unstarted game should have no mines around
     minesweeper::Game unstartedGame(5, 10, 13, &myRandom);
