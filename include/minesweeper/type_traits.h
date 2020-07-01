@@ -32,10 +32,13 @@ struct is_expandable_1D_sequence_container<
 
 // template helper function to decide if type is an expandable 2D sequence container
 // (eg. std::vector<std::vector<int>>, std::vector<std::string>, etc.)
+template <typename, typename = void>
+struct is_expandable_2D_sequence_container : std::false_type {};
 template <typename T>
-struct is_expandable_2D_sequence_container
-    : std::integral_constant<bool, is_expandable_sequence_container<T>::value &&
-                                       is_expandable_1D_sequence_container<typename T::value_type>::value> {};
+struct is_expandable_2D_sequence_container<
+    T, typename std::enable_if<is_expandable_sequence_container<T>::value &&
+                               is_expandable_1D_sequence_container<typename T::value_type>::value>::type>
+    : std::true_type {};
 
 } // namespace minesweeper
 

@@ -70,7 +70,9 @@ add_custom_target(copy-files ALL
 configure_file(test_config.h.in test_config.h @ONLY)
 
 set(TEST_SOURCE_LIST
-	minesweeper_tests.cpp
+	"minesweeper_tests.cpp"
+	"minesweeper_random_tests.cpp"
+	"minesweeper_type_traits_tests.cpp"
 )
 
 # Add test executable

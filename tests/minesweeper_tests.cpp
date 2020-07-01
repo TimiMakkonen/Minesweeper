@@ -12,7 +12,7 @@
 #include <minesweeper/random.h>
 #include <minesweeper/visual_minesweeper_cell.h>
 
-class MinesweeperTest : public ::testing::Test {
+class MinesweeperGameTest : public ::testing::Test {
   protected:
     // used for setting up fields for testing
     void SetUp() override { setSerialisationStrings(); }
@@ -139,9 +139,9 @@ class MinesweeperTest : public ::testing::Test {
     };
 };
 
-using MinesweeperDeathTest = MinesweeperTest;
+// using MinesweeperGameDeathTest = MinesweeperGameTest;
 
-TEST_F(MinesweeperTest, ConstructorTest) {
+TEST_F(MinesweeperGameTest, ConstructorTest) {
 
     // default constructor
     minesweeper::Game myDefaultGame;
@@ -174,7 +174,7 @@ TEST_F(MinesweeperTest, ConstructorTest) {
     EXPECT_EQ(mySquareUnsetRandomGame.getNumOfMines(), 7);
 }
 
-TEST_F(MinesweeperTest, ConstructorGridSizeTest) {
+TEST_F(MinesweeperGameTest, ConstructorGridSizeTest) {
 
     // negative grid
     EXPECT_THROW(minesweeper::Game myNegativeGridGame(-5, -3, 4, &myRandom), std::out_of_range);
@@ -219,7 +219,7 @@ TEST_F(MinesweeperTest, ConstructorGridSizeTest) {
     EXPECT_EQ(myVeryLargeGame.getNumOfMines(), 200'000);
 }
 
-TEST_F(MinesweeperTest, ConstructorMineTest) {
+TEST_F(MinesweeperGameTest, ConstructorMineTest) {
 
     // negative number of mines
     EXPECT_THROW(minesweeper::Game myNegativeMinesGame(5, -5, &myRandom), std::out_of_range);
@@ -239,7 +239,7 @@ TEST_F(MinesweeperTest, ConstructorMineTest) {
     EXPECT_THROW(minesweeper::Game myTooManyMinesGame(6, 40, &myRandom), std::out_of_range);
 }
 
-TEST_F(MinesweeperTest, CreateMinesAndNumsTest) {
+TEST_F(MinesweeperGameTest, CreateMinesAndNumsTest) {
 
     // negative chosen x and y for 'createMinesAndNums'
     minesweeper::Game negativeXandYCreateMinesAndNumsGame(7, 20, &myRandom);
@@ -288,7 +288,7 @@ TEST_F(MinesweeperTest, CreateMinesAndNumsTest) {
     EXPECT_THROW(alreadySetByCheckCreateMinesAndNumsGame.createMinesAndNums(12, 6), std::invalid_argument);
 }
 
-TEST_F(MinesweeperTest, ResetTest) {
+TEST_F(MinesweeperGameTest, ResetTest) {
 
     // unstarted game should not change after reset
     minesweeper::Game unstartedGame(12, 9, 40, &myRandom);
@@ -545,7 +545,7 @@ TEST_F(MinesweeperTest, ResetTest) {
     EXPECT_FALSE(premadeRemoveMinesAfterLossGame.playerHasLost());
 }
 
-TEST_F(MinesweeperTest, NewGameTest) {
+TEST_F(MinesweeperGameTest, NewGameTest) {
 
     // unstarted game should not change after newGame with same gridsize and number of mines
     minesweeper::Game unstartedGame(9, 12, 26, &myRandom);
@@ -704,7 +704,7 @@ TEST_F(MinesweeperTest, NewGameTest) {
     EXPECT_EQ(premadeWonGameAfterNewGameStr, premadeWonGameAfterResetStr);
 }
 
-TEST_F(MinesweeperTest, CheckInputCoordinatesTest) {
+TEST_F(MinesweeperGameTest, CheckInputCoordinatesTest) {
 
     // negative x and y
     minesweeper::Game negativeXandYCheckInputCoordsGame(11, 40, &myRandom);
@@ -744,7 +744,7 @@ TEST_F(MinesweeperTest, CheckInputCoordinatesTest) {
     EXPECT_TRUE(validCheckInputCoordsGame.isCellVisible(9, 20));
 }
 
-TEST_F(MinesweeperTest, MarkInputCoordinatesTest) {
+TEST_F(MinesweeperGameTest, MarkInputCoordinatesTest) {
 
     // negative x and y
     minesweeper::Game negativeXandYMarkInputCoordsGame(10, 23, &myRandom);
@@ -815,7 +815,7 @@ TEST_F(MinesweeperTest, MarkInputCoordinatesTest) {
     EXPECT_FALSE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
 }
 
-TEST_F(MinesweeperTest, PlayerHasWonTest) {
+TEST_F(MinesweeperGameTest, PlayerHasWonTest) {
 
     // empty win
     minesweeper::Game emptyWinGame(0, 0, &myRandom);
@@ -995,7 +995,7 @@ TEST_F(MinesweeperTest, PlayerHasWonTest) {
     EXPECT_TRUE(presetCheckToWinGame.playerHasWon());
 }
 
-TEST_F(MinesweeperTest, PlayerHasLostTest) {
+TEST_F(MinesweeperGameTest, PlayerHasLostTest) {
 
     // unstarted game
     minesweeper::Game unstartedGame(7, 6, 10, &myRandom);
@@ -1068,7 +1068,7 @@ TEST_F(MinesweeperTest, PlayerHasLostTest) {
     EXPECT_TRUE(presetLossGame.playerHasLost());
 }
 
-TEST_F(MinesweeperTest, IsCellVisibleTest) {
+TEST_F(MinesweeperGameTest, IsCellVisibleTest) {
 
     // +------------------------+
     // | Invalid Argument Tests |
@@ -1176,7 +1176,7 @@ TEST_F(MinesweeperTest, IsCellVisibleTest) {
     EXPECT_FALSE(premadeFiveByThreeLossGame.isCellVisible(0, 1));
 }
 
-TEST_F(MinesweeperTest, DoesCellHaveMineTest) {
+TEST_F(MinesweeperGameTest, DoesCellHaveMineTest) {
 
     // +------------------------+
     // | Invalid Argument Tests |
@@ -1282,7 +1282,7 @@ TEST_F(MinesweeperTest, DoesCellHaveMineTest) {
     EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.doesCellHaveMine(0, 1));
 }
 
-TEST_F(MinesweeperTest, IsCellMarkedTest) {
+TEST_F(MinesweeperGameTest, IsCellMarkedTest) {
 
     // +------------------------+
     // | Invalid Argument Tests |
@@ -1415,7 +1415,7 @@ TEST_F(MinesweeperTest, IsCellMarkedTest) {
     EXPECT_FALSE(premadeFourByEightWonGame.isCellMarked(5, 1));
 }
 
-TEST_F(MinesweeperTest, NumOfMinesAroundCellTest) {
+TEST_F(MinesweeperGameTest, NumOfMinesAroundCellTest) {
 
     // +------------------------+
     // | Invalid Argument Tests |
@@ -1514,7 +1514,7 @@ TEST_F(MinesweeperTest, NumOfMinesAroundCellTest) {
     }
 }
 
-TEST_F(MinesweeperTest, SerialiseTest) {
+TEST_F(MinesweeperGameTest, SerialiseTest) {
 
     // empty game serialisation
     minesweeper::Game emptyGame(0, 0, &myRandom);
@@ -1565,7 +1565,7 @@ TEST_F(MinesweeperTest, SerialiseTest) {
     EXPECT_EQ(simpleStartedGameStr, startedFiveBySixGameStr);
 }
 
-TEST_F(MinesweeperTest, DeserialiseTest) { // TODO: update once deserialise is more advanced
+TEST_F(MinesweeperGameTest, DeserialiseTest) { // TODO: update once deserialise is more advanced
 
     // empty string input
     minesweeper::Game emptyInputStringGame;
@@ -1625,7 +1625,7 @@ TEST_F(MinesweeperTest, DeserialiseTest) { // TODO: update once deserialise is m
     EXPECT_THROW(invalidNumOfMinesJsonGame.deserialise(invalidNumOfMinesJsonGameStream), std::out_of_range);
 }
 
-TEST_F(MinesweeperTest, SerialiseAndDeserialiseTest) {
+TEST_F(MinesweeperGameTest, SerialiseAndDeserialiseTest) {
 
     // +---------------------------+
     // | empty game serialisation: |
@@ -1673,7 +1673,7 @@ TEST_F(MinesweeperTest, SerialiseAndDeserialiseTest) {
     EXPECT_EQ(simpleGameStr, simpleGameCopyStr);
 }
 
-TEST_F(MinesweeperTest, VisualiseCell) {
+TEST_F(MinesweeperGameTest, VisualiseCell) {
 
     // negative x and y
     minesweeper::Game negativeXandYCheckInputCoordsGame(13, 15, 50, &myRandom);
@@ -1743,7 +1743,7 @@ TEST_F(MinesweeperTest, VisualiseCell) {
     EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(1, 1), minesweeper::VisualMinesweeperCell::TWO);
 }
 
-TEST_F(MinesweeperTest, Visualise) {
+TEST_F(MinesweeperGameTest, Visualise) {
 
     // valid/expected template types
     minesweeper::Game validTemplateTypes(13, 8, 48, &myRandom);
@@ -1796,7 +1796,7 @@ TEST_F(MinesweeperTest, Visualise) {
               emptyVisualVectorListExpected);
 }
 
-TEST_F(MinesweeperTest, DefaultRandomTest) {
+TEST_F(MinesweeperGameTest, DefaultRandomTest) {
 
     // reset default static random to nullptr
     minesweeper::Game::setDefaultRandom(nullptr);
@@ -1835,7 +1835,7 @@ TEST_F(MinesweeperTest, DefaultRandomTest) {
     minesweeper::Game::setDefaultRandom(nullptr);
 }
 
-TEST(MinesweeperStaticTest, MaxNumOfMinesMethodTest) {
+TEST(MinesweeperGameStaticTest, MaxNumOfMinesMethodTest) {
 
     // completely negative grid
     EXPECT_THROW(minesweeper::Game::maxNumOfMines(-5, -3), std::out_of_range);
@@ -1874,7 +1874,7 @@ TEST(MinesweeperStaticTest, MaxNumOfMinesMethodTest) {
     EXPECT_EQ(minesweeper::Game::maxNumOfMines(10'020, 20'458), 204'989'151);
 }
 
-TEST(MinesweeperStaticTest, MinNumOfMinesMethodTest) {
+TEST(MinesweeperGameStaticTest, MinNumOfMinesMethodTest) {
 
     // unspecified grid
     EXPECT_EQ(minesweeper::Game::minNumOfMines(), 0);
