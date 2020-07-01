@@ -189,8 +189,10 @@ Initial version of the game. Mostly in working condition.
 ## Fixes and features left to consider/implement
 
 * Add an option to add mines by percentage, not by quantity.
-* Add method which returns a visual representation of the current state of the grid in short string form.
 * Add more serialisation options.
 * Add verifications to deserialisation methods to check validity of the given game.
 * Make "Game's" deserialise method safer by guaranteeing that 'Game' is left in valid condition even if if throws.
 * Add more tests.
+* Implement Pimpl to clear up the public API.
+* Add doxygen.
+* Remove calls to public methods from the private methods within the same class.
