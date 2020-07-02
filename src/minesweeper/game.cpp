@@ -37,8 +37,7 @@ Game::Game(int gridHeight, int gridWidth, double proportionOfMines, IRandom* ran
       numOfMines{verifyNumOfMines(
           static_cast<int>(verifyProportionOfMines(proportionOfMines, gridHeight, gridWidth) * gridHeight * gridWidth),
           gridHeight, gridWidth)}, // throws
-      cells{initCells(this->gridHeight, this->gridWidth)},
-      random{random} {}
+      cells{initCells(this->gridHeight, this->gridWidth)}, random{random} {}
 
 // required by to solve "error C2027: use of undefined type"
 // in short, std::unique_ptr requires destructor to be defined here
@@ -750,7 +749,14 @@ double Game::maxProportionOfMines(const int gridH, const int gridW) {
                                 "Trying to check maximum proportion of mines for a negative sized grid.");
     }
 
-    return static_cast<double>(maxNumOfMines(gridH, gridW)) / (gridH * gridW);
+    double output = 0;
+
+    int numberOfCells = gridH * gridW;
+    if (numberOfCells != 0) {
+        output = static_cast<double>(maxNumOfMines(gridH, gridW)) / numberOfCells;
+    }
+
+    return output;
 }
 
 // static method
@@ -778,7 +784,14 @@ double Game::minProportionOfMines(const int gridH, const int gridW) {
                                 "Trying to check minimum number of mines for a negative sized grid.");
     }
 
-    return static_cast<double>(minNumOfMines(gridH, gridW)) / (gridH * gridW);
+    double output = 0;
+
+    int numberOfCells = gridH * gridW;
+    if (numberOfCells != 0) {
+        output = static_cast<double>(minNumOfMines(gridH, gridW)) / numberOfCells;
+    }
+
+    return output;
 }
 
 } // namespace minesweeper
