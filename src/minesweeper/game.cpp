@@ -33,10 +33,12 @@ Game::Game(int gridSize, double proportionOfMines, IRandom* random)
 
 Game::Game(int gridHeight, int gridWidth, double proportionOfMines, IRandom* random)
     : gridHeight{verifyGridDimension(gridHeight)}, // throws
-      gridWidth{verifyGridDimension(gridWidth)},   // throws
-      numOfMines{static_cast<int>(verifyProportionOfMines(proportionOfMines, gridHeight, gridWidth) * gridHeight *
-                                  gridWidth)}, // throws
-      cells{initCells(this->gridHeight, this->gridWidth)}, random{random} {}
+      gridWidth{verifyGridDimension(gridWidth)},
+      numOfMines{verifyNumOfMines(
+          static_cast<int>(verifyProportionOfMines(proportionOfMines, gridHeight, gridWidth) * gridHeight * gridWidth),
+          gridHeight, gridWidth)}, // throws
+      cells{initCells(this->gridHeight, this->gridWidth)},
+      random{random} {}
 
 // required by to solve "error C2027: use of undefined type"
 // in short, std::unique_ptr requires destructor to be defined here
@@ -380,12 +382,14 @@ void Game::newGame(int gridHeight, int gridWidth, double proportionOfMines) {
     verifyGridDimension(gridHeight);
     verifyGridDimension(gridWidth);
     verifyProportionOfMines(proportionOfMines, gridHeight, gridWidth);
+    int newNumOfMines = static_cast<int>(proportionOfMines * gridHeight * gridWidth);
+    verifyNumOfMines(newNumOfMines, gridHeight, gridWidth);
 
     this->reset_(false);
     this->resizeCells(gridHeight, gridWidth);
     this->gridHeight = gridHeight;
     this->gridWidth = gridWidth;
-    this->numOfMines = static_cast<int>(proportionOfMines * gridHeight * gridWidth);
+    this->numOfMines = newNumOfMines;
 }
 
 // to mark (or unmark) given coordinates, and keeping track of marked and wrongly marked mines
