@@ -4,7 +4,7 @@
 
 #include <minesweeper/random.h>
 
-TEST(MinesweeperRandomTest, ShuffleVectorTest) { // TODO
+TEST(MinesweeperRandomTest, ShuffleVectorTest) {
 
     minesweeper::Random myRandom;
 

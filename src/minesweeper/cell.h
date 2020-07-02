@@ -17,25 +17,24 @@ class Cell {
     int _numOfMinesAround = 0;
 
   public:
+    void reset(bool keepMineInformation);
+
+    // cell information methods:
     bool isVisible() const;
-
     bool hasMine() const;
-
     bool isMarked() const;
-
     int numOfMinesAround() const;
 
+    // cell mine creation methods:
+    void putMine();
     void incrNumOfMinesAround();
 
+    // cell checking method:
     void makeVisible();
 
-    void putMine();
-
+    // cell marking methods:
     void markCell();
-
     void unmarkCell();
-
-    void reset(bool keepMineInformation);
 
     // save cell:
     std::ostream& serialise(std::ostream& outStream) const;
@@ -47,6 +46,11 @@ class Cell {
 
     // visualise to 'VisualMinesweeperCell' method
     VisualMinesweeperCell visualise() const;
+
+  private:
+    nlohmann::json serialise_() const;
+
+    void deserialise_(nlohmann::json& j);
 };
 
 } // namespace minesweeper

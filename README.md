@@ -49,8 +49,15 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
   * Uses 'VisualMinesweeperCell' as the underlying information type.
   * Works with any type that supports conversion from
     'VisualMinesweeperCell' enum class. (eg. 'int')
+* Added option to add mines by proportion instead of number.
+  * Added new constructors and 'newGame' overloads to support this.
 * Added 'type_traits' to help with template type checking at
   compile-time.
+* Prettified headers.
+* Fixed some throw messages.
+* Removed internal calls to public methods within the same class.
+  * Should make possible thread-safe implementation trivial to achieve.
+    (simply add mutex field and lock all public methods)
 * Added some tests.
 
 ### Version 8.3.0
@@ -188,11 +195,13 @@ Initial version of the game. Mostly in working condition.
 
 ## Fixes and features left to consider/implement
 
-* Add an option to add mines by percentage, not by quantity.
 * Add more serialisation options.
 * Add verifications to deserialisation methods to check validity of the given game.
 * Make "Game's" deserialise method safer by guaranteeing that 'Game' is left in valid condition even if if throws.
 * Add more tests.
+  * Add tests to 'Game::maxProportionOfMines'.
+  * Add tests to 'Game::minProportionOfMines'.
+  * Add tests to 'proportion-of-mines constructors'.
+  * Add tests to "proportion-of-mines 'newGames'".
 * Implement Pimpl to clear up the public API.
 * Add doxygen.
-* Remove calls to public methods from the private methods within the same class.
