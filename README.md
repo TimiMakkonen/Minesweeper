@@ -199,9 +199,5 @@ Initial version of the game. Mostly in working condition.
 * Add verifications to deserialisation methods to check validity of the given game.
 * Make "Game's" deserialise method safer by guaranteeing that 'Game' is left in valid condition even if if throws.
 * Add more tests.
-  * Add tests to 'Game::maxProportionOfMines'.
-  * Add tests to 'Game::minProportionOfMines'.
-  * Add tests to 'proportion-of-mines constructors'.
-  * Add tests to "proportion-of-mines 'newGames'".
 * Implement Pimpl to clear up the public API.
 * Add doxygen.

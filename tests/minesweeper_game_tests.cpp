@@ -149,6 +149,10 @@ TEST_F(MinesweeperGameTest, ConstructorTest) {
     EXPECT_EQ(myDefaultGame.getGridWidth(), 0);
     EXPECT_EQ(myDefaultGame.getNumOfMines(), 0);
 
+    // +---------------------------------+
+    // | constructors with random field: |
+    // +---------------------------------+
+
     // most basic/expected constructor
     minesweeper::Game myBasicGame(10, 11, 20, &myRandom);
     EXPECT_EQ(myBasicGame.getGridHeight(), 10);
@@ -161,6 +165,22 @@ TEST_F(MinesweeperGameTest, ConstructorTest) {
     EXPECT_EQ(mySquareGame.getGridWidth(), 23);
     EXPECT_EQ(mySquareGame.getNumOfMines(), 14);
 
+    // basic/expected (proportional mines) constructor
+    minesweeper::Game myBasicPropMinesGame(15, 21, 0.37, &myRandom);
+    EXPECT_EQ(myBasicPropMinesGame.getGridHeight(), 15);
+    EXPECT_EQ(myBasicPropMinesGame.getGridWidth(), 21);
+    EXPECT_EQ(myBasicPropMinesGame.getNumOfMines(), 116);
+
+    // square grid size (proportional mines) constructor
+    minesweeper::Game mySquarePropMinesGame(19, 0.48, &myRandom);
+    EXPECT_EQ(mySquarePropMinesGame.getGridHeight(), 19);
+    EXPECT_EQ(mySquarePropMinesGame.getGridWidth(), 19);
+    EXPECT_EQ(mySquarePropMinesGame.getNumOfMines(), 173);
+
+    // +----------------------------------+
+    // | constructors with static random: |
+    // +----------------------------------+
+
     // basic constructor with random statically set or not set at all
     minesweeper::Game myUnsetRandomGame(8, 5, 4);
     EXPECT_EQ(myUnsetRandomGame.getGridHeight(), 8);
@@ -172,6 +192,18 @@ TEST_F(MinesweeperGameTest, ConstructorTest) {
     EXPECT_EQ(mySquareUnsetRandomGame.getGridHeight(), 6);
     EXPECT_EQ(mySquareUnsetRandomGame.getGridWidth(), 6);
     EXPECT_EQ(mySquareUnsetRandomGame.getNumOfMines(), 7);
+
+    // basic (proportional mines) constructor with random statically set or not set at all
+    minesweeper::Game myUnsetRandomPropMinesGame(10, 8, 0.19);
+    EXPECT_EQ(myUnsetRandomPropMinesGame.getGridHeight(), 10);
+    EXPECT_EQ(myUnsetRandomPropMinesGame.getGridWidth(), 8);
+    EXPECT_EQ(myUnsetRandomPropMinesGame.getNumOfMines(), 15);
+
+    // square grid size (proportional mines) constructor with random statically set or not set at all
+    minesweeper::Game mySquareUnsetRandomPropMinesGame(7, 0.24);
+    EXPECT_EQ(mySquareUnsetRandomPropMinesGame.getGridHeight(), 7);
+    EXPECT_EQ(mySquareUnsetRandomPropMinesGame.getGridWidth(), 7);
+    EXPECT_EQ(mySquareUnsetRandomPropMinesGame.getNumOfMines(), 11);
 }
 
 TEST_F(MinesweeperGameTest, ConstructorGridSizeTest) {
@@ -179,8 +211,23 @@ TEST_F(MinesweeperGameTest, ConstructorGridSizeTest) {
     // negative grid
     EXPECT_THROW(minesweeper::Game myNegativeGridGame(-5, -3, 4, &myRandom), std::out_of_range);
 
+    // negative grid (with proportional mines)
+    EXPECT_THROW(minesweeper::Game myNegativeGridPropMinesGame(-2, -8, 0.19, &myRandom), std::out_of_range);
+
     // negative square grid
     EXPECT_THROW(minesweeper::Game myNegativeSquareGridGame(-5, 8, &myRandom), std::out_of_range);
+
+    // negative square grid (with proportional mines)
+    EXPECT_THROW(minesweeper::Game myNegativeSquareGridPropMinesGame(-8, 0.5, &myRandom), std::out_of_range);
+
+    // negative grid height
+    EXPECT_THROW(minesweeper::Game myNegativeGridHeightGame(-6, 7, 0.45, &myRandom), std::out_of_range);
+    // negative grid height (with proportional mines)
+    EXPECT_THROW(minesweeper::Game myNegativeGridHeightPropMinesGame(-18, 15, 0.79, &myRandom), std::out_of_range);
+    // negative grid width
+    EXPECT_THROW(minesweeper::Game myNegativeGridWidthGame(13, -11, 0.81, &myRandom), std::out_of_range);
+    // negative grid width (with proportional mines)
+    EXPECT_THROW(minesweeper::Game myNegativeGridWidthPropMinesGame(21, -9, 0.68, &myRandom), std::out_of_range);
 
     // zero size grid
     minesweeper::Game myZeroSizeGame(0, 0, &myRandom);
@@ -212,6 +259,12 @@ TEST_F(MinesweeperGameTest, ConstructorGridSizeTest) {
     EXPECT_EQ(myLargeGame.getGridWidth(), 100);
     EXPECT_EQ(myLargeGame.getNumOfMines(), 110);
 
+    // large grid (with proportional mines)
+    minesweeper::Game myLargePropMinesGame(135, 111, 0.67, &myRandom);
+    EXPECT_EQ(myLargePropMinesGame.getGridHeight(), 135);
+    EXPECT_EQ(myLargePropMinesGame.getGridWidth(), 111);
+    EXPECT_EQ(myLargePropMinesGame.getNumOfMines(), 10'039);
+
     // very large grid
     minesweeper::Game myVeryLargeGame(1'000, 1'500, 200'000, &myRandom);
     EXPECT_EQ(myVeryLargeGame.getGridHeight(), 1'000);
@@ -220,6 +273,10 @@ TEST_F(MinesweeperGameTest, ConstructorGridSizeTest) {
 }
 
 TEST_F(MinesweeperGameTest, ConstructorMineTest) {
+
+    // +------------------------+
+    // | number of mines tests: |
+    // +------------------------+
 
     // negative number of mines
     EXPECT_THROW(minesweeper::Game myNegativeMinesGame(5, -5, &myRandom), std::out_of_range);
@@ -237,6 +294,51 @@ TEST_F(MinesweeperGameTest, ConstructorMineTest) {
 
     // too many mines
     EXPECT_THROW(minesweeper::Game myTooManyMinesGame(6, 40, &myRandom), std::out_of_range);
+
+    // +----------------------------+
+    // | proportion of mines tests: |
+    // +----------------------------+
+
+    // negative proportion of mines
+    EXPECT_THROW(minesweeper::Game myNegativePropMinesGame1(6, 9, -0.52, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game myNegativePropMinesGame2(8, 10, -15.78, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game myNegativePropMinesGame3(17, 13, -1.25, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game myNegativePropMinesGame4(2'544, 7'410, -54'514'518.52, &myRandom),
+                 std::out_of_range);
+
+    // zero proportion of mines
+    minesweeper::Game myZeroPropMinesGame(8, 0.0, &myRandom);
+    EXPECT_EQ(myZeroPropMinesGame.getNumOfMines(), 0);
+
+    // max proportion of mines
+    minesweeper::Game maxPropMinesGame(18, 16, 0.968'75, &myRandom);
+    EXPECT_EQ(maxPropMinesGame.getNumOfMines(), 279);
+
+    // close to max proportion of mines
+    minesweeper::Game closeToMaxPropMinesGame(9, 15, 0.933'333'333'333'3, &myRandom);
+    EXPECT_EQ(closeToMaxPropMinesGame.getNumOfMines(), 125);
+
+    // close to max proportion of mines again
+    minesweeper::Game closeToMaxPropMinesGame2(9, 0.888'888'888'888'88, &myRandom);
+    EXPECT_EQ(closeToMaxPropMinesGame2.getNumOfMines(), 71);
+
+    // slightly too big proportion of mines
+    EXPECT_THROW(minesweeper::Game slightTooBigPropMinesGame(18, 27, 0.981'481'481'481'49, &myRandom),
+                 std::out_of_range);
+
+    // slightly too big proportion (and number) of mines
+    EXPECT_THROW(minesweeper::Game slightTooBigPropAndNumMinesGame(17, 16, 0.970'588'235'295, &myRandom),
+                 std::out_of_range);
+
+    // too big proportion mines
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame1(14, 0.959'4, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame2(19, 9, 1.0, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame3(11, 18, 1.000'000'000'5, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame4(41, 1.01235565256, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame5(27, 12, 2.012510215, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame6(78, 35, 12.0251522, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame7(27, 39, 46.691851081, &myRandom), std::out_of_range);
+    EXPECT_THROW(minesweeper::Game tooBigPropMinesGame8(35, 44, 85.0, &myRandom), std::out_of_range);
 }
 
 TEST_F(MinesweeperGameTest, CreateMinesAndNumsTest) {
@@ -545,9 +647,10 @@ TEST_F(MinesweeperGameTest, ResetTest) {
     EXPECT_FALSE(premadeRemoveMinesAfterLossGame.playerHasLost());
 }
 
-TEST_F(MinesweeperGameTest, NewGameTest) {
+TEST_F(MinesweeperGameTest, NewGameTest) { // TODO: add prop of mines 'newGames'
 
     // unstarted game should not change after newGame with same gridsize and number of mines
+    // (normal grid, number of mines)
     minesweeper::Game unstartedGame(9, 12, 26, &myRandom);
     std::string unstartedGameStr = serialiseToString(unstartedGame);
     unstartedGame.newGame(9, 12, 26);
@@ -555,11 +658,28 @@ TEST_F(MinesweeperGameTest, NewGameTest) {
     EXPECT_EQ(unstartedGameStr, unstartedGameAfterNewGameStr);
 
     // unstarted game should not change after newGame with same gridsize and number of mines
+    // (square grid, number of mines)
     minesweeper::Game unstartedGame2(15, 15, 57, &myRandom);
     std::string unstartedGame2Str = serialiseToString(unstartedGame2);
     unstartedGame2.newGame(15, 57);
     std::string unstartedGame2AfterNewGameStr = serialiseToString(unstartedGame2);
     EXPECT_EQ(unstartedGame2Str, unstartedGame2AfterNewGameStr);
+
+    // unstarted game should not change after newGame with same gridsize and number of mines
+    // (normal grid, proportion of mines)
+    minesweeper::Game unstartedGame3(19, 0.86475, &myRandom);
+    std::string unstartedGame3Str = serialiseToString(unstartedGame3);
+    unstartedGame3.newGame(19, 0.86475);
+    std::string unstartedGame3AfterNewGameStr = serialiseToString(unstartedGame3);
+    EXPECT_EQ(unstartedGame3Str, unstartedGame3AfterNewGameStr);
+
+    // unstarted game should not change after newGame with same gridsize and number of mines
+    // (square grid, proportion of mines)
+    minesweeper::Game unstartedGame4(11, 13, 0.45954594418, &myRandom);
+    std::string unstartedGame4Str = serialiseToString(unstartedGame4);
+    unstartedGame4.newGame(11, 13, 0.45954594418);
+    std::string unstartedGame4AfterNewGameStr = serialiseToString(unstartedGame4);
+    EXPECT_EQ(unstartedGame4Str, unstartedGame4AfterNewGameStr);
 
     // +----------------+
     // | Throwing Tests |
@@ -569,25 +689,51 @@ TEST_F(MinesweeperGameTest, NewGameTest) {
     // negative x
     minesweeper::Game newNegativeXGame(10, 18, 28, &myRandom);
     EXPECT_THROW(newNegativeXGame.newGame(-2, 30, 10), std::out_of_range);
+    minesweeper::Game newNegativeXPropMinesGame(24, 11, 45, &myRandom);
+    EXPECT_THROW(newNegativeXPropMinesGame.newGame(-8, 10, 0.45145), std::out_of_range);
     // negative y
     minesweeper::Game newNegativeYGame(8, 20, 50, &myRandom);
     EXPECT_THROW(newNegativeYGame.newGame(15, -10, 34), std::out_of_range);
     // negative x and y
     minesweeper::Game newNegativeXandYGame(32, 24, 148, &myRandom);
     EXPECT_THROW(newNegativeXandYGame.newGame(-7, -24, 0), std::out_of_range);
+    minesweeper::Game newNegativeXandYPropMinesGame(28, 35, 245, &myRandom);
+    EXPECT_THROW(newNegativeXandYPropMinesGame.newGame(-28, -12, 0.0), std::out_of_range);
 
     // invalid number of mines should throw
     // too many mines
-    minesweeper::Game newTooManyMinesGame(27, 32, 258, &myRandom);
+    minesweeper::Game newTooManyMinesGame(17, 24, 258, &myRandom);
     EXPECT_THROW(newTooManyMinesGame.newGame(85, 42, 3'612), std::out_of_range);
 
-    // too many mines
-    minesweeper::Game newTooManyMinesGame2(26, 7, 75, &myRandom);
+    minesweeper::Game newTooManyMinesGame2(16, 7, 75, &myRandom);
     EXPECT_THROW(newTooManyMinesGame2.newGame(8, 19, 144), std::out_of_range);
 
     // negative number of mines
     minesweeper::Game newNegativeMinesGame(15, 6, 40, &myRandom);
     EXPECT_THROW(newNegativeMinesGame.newGame(21, 18, -8), std::out_of_range);
+
+    // too big proportion of mines
+    minesweeper::Game newTooBigPropMinesGame(18, 125, &myRandom);
+    EXPECT_THROW(newTooBigPropMinesGame.newGame(9, 13, 0.923'076'923'1), std::out_of_range);
+
+    minesweeper::Game newTooBigPropMinesGame2(13, 17, 114, &myRandom);
+    EXPECT_THROW(newTooBigPropMinesGame2.newGame(14, 0.959'183'673'47), std::out_of_range);
+
+    minesweeper::Game newTooBigPropMinesGame3(0, 0, &myRandom);
+    EXPECT_THROW(newTooBigPropMinesGame3.newGame(99, 82, 1.000'001), std::out_of_range);
+
+    minesweeper::Game newTooBigPropMinesGame4(1, 1, 0, &myRandom);
+    EXPECT_THROW(newTooBigPropMinesGame4.newGame(155, 2.191'15), std::out_of_range);
+
+    // too small proportion of mines
+    minesweeper::Game newTooSmallPropMinesGame(0, 0, &myRandom);
+    EXPECT_THROW(newTooSmallPropMinesGame.newGame(9, -0.000'000'000'1), std::out_of_range);
+
+    minesweeper::Game newTooSmallPropMinesGame2(13, 18, 42, &myRandom);
+    EXPECT_THROW(newTooSmallPropMinesGame2.newGame(28, -0.061'896'165'168), std::out_of_range);
+
+    minesweeper::Game newTooSmallPropMinesGame3(1, 9, 0, &myRandom);
+    EXPECT_THROW(newTooSmallPropMinesGame3.newGame(55, 79, -242.0), std::out_of_range);
 
     // +------------------------------------+
     // | new game after simple started game |
@@ -671,6 +817,78 @@ TEST_F(MinesweeperGameTest, NewGameTest) {
     EXPECT_NE(multipleNewGamesGameStr5, multipleNewGamesGameStr3);
     EXPECT_NE(multipleNewGamesGameStr5, multipleNewGamesGameStr4);
 
+    // +------------------------+
+    // | multiple new games (2) |
+    // +------------------------+
+
+    // gridHeight: 0, gridWidth: 0, numOfMines: 0
+    minesweeper::Game multipleNewGamesGame2(0, 0, &myRandom);
+    std::string multipleNewGamesGame2Str1 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str1, "");
+
+    // gridHeight: 10, gridWidth: 14, proportionOfMines: 0.5715
+    EXPECT_NO_THROW(multipleNewGamesGame2.newGame(10, 14, 0.5715));
+    std::string multipleNewGamesGame2Str2 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str2, "");
+    EXPECT_NE(multipleNewGamesGame2Str2, multipleNewGamesGame2Str1);
+
+    // gridHeight: 8, gridWidth: 8, proportionOfMines: 0.124'521'984'81
+    EXPECT_NO_THROW(multipleNewGamesGame2.newGame(8, 8, 0.124'521'984'81));
+    std::string multipleNewGamesGame2Str3 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str3, "");
+    EXPECT_NE(multipleNewGamesGame2Str3, multipleNewGamesGame2Str1);
+    EXPECT_NE(multipleNewGamesGame2Str3, multipleNewGamesGame2Str2);
+
+    // gridHeight: 16, gridWidth: 9, proportionOfMines: 0.000'000'01
+    EXPECT_NO_THROW(multipleNewGamesGame2.newGame(16, 9, 0.000'000'01));
+    std::string multipleNewGamesGame2Str4 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str4, "");
+    EXPECT_NE(multipleNewGamesGame2Str4, multipleNewGamesGame2Str1);
+    EXPECT_NE(multipleNewGamesGame2Str4, multipleNewGamesGame2Str2);
+    EXPECT_NE(multipleNewGamesGame2Str4, multipleNewGamesGame2Str3);
+
+    // gridHeight: 10, gridWidth: 14, proportionOfMines: 0.5715
+    EXPECT_NO_THROW(multipleNewGamesGame2.newGame(10, 14, 0.5715));
+    std::string multipleNewGamesGame2Str5 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str5, "");
+    EXPECT_NE(multipleNewGamesGame2Str5, multipleNewGamesGame2Str1);
+    EXPECT_EQ(multipleNewGamesGame2Str5, multipleNewGamesGame2Str2);
+    EXPECT_NE(multipleNewGamesGame2Str5, multipleNewGamesGame2Str3);
+    EXPECT_NE(multipleNewGamesGame2Str5, multipleNewGamesGame2Str4);
+
+    // gridHeight: 8, gridWidth: 8, proportionOfMines: 0.124'444'444'449
+    EXPECT_NO_THROW(multipleNewGamesGame2.newGame(8, 8, 0.124'444'444'449));
+    std::string multipleNewGamesGame2Str6 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str6, "");
+    EXPECT_NE(multipleNewGamesGame2Str6, multipleNewGamesGame2Str1);
+    EXPECT_NE(multipleNewGamesGame2Str6, multipleNewGamesGame2Str2);
+    EXPECT_EQ(multipleNewGamesGame2Str6, multipleNewGamesGame2Str3);
+    EXPECT_NE(multipleNewGamesGame2Str6, multipleNewGamesGame2Str4);
+    EXPECT_NE(multipleNewGamesGame2Str6, multipleNewGamesGame2Str5);
+
+    // gridHeight: 16, gridWidth: 9, proportionOfMines: 0.000'000'01
+    EXPECT_NO_THROW(multipleNewGamesGame2.newGame(16, 9, 0.006'944'444'45));
+    std::string multipleNewGamesGame2Str7 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str7, "");
+    EXPECT_NE(multipleNewGamesGame2Str7, multipleNewGamesGame2Str1);
+    EXPECT_NE(multipleNewGamesGame2Str7, multipleNewGamesGame2Str2);
+    EXPECT_NE(multipleNewGamesGame2Str7, multipleNewGamesGame2Str3);
+    EXPECT_NE(multipleNewGamesGame2Str7, multipleNewGamesGame2Str4);
+    EXPECT_NE(multipleNewGamesGame2Str7, multipleNewGamesGame2Str5);
+    EXPECT_NE(multipleNewGamesGame2Str7, multipleNewGamesGame2Str6);
+
+    // gridHeight: 8, gridWidth: 8, numOfMines: 7
+    EXPECT_NO_THROW(multipleNewGamesGame2.newGame(8, 8, 7));
+    std::string multipleNewGamesGame2Str8 = serialiseToString(multipleNewGamesGame2);
+    EXPECT_NE(multipleNewGamesGame2Str8, "");
+    EXPECT_NE(multipleNewGamesGame2Str8, multipleNewGamesGame2Str1);
+    EXPECT_NE(multipleNewGamesGame2Str8, multipleNewGamesGame2Str2);
+    EXPECT_EQ(multipleNewGamesGame2Str8, multipleNewGamesGame2Str3);
+    EXPECT_NE(multipleNewGamesGame2Str8, multipleNewGamesGame2Str4);
+    EXPECT_NE(multipleNewGamesGame2Str8, multipleNewGamesGame2Str5);
+    EXPECT_EQ(multipleNewGamesGame2Str8, multipleNewGamesGame2Str6);
+    EXPECT_NE(multipleNewGamesGame2Str8, multipleNewGamesGame2Str7);
+
     // +---------------------------------------------------------------------------------------+
     // | 'newGame' with same gridsize and number of mines should be equivalent to reset(false) |
     // +---------------------------------------------------------------------------------------+
@@ -681,14 +899,23 @@ TEST_F(MinesweeperGameTest, NewGameTest) {
         minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json], premadeWonGameToReset));
     EXPECT_NE(checkedWinFourByEightGameStr, "");
     std::string premadeWonGameToResetStr = serialiseToString(premadeWonGameToReset);
+    EXPECT_EQ(premadeWonGameToResetStr, checkedWinFourByEightGameStr);
 
-    // already won 4x8 game copy
+    // already won 4x8 game (copy)
     minesweeper::Game premadeWonGameToNewGame;
     ASSERT_NO_THROW(
         deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json],
                             premadeWonGameToNewGame));
     std::string premadeWonGameToNewGameStr = serialiseToString(premadeWonGameToNewGame);
-    EXPECT_EQ(premadeWonGameToNewGameStr, checkedWinFourByEightGameStr);
+    EXPECT_EQ(premadeWonGameToNewGameStr, premadeWonGameToResetStr);
+
+    // already won 4x8 game (second copy)
+    minesweeper::Game premadeWonGameWithPropMinesToNewGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json],
+                            premadeWonGameWithPropMinesToNewGame));
+    std::string premadeWonGameWithPropMinesToNewGameStr = serialiseToString(premadeWonGameWithPropMinesToNewGame);
+    EXPECT_EQ(premadeWonGameWithPropMinesToNewGameStr, premadeWonGameToNewGameStr);
 
     // RESET already won 4x8 game
     premadeWonGameToReset.reset(false);
@@ -702,6 +929,14 @@ TEST_F(MinesweeperGameTest, NewGameTest) {
     EXPECT_NE(premadeWonGameAfterNewGameStr, "");
     EXPECT_NE(premadeWonGameAfterNewGameStr, premadeWonGameToNewGameStr);
     EXPECT_EQ(premadeWonGameAfterNewGameStr, premadeWonGameAfterResetStr);
+
+    // NEW GAME already won 4x8 game (with proportion of mines)
+    premadeWonGameWithPropMinesToNewGame.newGame(4, 8, 0.25);
+    std::string premadeWonGameWithPropMinesAfterNewGameStr = serialiseToString(premadeWonGameWithPropMinesToNewGame);
+    EXPECT_NE(premadeWonGameWithPropMinesAfterNewGameStr, "");
+    EXPECT_NE(premadeWonGameWithPropMinesAfterNewGameStr, premadeWonGameWithPropMinesToNewGameStr);
+    EXPECT_EQ(premadeWonGameWithPropMinesAfterNewGameStr, premadeWonGameAfterResetStr);
+    EXPECT_EQ(premadeWonGameWithPropMinesAfterNewGameStr, premadeWonGameAfterNewGameStr);
 }
 
 TEST_F(MinesweeperGameTest, CheckInputCoordinatesTest) {
@@ -1874,6 +2109,60 @@ TEST(MinesweeperGameStaticTest, MaxNumOfMinesMethodTest) {
     EXPECT_EQ(minesweeper::Game::maxNumOfMines(10'020, 20'458), 204'989'151);
 }
 
+TEST(MinesweeperGameStaticTest, MaxProportionOfMinesMethodTest) {
+
+    // completely negative grid
+    EXPECT_THROW(minesweeper::Game::maxProportionOfMines(-4, -8), std::out_of_range);
+
+    // negative height grid
+    EXPECT_THROW(minesweeper::Game::maxProportionOfMines(-5, 8), std::out_of_range);
+
+    // negative width grid
+    EXPECT_THROW(minesweeper::Game::maxProportionOfMines(4, -9), std::out_of_range);
+
+    // zero size grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(0, 0), 0);
+
+    // zero height grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(0, 7), 0);
+
+    // zero width grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(412, 0), 0);
+
+    // 1x1 grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(1, 1), 0);
+
+    // 2x2 grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(2, 2), 0);
+
+    // 3x3 grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(3, 3), 0);
+
+    // 4x4 grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(4, 4), 0.4375);
+
+    // 5x5 grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(5, 5), 0.64);
+
+    // 10x10 grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(10, 10), 0.91);
+
+    // normal grid
+    EXPECT_EQ(minesweeper::Game::maxProportionOfMines(10, 9), 0.9);
+
+    // another normal grid
+    EXPECT_TRUE(std::abs(minesweeper::Game::maxProportionOfMines(13, 15) - 0.953'846'153'846'154) <
+                0.000'000'000'000'001);
+
+    // large grid
+    EXPECT_TRUE(std::abs(minesweeper::Game::maxProportionOfMines(416, 154) - 0.999'859'515'484'515) <
+                0.000'000'000'000'001);
+
+    // very large grid
+    EXPECT_TRUE(std::abs(minesweeper::Game::maxProportionOfMines(21'067, 13'259) - 0.999'999'967'779'740) <
+                0.000'000'000'000'001);
+}
+
 TEST(MinesweeperGameStaticTest, MinNumOfMinesMethodTest) {
 
     // unspecified grid
@@ -1911,4 +2200,43 @@ TEST(MinesweeperGameStaticTest, MinNumOfMinesMethodTest) {
 
     // very large grid
     EXPECT_EQ(minesweeper::Game::minNumOfMines(13'520, 22'498), 0);
+}
+
+TEST(MinesweeperGameStaticTest, MinProportionOfMinesMethodTest) {
+
+    // unspecified grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(), 0);
+
+    // completely negative grid
+    EXPECT_THROW(minesweeper::Game::minProportionOfMines(-4, -6), std::out_of_range);
+
+    // negative height grid
+    EXPECT_THROW(minesweeper::Game::minProportionOfMines(-7, 4), std::out_of_range);
+
+    // negative width grid
+    EXPECT_THROW(minesweeper::Game::minProportionOfMines(8, -3), std::out_of_range);
+
+    // zero size grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(0, 0), 0);
+
+    // zero height grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(0, 7), 0);
+
+    // zero width grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(5, 0), 0);
+
+    // 1x1 grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(1, 1), 0);
+
+    // 2x2 grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(2, 2), 0);
+
+    // normal grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(11, 9), 0);
+
+    // large grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(134, 157), 0);
+
+    // very large grid
+    EXPECT_EQ(minesweeper::Game::minProportionOfMines(25'221, 18'476), 0);
 }
