@@ -18,6 +18,6 @@ enum class VisualMinesweeperCell {
     MARKED
 };
 
-}
+} // namespace minesweeper
 
 #endif // MINESWEEPER_VISUAL_MINESWEEPER_CELL_H

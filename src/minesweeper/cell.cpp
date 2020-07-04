@@ -2,6 +2,7 @@
 #include <iomanip>   // std::setw
 #include <iostream>  // std::istream, std::ostream
 #include <stdexcept> // std::invalid_argument
+#include <string>    // std::string
 
 #include <nlohmann/json.hpp> // nlohmann::json
 
@@ -9,6 +10,22 @@
 #include <minesweeper/visual_minesweeper_cell.h>
 
 namespace minesweeper {
+
+// +----------------------------------+
+// | initialisation of static fields: |
+// +----------------------------------+
+
+// serialisation keys:
+const char* Cell::CELL_VERSION_KEY = "cellVersion";
+// basic serialisation structure keys:
+const char* Cell::IS_VISIBLE_KEY = "_isVisible";
+const char* Cell::HAS_MINE_KEY = "_hasMine";
+const char* Cell::IS_MARKED_KEY = "_isMarked";
+const char* Cell::NUM_OF_MINES_AROUND_KEY = "_numOfMinesAround";
+
+// +----------+
+// | methods: |
+// +----------+
 
 bool Cell::isVisible() const { return this->_isVisible; }
 
@@ -64,16 +81,19 @@ nlohmann::json Cell::serialise() const { return this->serialise_(); }
 
 nlohmann::json Cell::serialise_() const {
 
+    // current serialisation keys:
+    const std::string CURRENT_CELL_VERSION = "1.0";
+
     nlohmann::json j;
 
     // version information
-    j["cellVersion"] = "1.0";
+    j[CELL_VERSION_KEY] = CURRENT_CELL_VERSION;
 
     // cell fields
-    j["_isVisible"] = this->_isVisible;
-    j["_hasMine"] = this->_hasMine;
-    j["_isMarked"] = this->_isMarked;
-    j["_numOfMinesAround"] = this->_numOfMinesAround;
+    j[IS_VISIBLE_KEY] = this->_isVisible;
+    j[HAS_MINE_KEY] = this->_hasMine;
+    j[IS_MARKED_KEY] = this->_isMarked;
+    j[NUM_OF_MINES_AROUND_KEY] = this->_numOfMinesAround;
 
     return j;
 }
@@ -95,19 +115,22 @@ std::istream& Cell::deserialise(std::istream& inStream) {
     return inStream;
 }
 
-void Cell::deserialise(nlohmann::json& j) { this->deserialise_(j); }
+void Cell::deserialise(const nlohmann::json& j) { this->deserialise_(j); }
 
-void Cell::deserialise_(nlohmann::json& j) {
+void Cell::deserialise_(const nlohmann::json& j) {
+
+    // current serialisation keys:
+    const std::string CURRENT_CELL_VERSION = "1.0";
 
     try {
 
-        if (j.at("cellVersion") == "1.0") {
+        if (j.at(CELL_VERSION_KEY) == CURRENT_CELL_VERSION) {
 
             // cell fields
-            this->_isVisible = j.at("_isVisible");
-            this->_hasMine = j.at("_hasMine");
-            this->_isMarked = j.at("_isMarked");
-            this->_numOfMinesAround = j.at("_numOfMinesAround");
+            this->_isVisible = j.at(IS_VISIBLE_KEY);
+            this->_hasMine = j.at(HAS_MINE_KEY);
+            this->_isMarked = j.at(IS_MARKED_KEY);
+            this->_numOfMinesAround = j.at(NUM_OF_MINES_AROUND_KEY);
         }
 
     } catch (nlohmann::json::type_error& ex) {

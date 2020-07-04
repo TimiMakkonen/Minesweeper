@@ -23,9 +23,9 @@ struct is_expandable_sequence_container<
 // template helper function to decide if type is an expandable 1D sequence container
 // (eg. std::vector<int>, std::string, std::deque<int>, std::list<int>)
 template <typename, typename = void>
-struct is_expandable_1D_sequence_container : std::false_type {};
+struct is_expandable_1d_sequence_container : std::false_type {};
 template <typename T>
-struct is_expandable_1D_sequence_container<
+struct is_expandable_1d_sequence_container<
     T, typename std::enable_if<is_expandable_sequence_container<T>::value &&
                                !is_expandable_sequence_container<typename T::value_type>::value>::type>
     : std::true_type {};
@@ -33,11 +33,11 @@ struct is_expandable_1D_sequence_container<
 // template helper function to decide if type is an expandable 2D sequence container
 // (eg. std::vector<std::vector<int>>, std::vector<std::string>, etc.)
 template <typename, typename = void>
-struct is_expandable_2D_sequence_container : std::false_type {};
+struct is_expandable_2d_sequence_container : std::false_type {};
 template <typename T>
-struct is_expandable_2D_sequence_container<
+struct is_expandable_2d_sequence_container<
     T, typename std::enable_if<is_expandable_sequence_container<T>::value &&
-                               is_expandable_1D_sequence_container<typename T::value_type>::value>::type>
+                               is_expandable_1d_sequence_container<typename T::value_type>::value>::type>
     : std::true_type {};
 
 } // namespace minesweeper

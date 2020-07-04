@@ -11,13 +11,13 @@ namespace minesweeper {
 class Random : public IRandom {
 
   private:
-    std::random_device rd;
-    std::mt19937 uRng;
+    std::random_device _rd;
+    std::mt19937 _uRng;
 
   public:
     Random();
 
-    void shuffleVector(std::vector<int>& vec) final override;
+    void shuffleVector(std::vector<int>& vec) override;
 };
 } // namespace minesweeper
 

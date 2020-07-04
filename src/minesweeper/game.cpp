@@ -5,6 +5,7 @@
 #include <numeric>   // std::iota
 #include <sstream>   // std::ostringstream
 #include <stdexcept> // std::out_of_range
+#include <string>    // std::string
 #include <vector>    // std::vector
 
 #include <nlohmann/json.hpp> // nlohmann::json
@@ -15,29 +16,66 @@
 
 namespace minesweeper {
 
-// initialisation of static fields:
+// +----------------------------------+
+// | initialisation of static fields: |
+// +----------------------------------+
+
 IRandom* Game::defaultRandom = nullptr;
 
+const int Game::MAX_NUMBER_OF_CELLS_AROUND_MINE = 8;
+
+// serialisation magic/version keys:
+const char* Game::MAGIC_KEY = "magic";
+const char* Game::VERSION_KEY = "version";
+// basic serialisation structure keys:
+const char* Game::CURRENT_GAME_KEY = "currentGame";
+const char* Game::ROW_NUMBER_KEY = "rowNumber";
+const char* Game::COLUMN_NUMBER_KEY = "columnNumber";
+const char* Game::CELLS_KEY = "cells";
+const char* Game::ROW_CELLS_KEY = "rowCells";
+const char* Game::CELL_KEY = "cell";
+// Game private member keys:
+const char* Game::GRID_HEIGHT_KEY = "gridHeight";
+const char* Game::GRID_WIDTH_KEY = "gridWidth";
+const char* Game::NUM_OF_MINES_KEY = "numOfMines";
+const char* Game::NUM_OF_MARKED_MINES_KEY = "numOfMarkedMines";
+const char* Game::NUM_OF_WRONGLY_MARKED_CELLS_KEY = "numOfWronglyMarkedCells";
+const char* Game::NUM_OF_VISIBLE_CELLS_KEY = "numOfVisibleCells";
+const char* Game::CHECKED_MINE_KEY = "_checkedMine";
+const char* Game::MINES_HAVE_BEEN_SET_KEY = "minesHaveBeenSet";
+
+// +----------+
+// | methods: |
+// +----------+
+
 Game::Game() = default;
+
+Game::Game(const Game& other)
+    : _gridHeight(other._gridHeight), _gridWidth(other._gridWidth), _numOfMines(other._numOfMines),
+      _numOfMarkedMines(other._numOfMarkedMines), _numOfWronglyMarkedCells(other._numOfWronglyMarkedCells),
+      _numOfVisibleCells(other._numOfVisibleCells), _checkedMine(other._checkedMine),
+      _minesHaveBeenSet(other._minesHaveBeenSet), _cells{initCells_(other)}, _random(other._random) {}
+
+Game::Game(Game&& other) noexcept : Game() { swap(*this, other); }
 
 Game::Game(int gridSize, int numOfMines, IRandom* random) : Game(gridSize, gridSize, numOfMines, random) {}
 
 Game::Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random)
-    : gridHeight{verifyGridDimension(gridHeight)},                     // throws
-      gridWidth{verifyGridDimension(gridWidth)},                       // throws
-      numOfMines{verifyNumOfMines(numOfMines, gridHeight, gridWidth)}, // throws
-      cells{initCells(this->gridHeight, this->gridWidth)}, random{random} {}
+    : _gridHeight{verifyGridDimension_(gridHeight)},                     // throws
+      _gridWidth{verifyGridDimension_(gridWidth)},                       // throws
+      _numOfMines{verifyNumOfMines_(numOfMines, gridHeight, gridWidth)}, // throws
+      _cells{initCells_(this->_gridHeight, this->_gridWidth)}, _random{random} {}
 
 Game::Game(int gridSize, double proportionOfMines, IRandom* random)
     : Game(gridSize, gridSize, proportionOfMines, random) {}
 
 Game::Game(int gridHeight, int gridWidth, double proportionOfMines, IRandom* random)
-    : gridHeight{verifyGridDimension(gridHeight)}, // throws
-      gridWidth{verifyGridDimension(gridWidth)},
-      numOfMines{verifyNumOfMines(
-          static_cast<int>(verifyProportionOfMines(proportionOfMines, gridHeight, gridWidth) * gridHeight * gridWidth),
+    : _gridHeight{verifyGridDimension_(gridHeight)}, // throws
+      _gridWidth{verifyGridDimension_(gridWidth)},
+      _numOfMines{verifyNumOfMines_(
+          static_cast<int>(verifyProportionOfMines_(proportionOfMines, gridHeight, gridWidth) * gridHeight * gridWidth),
           gridHeight, gridWidth)}, // throws
-      cells{initCells(this->gridHeight, this->gridWidth)}, random{random} {}
+      _cells{initCells_(this->_gridHeight, this->_gridWidth)}, _random{random} {}
 
 // required by to solve "error C2027: use of undefined type"
 // in short, std::unique_ptr requires destructor to be defined here
@@ -47,12 +85,49 @@ Game::Game(int gridHeight, int gridWidth, double proportionOfMines, IRandom* ran
 // https://stackoverflow.com/questions/13414652/forward-declaration-with-unique-ptr
 Game::~Game() = default;
 
+Game& Game::operator=(Game other) {
+
+    swap(*this, other);
+
+    return *this;
+}
+
+Game& Game::operator=(Game&& other) noexcept {
+
+    Game temp(std::move(other));
+
+    swap(*this, temp);
+
+    return *this;
+}
+
+// friend swap function
+void swap(Game& first, Game& second) {
+
+    using std::swap;
+
+    swap(first._gridHeight, second._gridHeight);
+    swap(first._gridWidth, second._gridWidth);
+    swap(first._numOfMines, second._numOfMines);
+
+    swap(first._numOfMarkedMines, second._numOfMarkedMines);
+    swap(first._numOfWronglyMarkedCells, second._numOfWronglyMarkedCells);
+    swap(first._numOfVisibleCells, second._numOfVisibleCells);
+
+    swap(first._checkedMine, second._checkedMine);
+    swap(first._minesHaveBeenSet, second._minesHaveBeenSet);
+
+    swap(first._cells, second._cells);
+
+    swap(first._random, second._random);
+}
+
 // static method
-int Game::verifyGridDimension(int gridDimension) {
+int Game::verifyGridDimension_(int gridDimension) {
 
     if (gridDimension < 0) {
         throw std::out_of_range(
-            "Game::verifyGridDimension(int gridDimension): Trying to create a grid with negative (" +
+            "Game::verifyGridDimension_(int gridDimension): Trying to create a grid with negative (" +
             std::to_string(gridDimension) + ") grid dimension.");
     }
 
@@ -60,16 +135,16 @@ int Game::verifyGridDimension(int gridDimension) {
 }
 
 // static method
-int Game::verifyNumOfMines(int numOfMines, int gridHeight, int gridWidth) {
+int Game::verifyNumOfMines_(int numOfMines, int gridHeight, int gridWidth) {
 
     if (numOfMines > maxNumOfMines(gridHeight, gridWidth)) {
-        throw std::out_of_range("Game::verifyNumOfMines(int numOfMines, int gridHeight, int gridWidth): "
+        throw std::out_of_range("Game::verifyNumOfMines_(int numOfMines, int gridHeight, int gridWidth): "
                                 "Trying to create a grid with too many (" +
                                 std::to_string(numOfMines) + ") mines.");
     }
 
     if (numOfMines < minNumOfMines(gridHeight, gridWidth)) {
-        throw std::out_of_range("Game::verifyNumOfMines(int numOfMines, int gridHeight, int gridWidth): "
+        throw std::out_of_range("Game::verifyNumOfMines_(int numOfMines, int gridHeight, int gridWidth): "
                                 "Trying to create a grid with too few (" +
                                 std::to_string(numOfMines) + ") mines.");
     }
@@ -78,18 +153,18 @@ int Game::verifyNumOfMines(int numOfMines, int gridHeight, int gridWidth) {
 }
 
 // static method
-double Game::verifyProportionOfMines(double proportionOfMines, int gridHeight, int gridWidth) {
+double Game::verifyProportionOfMines_(double proportionOfMines, int gridHeight, int gridWidth) {
 
     if (proportionOfMines > maxProportionOfMines(gridHeight, gridWidth)) {
         throw std::out_of_range(
-            "Game::verifyProportionOfMines(double proportionOfMines, int gridHeight, int gridWidth): "
+            "Game::verifyProportionOfMines_(double proportionOfMines, int gridHeight, int gridWidth): "
             "Trying to create a grid with too big proportion (" +
             std::to_string(proportionOfMines) + ") of mines.");
     }
 
     if (proportionOfMines < minProportionOfMines(gridHeight, gridWidth)) {
         throw std::out_of_range(
-            "Game::verifyProportionOfMines(double proportionOfMines, int gridHeight, int gridWidth): "
+            "Game::verifyProportionOfMines_(double proportionOfMines, int gridHeight, int gridWidth): "
             "Trying to create a grid with too small proportion (" +
             std::to_string(proportionOfMines) + ") of mines.");
     }
@@ -98,16 +173,16 @@ double Game::verifyProportionOfMines(double proportionOfMines, int gridHeight, i
 }
 
 // static method
-int Game::verifyNumOfMarkedMines(int numOfMarkedMines, int numOfMines) {
+int Game::verifyNumOfMarkedMines_(int numOfMarkedMines, int numOfMines) {
 
     if (numOfMarkedMines > numOfMines) {
-        throw std::out_of_range("Game::verifyNumOfMarkedMines(int numOfMarkedMines, int numOfMines): "
+        throw std::out_of_range("Game::verifyNumOfMarkedMines_(int numOfMarkedMines, int numOfMines): "
                                 "Trying to create a grid with too many (" +
                                 std::to_string(numOfMarkedMines) + ") marked mines.");
     }
 
     if (numOfMarkedMines < 0) {
-        throw std::out_of_range("Game::verifyNumOfMarkedMines(int numOfMarkedMines, int numOfMines): "
+        throw std::out_of_range("Game::verifyNumOfMarkedMines_(int numOfMarkedMines, int numOfMines): "
                                 "Trying to create a grid with too few (" +
                                 std::to_string(numOfMarkedMines) + ") marked mines.");
     }
@@ -116,19 +191,19 @@ int Game::verifyNumOfMarkedMines(int numOfMarkedMines, int numOfMines) {
 }
 
 // static method
-int Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells, int gridHeight, int gridWidth, int numOfMines) {
+int Game::verifyNumOfWronglyMarkedCells_(int numOfWronglyMarkedCells, int gridHeight, int gridWidth, int numOfMines) {
 
     int numOfMinelessCells = gridHeight * gridWidth - numOfMines;
 
     if (numOfWronglyMarkedCells > numOfMinelessCells) {
-        throw std::out_of_range("Game::verifyNumOfWronglyMarkedCells("
+        throw std::out_of_range("Game::verifyNumOfWronglyMarkedCells_("
                                 "int numOfWronglyMarkedCells, int gridHeight, int gridWidth, int numOfMines): "
                                 "Trying to create a grid with too many (" +
                                 std::to_string(numOfWronglyMarkedCells) + ") wrongly marked cells.");
     }
 
     if (numOfWronglyMarkedCells < 0) {
-        throw std::out_of_range("Game::verifyNumOfWronglyMarkedCells("
+        throw std::out_of_range("Game::verifyNumOfWronglyMarkedCells_("
                                 "int numOfWronglyMarkedCells, int gridHeight, int gridWidth, int numOfMines): "
                                 "Trying to create a grid with too few (" +
                                 std::to_string(numOfWronglyMarkedCells) + ") wrongly marked cells.");
@@ -138,16 +213,16 @@ int Game::verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells, int gridHei
 }
 
 // static method
-int Game::verifyNumOfVisibleCells(int numOfVisibleCells, int gridHeight, int gridWidth) {
+int Game::verifyNumOfVisibleCells_(int numOfVisibleCells, int gridHeight, int gridWidth) {
 
     if (numOfVisibleCells > gridHeight * gridWidth) {
-        throw std::out_of_range("Game::verifyNumOfVisibleCells(int numOfVisibleCells, int gridHeight, int gridWidth): "
+        throw std::out_of_range("Game::verifyNumOfVisibleCells_(int numOfVisibleCells, int gridHeight, int gridWidth): "
                                 "Trying to create a grid with too many (" +
                                 std::to_string(numOfVisibleCells) + ") visible cells.");
     }
 
     if (numOfVisibleCells < 0) {
-        throw std::out_of_range("Game::verifyNumOfVisibleCells(int numOfVisibleCells, int gridHeight, int gridWidth): "
+        throw std::out_of_range("Game::verifyNumOfVisibleCells_(int numOfVisibleCells, int gridHeight, int gridWidth): "
                                 "Trying to create a grid with too few (" +
                                 std::to_string(numOfVisibleCells) + ") visible cells.");
     }
@@ -157,16 +232,16 @@ int Game::verifyNumOfVisibleCells(int numOfVisibleCells, int gridHeight, int gri
 
 // static method
 // consider combining with Game::resizeCells()
-std::vector<std::vector<std::unique_ptr<Cell>>> Game::initCells(const int gridH, const int gridW) {
+std::vector<std::vector<std::unique_ptr<Cell>>> Game::initCells_(const int gridHeight, const int gridWidth) {
 
-    assert(gridH >= 0 && gridW >= 0);
+    assert(gridHeight >= 0 && gridWidth >= 0);
 
     std::vector<std::vector<std::unique_ptr<Cell>>> outputCellMatrix;
-    outputCellMatrix.reserve(gridH);
-    for (int y = 0; y < gridH; ++y) {
+    outputCellMatrix.reserve(gridHeight);
+    for (int y = 0; y < gridHeight; ++y) {
         std::vector<std::unique_ptr<Cell>> outputCellRow;
-        outputCellRow.reserve(gridW);
-        for (int x = 0; x < gridW; ++x) {
+        outputCellRow.reserve(gridWidth);
+        for (int x = 0; x < gridWidth; ++x) {
             outputCellRow.emplace_back(std::make_unique<Cell>());
         }
         outputCellMatrix.emplace_back(std::move(outputCellRow));
@@ -174,33 +249,53 @@ std::vector<std::vector<std::unique_ptr<Cell>>> Game::initCells(const int gridH,
     return outputCellMatrix;
 }
 
-// consider combining with Game::initCells()
-void Game::resizeCells(const int gridH, const int gridW) {
+// static method
+// consider combining with Game::resizeCells()
+std::vector<std::vector<std::unique_ptr<Cell>>> Game::initCells_(const Game& other) {
 
-    assert(gridH >= 0 && gridW >= 0);
+    auto gridHeight = other._gridHeight;
+    auto gridWidth = other._gridWidth;
 
-    this->cells.reserve(gridH);
-    this->cells.resize(gridH);
-    for (auto& cellRow : cells) {
+    std::vector<std::vector<std::unique_ptr<Cell>>> outputCellMatrix;
+    outputCellMatrix.reserve(gridHeight);
+    for (const auto& otherCellRow : other._cells) {
+        std::vector<std::unique_ptr<Cell>> outputCellRow;
+        outputCellRow.reserve(gridWidth);
+        for (const auto& otherCellPtr : otherCellRow) {
+            outputCellRow.emplace_back(std::make_unique<Cell>(*otherCellPtr));
+        }
+        outputCellMatrix.emplace_back(std::move(outputCellRow));
+    }
+    return outputCellMatrix;
+}
 
-        cellRow.reserve(gridW);
-        if (cellRow.size() < gridW) {
-            for (size_t i = cellRow.size(); i < gridW; ++i) {
+// consider combining with Game::initCells_()
+void Game::resizeCells_(const int gridHeight, const int gridWidth) {
+
+    assert(gridHeight >= 0 && gridWidth >= 0);
+
+    this->_cells.reserve(gridHeight);
+    this->_cells.resize(gridHeight);
+    for (auto& cellRow : _cells) {
+
+        cellRow.reserve(gridWidth);
+        if (cellRow.size() < gridWidth) {
+            for (size_t i = cellRow.size(); i < gridWidth; ++i) {
                 cellRow.emplace_back(std::make_unique<Cell>());
             }
         }
-        cellRow.resize(gridW);
+        cellRow.resize(gridWidth);
     }
 }
 
 void Game::createMinesAndNums(const int initChosenX, const int initChosenY) {
 
-    if (initChosenX < 0 || initChosenY < 0 || initChosenX >= this->gridWidth || initChosenY >= this->gridHeight) {
+    if (initChosenX < 0 || initChosenY < 0 || initChosenX >= this->_gridWidth || initChosenY >= this->_gridHeight) {
         throw std::out_of_range("Game::createMinesAndNums(const int initChosenX, const int initChosenY): "
                                 "Trying to use initial cell (initChosenX, initChosenX) outside grid.");
     }
 
-    if (minesHaveBeenSet) {
+    if (this->_minesHaveBeenSet) {
         throw std::invalid_argument("Game::createMinesAndNums(const int initChosenX, const int initChosenY): "
                                     "Trying to create mines and numbers for a grid that already has them created.");
     }
@@ -210,127 +305,127 @@ void Game::createMinesAndNums(const int initChosenX, const int initChosenY) {
 
 void Game::createMinesAndNums_(const int initChosenX, const int initChosenY) {
 
-    assert(initChosenX >= 0 && initChosenY >= 0 && initChosenX < this->gridWidth && initChosenY < this->gridHeight);
+    assert(initChosenX >= 0 && initChosenY >= 0 && initChosenX < this->_gridWidth && initChosenY < this->_gridHeight);
 
-    assert(!minesHaveBeenSet);
+    assert(!this->_minesHaveBeenSet);
 
-    std::vector<int> mineSpots(this->gridWidth * this->gridHeight);
-    this->chooseRandomMineCells(mineSpots, initChosenX, initChosenY);
+    std::vector<int> mineSpots(this->_gridWidth * this->_gridHeight);
+    this->chooseRandomMineCells_(mineSpots, initChosenX, initChosenY);
 
-    int X = 0;
-    int Y = 0;
-    for (int i = 0; i < this->numOfMines; ++i) {
+    int x = 0;
+    int y = 0;
+    for (int i = 0; i < this->_numOfMines; ++i) {
 
-        X = mineSpots[i] % this->gridWidth;
-        Y = mineSpots[i] / this->gridWidth;
+        x = mineSpots[i] % this->_gridWidth;
+        y = mineSpots[i] / this->_gridWidth;
 
-        this->createMine(X, Y);
+        this->createMine_(x, y);
 
-        this->incrNumsAroundMine(X, Y);
+        this->incrNumsAroundMine_(x, y);
     }
 
-    this->minesHaveBeenSet = true;
+    this->_minesHaveBeenSet = true;
 }
 
-void Game::chooseRandomMineCells(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const {
+void Game::chooseRandomMineCells_(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const {
 
     // to populate mineSpots vector with values: 0, 1, 2, ..., gridWidth*gridHeight - 1
     std::iota(mineSpots.begin(), mineSpots.end(), 0);
 
     // to shuffle this vector
-    this->randomizeMineVector(mineSpots);
+    this->randomizeMineVector_(mineSpots);
 
     // to remove bad gridspots (those on and around chosen initial spot)
-    mineSpots.erase(std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->gridWidth + initChosenX)),
+    mineSpots.erase(std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->_gridWidth + initChosenX)),
                     mineSpots.end());
     if (initChosenX > 0) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->gridWidth + initChosenX - 1)),
+            std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->_gridWidth + initChosenX - 1)),
             mineSpots.end()); // left
     }
-    if (initChosenX < this->gridWidth - 1) {
+    if (initChosenX < this->_gridWidth - 1) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->gridWidth + initChosenX + 1)),
+            std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->_gridWidth + initChosenX + 1)),
             mineSpots.end()); // right
     }
     if (initChosenY > 0) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->gridWidth + initChosenX)),
+            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->_gridWidth + initChosenX)),
             mineSpots.end()); // top
     }
-    if (initChosenY < this->gridHeight - 1) {
+    if (initChosenY < this->_gridHeight - 1) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->gridWidth + initChosenX)),
+            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->_gridWidth + initChosenX)),
             mineSpots.end()); // bottom
     }
     if (initChosenY > 0 && initChosenX > 0) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->gridWidth + initChosenX - 1)),
+            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->_gridWidth + initChosenX - 1)),
             mineSpots.end()); // top left
     }
-    if (initChosenY > 0 && initChosenX < this->gridWidth - 1) {
+    if (initChosenY > 0 && initChosenX < this->_gridWidth - 1) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->gridWidth + initChosenX + 1)),
+            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->_gridWidth + initChosenX + 1)),
             mineSpots.end()); // top right
     }
-    if (initChosenY < this->gridHeight - 1 && initChosenX > 0) {
+    if (initChosenY < this->_gridHeight - 1 && initChosenX > 0) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->gridWidth + initChosenX - 1)),
+            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->_gridWidth + initChosenX - 1)),
             mineSpots.end()); // bottom left
     }
-    if (initChosenY < this->gridHeight - 1 && initChosenX < this->gridWidth - 1) {
+    if (initChosenY < this->_gridHeight - 1 && initChosenX < this->_gridWidth - 1) {
         mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->gridWidth + initChosenX + 1)),
+            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->_gridWidth + initChosenX + 1)),
             mineSpots.end()); // bottom right
     }
 }
 
-void Game::randomizeMineVector(std::vector<int>& mineSpots) const {
+void Game::randomizeMineVector_(std::vector<int>& mineSpots) const {
 
-    if (this->random != nullptr) {
-        this->random->shuffleVector(mineSpots);
+    if (this->_random != nullptr) {
+        this->_random->shuffleVector(mineSpots);
     } else {
         if (Game::defaultRandom != nullptr) {
             Game::defaultRandom->shuffleVector(mineSpots);
         } else {
-            throw std::invalid_argument("Game::randomizeMineVector(std::vector<int>& mineSpots): "
-                                        "Neither field 'random' nor static field 'defaultRandom' is initialised.");
+            throw std::invalid_argument("Game::randomizeMineVector_(std::vector<int>& mineSpots): "
+                                        "Neither field '_random' nor static field 'defaultRandom' is initialised.");
         }
     }
 }
 
-void Game::createMine(const int X, const int Y) {
+void Game::createMine_(const int x, const int y) {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
-    this->cells[Y][X]->putMine();
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    this->_cells[y][x]->putMine();
 }
 
-void Game::incrNumsAroundMine(const int X, const int Y) {
+void Game::incrNumsAroundMine_(const int x, const int y) {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
-    if (X > 0) {
-        this->cells[Y][X - 1]->incrNumOfMinesAround(); // left
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    if (x > 0) {
+        this->_cells[y][x - 1]->incrNumOfMinesAround(); // left
     }
-    if (X < this->gridWidth - 1) {
-        this->cells[Y][X + 1]->incrNumOfMinesAround(); // right
+    if (x < this->_gridWidth - 1) {
+        this->_cells[y][x + 1]->incrNumOfMinesAround(); // right
     }
-    if (Y > 0) {
-        this->cells[Y - 1][X]->incrNumOfMinesAround(); // top
+    if (y > 0) {
+        this->_cells[y - 1][x]->incrNumOfMinesAround(); // top
     }
-    if (Y < this->gridHeight - 1) {
-        this->cells[Y + 1][X]->incrNumOfMinesAround(); // bottom
+    if (y < this->_gridHeight - 1) {
+        this->_cells[y + 1][x]->incrNumOfMinesAround(); // bottom
     }
-    if (Y > 0 && X > 0) {
-        this->cells[Y - 1][X - 1]->incrNumOfMinesAround(); // top left
+    if (y > 0 && x > 0) {
+        this->_cells[y - 1][x - 1]->incrNumOfMinesAround(); // top left
     }
-    if (Y > 0 && X < this->gridWidth - 1) {
-        this->cells[Y - 1][X + 1]->incrNumOfMinesAround(); // top right
+    if (y > 0 && x < this->_gridWidth - 1) {
+        this->_cells[y - 1][x + 1]->incrNumOfMinesAround(); // top right
     }
-    if (Y < this->gridHeight - 1 && X > 0) {
-        this->cells[Y + 1][X - 1]->incrNumOfMinesAround(); // bottom left
+    if (y < this->_gridHeight - 1 && x > 0) {
+        this->_cells[y + 1][x - 1]->incrNumOfMinesAround(); // bottom left
     }
-    if (Y < this->gridHeight - 1 && X < this->gridWidth - 1) {
-        this->cells[Y + 1][X + 1]->incrNumOfMinesAround(); // bottom right
+    if (y < this->_gridHeight - 1 && x < this->_gridWidth - 1) {
+        this->_cells[y + 1][x + 1]->incrNumOfMinesAround(); // bottom right
     }
 }
 
@@ -339,17 +434,17 @@ void Game::reset(bool keepCreatedMines) { this->reset_(keepCreatedMines); }
 void Game::reset_(bool keepCreatedMines) {
 
     // reset game fields
-    this->numOfMarkedMines = 0;
-    this->numOfWronglyMarkedCells = 0;
-    this->numOfVisibleCells = 0;
+    this->_numOfMarkedMines = 0;
+    this->_numOfWronglyMarkedCells = 0;
+    this->_numOfVisibleCells = 0;
     this->_checkedMine = false;
 
     if (!keepCreatedMines) {
-        this->minesHaveBeenSet = false;
+        this->_minesHaveBeenSet = false;
     }
 
     // reset cells
-    for (auto& cellRow : this->cells) {
+    for (auto& cellRow : this->_cells) {
         for (auto& cell : cellRow) {
 
             cell->reset(keepCreatedMines);
@@ -362,15 +457,15 @@ void Game::newGame(int gridSize, int numOfMines) { this->newGame(gridSize, gridS
 void Game::newGame(int gridHeight, int gridWidth, int numOfMines) {
 
     // parameter verification
-    verifyGridDimension(gridHeight);
-    verifyGridDimension(gridWidth);
-    verifyNumOfMines(numOfMines, gridHeight, gridWidth);
+    verifyGridDimension_(gridHeight);
+    verifyGridDimension_(gridWidth);
+    verifyNumOfMines_(numOfMines, gridHeight, gridWidth);
 
     this->reset_(false);
-    this->resizeCells(gridHeight, gridWidth);
-    this->gridHeight = gridHeight;
-    this->gridWidth = gridWidth;
-    this->numOfMines = numOfMines;
+    this->resizeCells_(gridHeight, gridWidth);
+    this->_gridHeight = gridHeight;
+    this->_gridWidth = gridWidth;
+    this->_numOfMines = numOfMines;
 }
 
 void Game::newGame(int gridSize, double proportionOfMines) { this->newGame(gridSize, gridSize, proportionOfMines); }
@@ -378,65 +473,65 @@ void Game::newGame(int gridSize, double proportionOfMines) { this->newGame(gridS
 void Game::newGame(int gridHeight, int gridWidth, double proportionOfMines) {
 
     // parameter verification
-    verifyGridDimension(gridHeight);
-    verifyGridDimension(gridWidth);
-    verifyProportionOfMines(proportionOfMines, gridHeight, gridWidth);
+    verifyGridDimension_(gridHeight);
+    verifyGridDimension_(gridWidth);
+    verifyProportionOfMines_(proportionOfMines, gridHeight, gridWidth);
     int newNumOfMines = static_cast<int>(proportionOfMines * gridHeight * gridWidth);
-    verifyNumOfMines(newNumOfMines, gridHeight, gridWidth);
+    verifyNumOfMines_(newNumOfMines, gridHeight, gridWidth);
 
     this->reset_(false);
-    this->resizeCells(gridHeight, gridWidth);
-    this->gridHeight = gridHeight;
-    this->gridWidth = gridWidth;
-    this->numOfMines = newNumOfMines;
+    this->resizeCells_(gridHeight, gridWidth);
+    this->_gridHeight = gridHeight;
+    this->_gridWidth = gridWidth;
+    this->_numOfMines = newNumOfMines;
 }
 
 // to mark (or unmark) given coordinates, and keeping track of marked and wrongly marked mines
-void Game::markInputCoordinates(const int X, const int Y) {
+void Game::markInputCoordinates(const int x, const int y) {
 
-    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
         throw std::out_of_range(
-            "Game::markInputCoordinates(const int X, const int Y): Trying to mark cell outside grid.");
+            "Game::markInputCoordinates(const int x, const int y): Trying to mark cell outside grid.");
     }
 
-    if (!minesHaveBeenSet) {
-        throw std::invalid_argument("Game::markInputCoordinates(const int X, const int Y): "
+    if (!this->_minesHaveBeenSet) {
+        throw std::invalid_argument("Game::markInputCoordinates(const int x, const int y): "
                                     "Trying to mark a cell before mines hava been initialised. \n\t"
                                     "(Initialise mines by calling: "
                                     "createMinesAndNums(const int initChosenX, const int initChosenY) or "
-                                    "checkInputCoordinates(const int X, const int Y).)");
+                                    "checkInputCoordinates(const int x, const int y).)");
     }
-    if (!this->isCellVisible_(X, Y)) {
-        if (this->isCellMarked_(X, Y)) {
-            this->unmarkCell(X, Y);
+    if (!this->isCellVisible_(x, y)) {
+        if (this->isCellMarked_(x, y)) {
+            this->unmarkCell_(x, y);
 
-            if (this->doesCellHaveMine_(X, Y)) {
-                --(this->numOfMarkedMines);
+            if (this->doesCellHaveMine_(x, y)) {
+                --(this->_numOfMarkedMines);
             } else {
-                --(this->numOfWronglyMarkedCells);
+                --(this->_numOfWronglyMarkedCells);
             }
         } else {
-            if (!this->isCellVisible_(X, Y)) {
+            if (!this->isCellVisible_(x, y)) {
 
-                this->markCell(X, Y);
+                this->markCell_(x, y);
 
-                if (this->doesCellHaveMine_(X, Y)) {
-                    ++(this->numOfMarkedMines);
+                if (this->doesCellHaveMine_(x, y)) {
+                    ++(this->_numOfMarkedMines);
                 } else {
-                    ++(this->numOfWronglyMarkedCells);
+                    ++(this->_numOfWronglyMarkedCells);
                 }
             }
         }
     }
 }
 
-bool Game::allMinesMarked() const { return this->numOfMines == this->numOfMarkedMines; }
+bool Game::allMinesMarked_() const { return this->_numOfMines == this->_numOfMarkedMines; }
 
-bool Game::noNonMinesMarked() const { return this->numOfWronglyMarkedCells == 0; }
+bool Game::noNonMinesMarked_() const { return this->_numOfWronglyMarkedCells == 0; }
 
-bool Game::allNonMinesVisible() const {
+bool Game::allNonMinesVisible_() const {
 
-    return this->numOfVisibleCells + this->numOfMines == this->gridWidth * this->gridHeight && !this->_checkedMine;
+    return this->_numOfVisibleCells + this->_numOfMines == this->_gridWidth * this->_gridHeight && !this->_checkedMine;
 }
 
 bool Game::playerHasWon() const {
@@ -444,7 +539,7 @@ bool Game::playerHasWon() const {
     bool playerWon = false;
 
     if (!this->playerHasLost_()) {
-        if (this->allNonMinesVisible() || (this->allMinesMarked() && this->noNonMinesMarked())) {
+        if (this->allNonMinesVisible_() || (this->allMinesMarked_() && this->noNonMinesMarked_())) {
             playerWon = true;
         }
     }
@@ -453,197 +548,205 @@ bool Game::playerHasWon() const {
 
 bool Game::playerHasLost() const { return this->playerHasLost_(); }
 
-bool Game::playerHasLost_() const { return this->checkedMine(); }
+bool Game::playerHasLost_() const { return this->checkedMine_(); }
 
-bool Game::checkedMine() const { return this->_checkedMine; }
+bool Game::checkedMine_() const { return this->_checkedMine; }
 
-bool Game::isCellVisible(const int X, const int Y) const {
+bool Game::isCellVisible(const int x, const int y) const {
 
-    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
         throw std::out_of_range(
-            "Game::isCellVisible(const int X, const int Y): Trying to check if a cell outside the grid is visible.");
+            "Game::isCellVisible(const int x, const int y): Trying to check if a cell outside the grid is visible.");
     }
-    return this->isCellVisible_(X, Y);
+    return this->isCellVisible_(x, y);
 }
 
-bool Game::isCellVisible_(const int X, const int Y) const {
+bool Game::isCellVisible_(const int x, const int y) const {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
 
-    return this->cells[Y][X]->isVisible();
+    return this->_cells[y][x]->isVisible();
 }
 
-bool Game::doesCellHaveMine(const int X, const int Y) const {
+bool Game::doesCellHaveMine(const int x, const int y) const {
 
-    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
         throw std::out_of_range(
-            "Game::doesCellHaveMine(const int X, const int Y): Trying to check if a cell outside the grid has a mine.");
+            "Game::doesCellHaveMine(const int x, const int y): Trying to check if a cell outside the grid has a mine.");
     }
-    return this->doesCellHaveMine_(X, Y);
+    return this->doesCellHaveMine_(x, y);
 }
 
-bool Game::doesCellHaveMine_(const int X, const int Y) const {
+bool Game::doesCellHaveMine_(const int x, const int y) const {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
 
-    return this->cells[Y][X]->hasMine();
+    return this->_cells[y][x]->hasMine();
 }
 
-bool Game::isCellMarked(const int X, const int Y) const {
+bool Game::isCellMarked(const int x, const int y) const {
 
-    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
         throw std::out_of_range(
-            "Game::isCellMarked(const int X, const int Y): Trying to check if a cell outside the grid is marked.");
+            "Game::isCellMarked(const int x, const int y): Trying to check if a cell outside the grid is marked.");
     }
-    return this->isCellMarked_(X, Y);
+    return this->isCellMarked_(x, y);
 }
 
-bool Game::isCellMarked_(const int X, const int Y) const {
+bool Game::isCellMarked_(const int x, const int y) const {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
 
-    return this->cells[Y][X]->isMarked();
+    return this->_cells[y][x]->isMarked();
 }
 
-int Game::numOfMinesAroundCell(const int X, const int Y) const {
+int Game::numOfMinesAroundCell(const int x, const int y) const {
 
-    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
-        throw std::out_of_range("Game::numOfMinesAroundCell(const int X, const int Y): "
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
+        throw std::out_of_range("Game::numOfMinesAroundCell(const int x, const int y): "
                                 "Trying to check number of mines around a cell outside the grid.");
     }
-    return this->numOfMinesAroundCell_(X, Y);
+    return this->numOfMinesAroundCell_(x, y);
 }
 
-int Game::numOfMinesAroundCell_(const int X, const int Y) const {
+int Game::numOfMinesAroundCell_(const int x, const int y) const {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
 
-    return this->cells[Y][X]->numOfMinesAround();
+    return this->_cells[y][x]->numOfMinesAround();
 }
 
-void Game::makeCellVisible(const int X, const int Y) {
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
-    this->cells[Y][X]->makeVisible();
+void Game::makeCellVisible_(const int x, const int y) {
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    this->_cells[y][x]->makeVisible();
 }
 
-void Game::markCell(const int X, const int Y) {
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
-    this->cells[Y][X]->markCell();
+void Game::markCell_(const int x, const int y) {
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    this->_cells[y][x]->markCell();
 }
 
-void Game::unmarkCell(const int X, const int Y) {
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
-    this->cells[Y][X]->unmarkCell();
+void Game::unmarkCell_(const int x, const int y) {
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    this->_cells[y][x]->unmarkCell();
 }
 
-VisualMinesweeperCell Game::visualiseCell_(const int X, const int Y) const {
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
-    return this->cells[Y][X]->visualise();
+VisualMinesweeperCell Game::visualiseCell_(const int x, const int y) const {
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    return this->_cells[y][x]->visualise();
 }
 
 // to check user given coordinates, and make it visible
-void Game::checkInputCoordinates(const int X, const int Y) {
+void Game::checkInputCoordinates(const int x, const int y) {
 
-    if (X < 0 || Y < 0 || X >= this->gridWidth || Y >= this->gridHeight) {
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
         throw std::out_of_range(
-            "Game::checkInputCoordinates(const int X, const int Y): Trying to check cell outside grid.");
+            "Game::checkInputCoordinates(const int x, const int y): Trying to check cell outside grid.");
     }
 
-    this->checkInputCoordinates_(X, Y);
+    this->checkInputCoordinates_(x, y);
 }
 
-void Game::checkInputCoordinates_(const int X, const int Y) {
+void Game::checkInputCoordinates_(const int x, const int y) {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
 
     // could maybe be moved to public 'Game::checkInputCoordinates(const int X, const int Y)'
-    if (!minesHaveBeenSet) {
-        this->createMinesAndNums_(X, Y);
+    if (!_minesHaveBeenSet) {
+        this->createMinesAndNums_(x, y);
     }
 
-    if (!(this->isCellVisible_(X, Y)) && !(this->isCellMarked_(X, Y))) {
-        this->makeCellVisible(X, Y);
-        ++(this->numOfVisibleCells);
+    if (!(this->isCellVisible_(x, y)) && !(this->isCellMarked_(x, y))) {
+        this->makeCellVisible_(x, y);
+        ++(this->_numOfVisibleCells);
 
-        if (this->doesCellHaveMine_(X, Y)) {
+        if (this->doesCellHaveMine_(x, y)) {
             this->_checkedMine = true;
-        } else if (this->numOfMinesAroundCell_(X, Y) == 0) {
-            this->checkAroundCoordinate(X, Y);
+        } else if (this->numOfMinesAroundCell_(x, y) == 0) {
+            this->checkAroundCoordinate_(x, y);
         }
     }
 }
 
-void Game::checkAroundCoordinate(const int X, const int Y) {
+void Game::checkAroundCoordinate_(const int x, const int y) {
 
-    assert(X >= 0 && Y >= 0 && X < this->gridWidth && Y < this->gridHeight);
-    if (X > 0) {
-        this->checkInputCoordinates_(X - 1, Y); // left
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    if (x > 0) {
+        this->checkInputCoordinates_(x - 1, y); // left
     }
-    if (X < this->gridWidth - 1) {
-        this->checkInputCoordinates_(X + 1, Y); // right
+    if (x < this->_gridWidth - 1) {
+        this->checkInputCoordinates_(x + 1, y); // right
     }
-    if (Y > 0) {
-        this->checkInputCoordinates_(X, Y - 1); // top
+    if (y > 0) {
+        this->checkInputCoordinates_(x, y - 1); // top
     }
-    if (Y < this->gridHeight - 1) {
-        this->checkInputCoordinates_(X, Y + 1); // bottom
+    if (y < this->_gridHeight - 1) {
+        this->checkInputCoordinates_(x, y + 1); // bottom
     }
-    if (X > 0 && Y > 0) {
-        this->checkInputCoordinates_(X - 1, Y - 1); // top left
+    if (x > 0 && y > 0) {
+        this->checkInputCoordinates_(x - 1, y - 1); // top left
     }
-    if (Y > 0 && X < this->gridWidth - 1) {
-        this->checkInputCoordinates_(X + 1, Y - 1); // top right
+    if (y > 0 && x < this->_gridWidth - 1) {
+        this->checkInputCoordinates_(x + 1, y - 1); // top right
     }
-    if (Y < this->gridHeight - 1 && X > 0) {
-        this->checkInputCoordinates_(X - 1, Y + 1); // bottom left
+    if (y < this->_gridHeight - 1 && x > 0) {
+        this->checkInputCoordinates_(x - 1, y + 1); // bottom left
     }
-    if (X < this->gridWidth - 1 && Y < this->gridHeight - 1) {
-        this->checkInputCoordinates_(X + 1, Y + 1); // bottom right
+    if (x < this->_gridWidth - 1 && y < this->_gridHeight - 1) {
+        this->checkInputCoordinates_(x + 1, y + 1); // bottom right
     }
 }
 
-int Game::getGridHeight() const { return this->gridHeight; }
+int Game::getGridHeight() const { return this->_gridHeight; }
 
-int Game::getGridWidth() const { return this->gridWidth; }
+int Game::getGridWidth() const { return this->_gridWidth; }
 
-int Game::getNumOfMines() const { return this->numOfMines; }
+int Game::getNumOfMines() const { return this->_numOfMines; }
 
 std::ostream& Game::serialise(std::ostream& outStream) const {
+
+    // current serialisation magic and version:
+    const std::string CURRENT_SERIALISATION_MAGIC = "Timi's Minesweeper";
+    const std::string CURRENT_SERIALISATION_VERSION = "1.0";
+
+    // +-------------------------+
+    // | Start of serialisation: |
+    // +-------------------------+
 
     nlohmann::json j;
 
     // magic and version information:
-    j["magic"] = "Timi's Minesweeper";
-    j["version"] = "1.0";
+    j[MAGIC_KEY] = CURRENT_SERIALISATION_MAGIC;
+    j[VERSION_KEY] = CURRENT_SERIALISATION_VERSION;
 
     // current game fields:
-    j["currentGame"]["gridHeight"] = this->gridHeight;
-    j["currentGame"]["gridWidth"] = this->gridWidth;
-    j["currentGame"]["numOfMines"] = this->numOfMines;
-    j["currentGame"]["numOfMarkedMines"] = this->numOfMarkedMines;
-    j["currentGame"]["numOfWronglyMarkedCells"] = this->numOfWronglyMarkedCells;
-    j["currentGame"]["numOfVisibleCells"] = this->numOfVisibleCells;
-    j["currentGame"]["_checkedMine"] = this->_checkedMine;
-    j["currentGame"]["minesHaveBeenSet"] = this->minesHaveBeenSet;
+    j[CURRENT_GAME_KEY][GRID_HEIGHT_KEY] = this->_gridHeight;
+    j[CURRENT_GAME_KEY][GRID_WIDTH_KEY] = this->_gridWidth;
+    j[CURRENT_GAME_KEY][NUM_OF_MINES_KEY] = this->_numOfMines;
+    j[CURRENT_GAME_KEY][NUM_OF_MARKED_MINES_KEY] = this->_numOfMarkedMines;
+    j[CURRENT_GAME_KEY][NUM_OF_WRONGLY_MARKED_CELLS_KEY] = this->_numOfWronglyMarkedCells;
+    j[CURRENT_GAME_KEY][NUM_OF_VISIBLE_CELLS_KEY] = this->_numOfVisibleCells;
+    j[CURRENT_GAME_KEY][CHECKED_MINE_KEY] = this->_checkedMine;
+    j[CURRENT_GAME_KEY][MINES_HAVE_BEEN_SET_KEY] = this->_minesHaveBeenSet;
 
     // cell data:
-    if (this->gridHeight != 0 && this->gridWidth != 0) {
-        for (int y = 0; y < this->gridHeight; ++y) {
+    if (this->_gridHeight != 0 && this->_gridWidth != 0) {
+        for (int y = 0; y < this->_gridHeight; ++y) {
 
             nlohmann::json jRowObject;
-            jRowObject["rowNumber"] = y;
+            jRowObject[ROW_NUMBER_KEY] = y;
 
-            for (int x = 0; x < this->gridWidth; ++x) {
+            for (int x = 0; x < this->_gridWidth; ++x) {
 
                 nlohmann::json jCellObject;
-                jCellObject["columnNumber"] = x;
+                jCellObject[COLUMN_NUMBER_KEY] = x;
 
-                jCellObject["cell"] = cells[y][x]->serialise();
+                jCellObject[CELL_KEY] = this->_cells[y][x]->serialise();
 
-                jRowObject["rowCells"].push_back(jCellObject);
+                jRowObject[ROW_CELLS_KEY].push_back(jCellObject);
             }
 
-            j["currentGame"]["cells"].push_back(jRowObject);
+            j[CURRENT_GAME_KEY][CELLS_KEY].push_back(jRowObject);
         }
     }
 
@@ -657,50 +760,56 @@ std::istream& Game::deserialise(std::istream& inStream) {
     // this method assigns field straight away,
     // hence it cannot be trusted to leave Game in valid state if and error occurs.
 
+    // current serialisation magic and version:
+    const std::string CURRENT_SERIALISATION_MAGIC = "Timi's Minesweeper";
+    const std::string CURRENT_SERIALISATION_VERSION = "1.0";
+
     try {
 
         nlohmann::json j;
         inStream >> j;
 
-        if (j.at("magic") == "Timi's Minesweeper") {
-            if (j.at("version") == "1.0") {
+        if (j.at(MAGIC_KEY) == CURRENT_SERIALISATION_MAGIC) {
+            if (j.at(VERSION_KEY) == CURRENT_SERIALISATION_VERSION) {
 
                 // current game fields:
-                int newGridHeight = verifyGridDimension(j.at("currentGame").at("gridHeight"));
-                int newGridWidth = verifyGridDimension(j.at("currentGame").at("gridWidth"));
-                int newNumOfMines = verifyNumOfMines(j.at("currentGame").at("numOfMines"), newGridHeight, newGridWidth);
+                int newGridHeight = verifyGridDimension_(j.at(CURRENT_GAME_KEY).at(GRID_HEIGHT_KEY));
+                int newGridWidth = verifyGridDimension_(j.at(CURRENT_GAME_KEY).at(GRID_WIDTH_KEY));
+                int newNumOfMines =
+                    verifyNumOfMines_(j.at(CURRENT_GAME_KEY).at(NUM_OF_MINES_KEY), newGridHeight, newGridWidth);
                 int newNumOfMarkedMines =
-                    verifyNumOfMarkedMines(j.at("currentGame").at("numOfMarkedMines"), newNumOfMines);
-                int newNumOfWronglyMarkedCells = verifyNumOfWronglyMarkedCells(
-                    j.at("currentGame").at("numOfWronglyMarkedCells"), newGridHeight, newGridWidth, newNumOfMines);
-                int newNumOfVisibleCells =
-                    verifyNumOfVisibleCells(j.at("currentGame").at("numOfVisibleCells"), newGridHeight, newGridWidth);
-                bool new_checkedMine = j.at("currentGame").at("_checkedMine");
-                bool newMinesHaveBeenSet = j.at("currentGame").at("minesHaveBeenSet");
+                    verifyNumOfMarkedMines_(j.at(CURRENT_GAME_KEY).at(NUM_OF_MARKED_MINES_KEY), newNumOfMines);
+                int newNumOfWronglyMarkedCells =
+                    verifyNumOfWronglyMarkedCells_(j.at(CURRENT_GAME_KEY).at(NUM_OF_WRONGLY_MARKED_CELLS_KEY),
+                                                   newGridHeight, newGridWidth, newNumOfMines);
+                int newNumOfVisibleCells = verifyNumOfVisibleCells_(j.at(CURRENT_GAME_KEY).at(NUM_OF_VISIBLE_CELLS_KEY),
+                                                                    newGridHeight, newGridWidth);
+                bool newCheckedMine = j.at(CURRENT_GAME_KEY).at(CHECKED_MINE_KEY);
+                bool newMinesHaveBeenSet = j.at(CURRENT_GAME_KEY).at(MINES_HAVE_BEEN_SET_KEY);
 
-                this->gridHeight = newGridHeight;
-                this->gridWidth = newGridWidth;
-                this->numOfMines = newNumOfMines;
-                this->numOfMarkedMines = newNumOfMarkedMines;
-                this->numOfWronglyMarkedCells = newNumOfWronglyMarkedCells;
-                this->numOfVisibleCells = newNumOfVisibleCells;
-                this->_checkedMine = new_checkedMine;
-                this->minesHaveBeenSet = newMinesHaveBeenSet;
+                this->_gridHeight = newGridHeight;
+                this->_gridWidth = newGridWidth;
+                this->_numOfMines = newNumOfMines;
+                this->_numOfMarkedMines = newNumOfMarkedMines;
+                this->_numOfWronglyMarkedCells = newNumOfWronglyMarkedCells;
+                this->_numOfVisibleCells = newNumOfVisibleCells;
+                this->_checkedMine = newCheckedMine;
+                this->_minesHaveBeenSet = newMinesHaveBeenSet;
 
                 // resize cells/grid to accept their data
-                this->resizeCells(newGridHeight, newGridWidth);
+                this->resizeCells_(newGridHeight, newGridWidth);
 
                 // cell data:
-                if (this->gridHeight != 0 && this->gridWidth != 0) {
-                    for (auto& jRowObject : j.at("currentGame").at("cells")) {
+                if (this->_gridHeight != 0 && this->_gridWidth != 0) {
+                    for (auto& jRowObject : j.at(CURRENT_GAME_KEY).at(CELLS_KEY)) {
 
-                        const int y = jRowObject.at("rowNumber");
+                        const int Y = jRowObject.at(ROW_NUMBER_KEY);
 
-                        for (auto& jCellObject : jRowObject.at("rowCells")) {
+                        for (auto& jCellObject : jRowObject.at(ROW_CELLS_KEY)) {
 
-                            const int x = jCellObject.at("columnNumber");
+                            const int X = jCellObject.at(COLUMN_NUMBER_KEY);
 
-                            cells[y][x]->deserialise(jCellObject.at("cell"));
+                            this->_cells[Y][X]->deserialise(jCellObject.at(CELL_KEY));
                         }
                     }
                 }

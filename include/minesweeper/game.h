@@ -21,26 +21,24 @@ class Game {
     // | fields: |
     // +---------+
 
-    int gridHeight = 0;
-    int gridWidth = 0;
-    int numOfMines = 0;
-    int numOfMarkedMines = 0;
-    int numOfWronglyMarkedCells = 0;
-    int numOfVisibleCells = 0;
+    int _gridHeight = 0;
+    int _gridWidth = 0;
+    int _numOfMines = 0;
+    int _numOfMarkedMines = 0;
+    int _numOfWronglyMarkedCells = 0;
+    int _numOfVisibleCells = 0;
     bool _checkedMine = false;
-    bool minesHaveBeenSet = false;
+    bool _minesHaveBeenSet = false;
 
-    std::vector<std::vector<std::unique_ptr<Cell>>> cells;
+    std::vector<std::vector<std::unique_ptr<Cell>>> _cells;
 
     // field used to randomise vector of ints to choose locations of mines
-    IRandom* random = nullptr;
+    IRandom* _random = nullptr;
 
     // static field used to randomise vector of ints to choose locations of mines
     // only used if IRandom not specifically set for an instance
     // set with setDefaultRandom(IRandom* random)
     static IRandom* defaultRandom;
-
-    static const int MAX_NUMBER_OF_CELLS_AROUND_MINE = 8;
 
   public:
     // +-----------------+
@@ -49,6 +47,8 @@ class Game {
 
     // constructors:
     Game();
+    Game(const Game& other);
+    Game(Game&& other) noexcept;
     Game(int gridSize, int numOfMines, IRandom* random = nullptr);
     Game(int gridHeight, int gridWidth, int numOfMines, IRandom* random = nullptr);
     Game(int gridSize, double proportionOfMines, IRandom* random = nullptr);
@@ -56,6 +56,13 @@ class Game {
 
     // default destructor:
     ~Game();
+
+    // assignment operators:
+    Game& operator=(Game other);
+    Game& operator=(Game&& other) noexcept;
+
+    // swap:
+    friend void swap(Game& first, Game& second);
 
     // reset and new game methods:
     void reset(bool keepCreatedMines = false);
@@ -65,23 +72,23 @@ class Game {
     void newGame(int gridHeight, int gridWidth, double proportionOfMines);
 
     // optional (and not recommended) now, invoked by: 'checkInputCoordinates' (left available for legacy support)
-    void createMinesAndNums(const int initChosenX, const int initChosenY);
+    void createMinesAndNums(int initChosenX, int initChosenY);
 
     // to check user given coordinates, and make it visible
-    void checkInputCoordinates(const int X, const int Y);
+    void checkInputCoordinates(int x, int y);
 
     // to mark (or unmark) given coordinates, and keeping track of marked and wrongly marked mines
-    void markInputCoordinates(const int X, const int Y);
+    void markInputCoordinates(int x, int y);
 
     // game progress information:
     bool playerHasWon() const;
     bool playerHasLost() const;
 
     // cell information:
-    bool isCellVisible(const int X, const int Y) const;
-    bool doesCellHaveMine(const int X, const int Y) const;
-    bool isCellMarked(const int X, const int Y) const;
-    int numOfMinesAroundCell(const int X, const int Y) const;
+    bool isCellVisible(int x, int y) const;
+    bool doesCellHaveMine(int x, int y) const;
+    bool isCellMarked(int x, int y) const;
+    int numOfMinesAroundCell(int x, int y) const;
 
     // getters:
     int getGridHeight() const;
@@ -96,14 +103,14 @@ class Game {
 
     // get visual information of cell:
     template <class T = VisualMinesweeperCell>
-    T visualiseCell(const int X, const int Y) const;
+    T visualiseCell(int x, int y) const;
 
     // get visual information of each cell:
     template <class Container,
-              typename std::enable_if<is_expandable_1D_sequence_container<Container>::value, int>::type = 0>
+              typename std::enable_if<is_expandable_1d_sequence_container<Container>::value, int>::type = 0>
     Container visualise() const;
     template <class Container,
-              typename std::enable_if<is_expandable_2D_sequence_container<Container>::value, int>::type = 0>
+              typename std::enable_if<is_expandable_2d_sequence_container<Container>::value, int>::type = 0>
     Container visualise() const;
 
     // +------------------------+
@@ -114,76 +121,103 @@ class Game {
     static void setDefaultRandom(IRandom* random);
 
     // static maximum number/proportion of mines checking methods:
-    static int maxNumOfMines(const int gridHeight, const int gridWidth);
-    static double maxProportionOfMines(const int gridHeight, const int gridWidth);
+    static int maxNumOfMines(int gridHeight, int gridWidth);
+    static double maxProportionOfMines(int gridHeight, int gridWidth);
 
     // static minimum number/proportion of mines checking methods:
     static int minNumOfMines();
-    static int minNumOfMines(const int gridHeight, const int gridWidth);
+    static int minNumOfMines(int gridHeight, int gridWidth);
     static double minProportionOfMines();
-    static double minProportionOfMines(const int gridHeight, const int gridWidth);
+    static double minProportionOfMines(int gridHeight, int gridWidth);
 
   private:
+    // +----------------------+
+    // | static const fields: |
+    // +----------------------+
+
+    static const int MAX_NUMBER_OF_CELLS_AROUND_MINE;
+
+    // serialisation magic/version keys:
+    static const char* MAGIC_KEY;
+    static const char* VERSION_KEY;
+    // basic serialisation structure keys:
+    static const char* CURRENT_GAME_KEY;
+    static const char* ROW_NUMBER_KEY;
+    static const char* COLUMN_NUMBER_KEY;
+    static const char* CELLS_KEY;
+    static const char* ROW_CELLS_KEY;
+    static const char* CELL_KEY;
+    // Game private member keys:
+    static const char* GRID_HEIGHT_KEY;
+    static const char* GRID_WIDTH_KEY;
+    static const char* NUM_OF_MINES_KEY;
+    static const char* NUM_OF_MARKED_MINES_KEY;
+    static const char* NUM_OF_WRONGLY_MARKED_CELLS_KEY;
+    static const char* NUM_OF_VISIBLE_CELLS_KEY;
+    static const char* CHECKED_MINE_KEY;
+    static const char* MINES_HAVE_BEEN_SET_KEY;
+
     // +------------------+
     // | private methods: |
     // +------------------+
 
     // private resizeCells method:
-    void resizeCells(int gridH, int gridW);
+    void resizeCells_(int gridH, int gridW);
 
     // private mines creation methods:
-    void createMinesAndNums_(const int initChosenX, const int initChosenY);
-    void chooseRandomMineCells(std::vector<int>& mineSpots, const int initChosenX, const int initChosenY) const;
-    void randomizeMineVector(std::vector<int>& mineSpots) const;
-    void createMine(const int X, const int Y);
-    void incrNumsAroundMine(const int X, const int Y);
+    void createMinesAndNums_(int initChosenX, int initChosenY);
+    void chooseRandomMineCells_(std::vector<int>& mineSpots, int initChosenX, int initChosenY) const;
+    void randomizeMineVector_(std::vector<int>& mineSpots) const;
+    void createMine_(int x, int y);
+    void incrNumsAroundMine_(int x, int y);
 
     // private reset method:
     void reset_(bool keepCreatedMines = false);
 
     // private check cell methods:
-    void checkInputCoordinates_(const int X, const int Y);
-    void checkAroundCoordinate(const int X, const int Y);
-    void makeCellVisible(const int X, const int Y);
+    void checkInputCoordinates_(int x, int y);
+    void checkAroundCoordinate_(int x, int y);
+    void makeCellVisible_(int x, int y);
 
     // private mark cell methods:
-    void markCell(const int X, const int Y);
-    void unmarkCell(const int X, const int Y);
+    void markCell_(int x, int y);
+    void unmarkCell_(int x, int y);
 
     // private win conditions:
-    bool allNonMinesVisible() const;
-    bool allMinesMarked() const;
-    bool noNonMinesMarked() const;
+    bool allNonMinesVisible_() const;
+    bool allMinesMarked_() const;
+    bool noNonMinesMarked_() const;
 
     bool playerHasLost_() const;
 
     // private loss conditions:
-    bool checkedMine() const;
+    bool checkedMine_() const;
 
     // private cell information methods:
-    bool isCellVisible_(const int X, const int Y) const;
-    bool doesCellHaveMine_(const int X, const int Y) const;
-    bool isCellMarked_(const int X, const int Y) const;
-    int numOfMinesAroundCell_(const int X, const int Y) const;
+    bool isCellVisible_(int x, int y) const;
+    bool doesCellHaveMine_(int x, int y) const;
+    bool isCellMarked_(int x, int y) const;
+    int numOfMinesAroundCell_(int x, int y) const;
 
     // private visual cell information:
-    VisualMinesweeperCell visualiseCell_(const int X, const int Y) const;
+    VisualMinesweeperCell visualiseCell_(int x, int y) const;
 
     // +-------------------------+
     // | private static methods: |
     // +-------------------------+
 
-    // private static cell initialisation method:
-    static std::vector<std::vector<std::unique_ptr<Cell>>> initCells(const int gridH, const int gridW);
+    // private static cell initialisation methods:
+    static std::vector<std::vector<std::unique_ptr<Cell>>> initCells_(int gridHeight, int gridWidth);
+    static std::vector<std::vector<std::unique_ptr<Cell>>> initCells_(const Game& other);
 
     // private static verification methods:
-    static int verifyGridDimension(int gridDimension);
-    static int verifyNumOfMines(int numOfMines, int gridHeight, int gridWidth);
-    static double verifyProportionOfMines(double proportionOfMines, int gridHeight, int gridWidth);
-    static int verifyNumOfVisibleCells(int numOfVisibleCells, int gridHeight, int gridWidth);
-    static int verifyNumOfMarkedMines(int numOfMarkedMines, int numOfMines);
-    static int verifyNumOfWronglyMarkedCells(int numOfWronglyMarkedCells, int gridHeight, int gridWidth,
-                                             int numOfMines);
+    static int verifyGridDimension_(int gridDimension);
+    static int verifyNumOfMines_(int numOfMines, int gridHeight, int gridWidth);
+    static double verifyProportionOfMines_(double proportionOfMines, int gridHeight, int gridWidth);
+    static int verifyNumOfVisibleCells_(int numOfVisibleCells, int gridHeight, int gridWidth);
+    static int verifyNumOfMarkedMines_(int numOfMarkedMines, int numOfMines);
+    static int verifyNumOfWronglyMarkedCells_(int numOfWronglyMarkedCells, int gridHeight, int gridWidth,
+                                              int numOfMines);
 };
 
 } // namespace minesweeper

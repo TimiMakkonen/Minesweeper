@@ -51,10 +51,16 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
     'VisualMinesweeperCell' enum class. (eg. 'int')
 * Added option to add mines by proportion instead of number.
   * Added new constructors and 'newGame' overloads to support this.
+* Added 'Game' copy/move constructors, friend swap and
+  copy/move assigment operators.
+* Added 'IRandom' default constructors, destructor and
+  assigment operators.
 * Added 'type_traits' to help with template type checking at
   compile-time.
 * Prettified headers.
 * Fixed some throw messages.
+* Made 'clang-tidy' to actually work on headers.
+  * Fixed bunch of new warnings/errors identified by this.
 * Removed internal calls to public methods within the same class.
   * Should make possible thread-safe implementation trivial to achieve.
     (simply add mutex field and lock all public methods)
@@ -199,5 +205,8 @@ Initial version of the game. Mostly in working condition.
 * Add verifications to deserialisation methods to check validity of the given game.
 * Make "Game's" deserialise method safer by guaranteeing that 'Game' is left in valid condition even if if throws.
 * Add more tests.
+  * Add 'Game' copy/move constructor tests.
+  * Add 'Game' swap tests.
+  * Add 'Game' copy/move assignment tests.
 * Implement Pimpl to clear up the public API.
 * Add doxygen.
