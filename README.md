@@ -29,7 +29,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version History
 
-### Version DEVELOP
+### Version 8.4.0
 
 * Added 'VisualMinesweeperCell' enum class to represent the visual state
   of a cell.
