@@ -15,6 +15,7 @@ set(TEST_DATA_FILE_LIST
 	"lossGame_fiveByThree_serialisation.json"
 	"startedGame_sixByEight_serialisation.json"
 	"unfinishedGame_sevenBySeven_serialisation.json"
+	"invalidMarkLossGame_nineByFive_serialisation.json"
 	# invalid serialisations
 	"invalid-serialisation/invalidGridsize.json"
 	"invalid-serialisation/invalidJsonMissingBrace.json"

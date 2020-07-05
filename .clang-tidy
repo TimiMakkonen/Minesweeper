@@ -4,7 +4,8 @@ Checks: '*,
         -fuchsia-default-arguments-calls,
         -fuchsia-default-arguments-declarations,
         -llvm-header-guard,
-        -google-runtime-references'
+        -google-runtime-references,
+        -hicpp-special-member-functions'
 
 WarningsAsErrors: '*'
 

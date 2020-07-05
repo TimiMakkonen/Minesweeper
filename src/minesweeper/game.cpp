@@ -92,15 +92,6 @@ Game& Game::operator=(Game other) {
     return *this;
 }
 
-Game& Game::operator=(Game&& other) noexcept {
-
-    Game temp(std::move(other));
-
-    swap(*this, temp);
-
-    return *this;
-}
-
 // friend swap function
 void swap(Game& first, Game& second) {
 
@@ -501,6 +492,9 @@ void Game::markInputCoordinates(const int x, const int y) {
                                     "createMinesAndNums(const int initChosenX, const int initChosenY) or "
                                     "checkInputCoordinates(const int x, const int y).)");
     }
+
+    // if cell is already visible, do nothing
+    // else mark or unmark it and update 'marked counters'
     if (!this->isCellVisible_(x, y)) {
         if (this->isCellMarked_(x, y)) {
             this->unmarkCell_(x, y);

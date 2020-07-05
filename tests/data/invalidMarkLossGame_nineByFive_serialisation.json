@@ -1,0 +1,511 @@
+{
+    "currentGame": {
+        "_checkedMine": true,
+        "cells": [
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 0
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 3,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 3,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 1
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 2
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 3,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 3
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 3,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 4
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 0,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 3,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 5
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 3,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": true,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 6
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 3,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": true,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 7
+            },
+            {
+                "rowCells": [
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 0
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": true,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 1
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 2,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 2
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 3
+                    },
+                    {
+                        "cell": {
+                            "_hasMine": false,
+                            "_isMarked": false,
+                            "_isVisible": false,
+                            "_numOfMinesAround": 1,
+                            "cellVersion": "1.0"
+                        },
+                        "columnNumber": 4
+                    }
+                ],
+                "rowNumber": 8
+            }
+        ],
+        "gridHeight": 9,
+        "gridWidth": 5,
+        "minesHaveBeenSet": true,
+        "numOfMarkedMines": 7,
+        "numOfMines": 14,
+        "numOfVisibleCells": 23,
+        "numOfWronglyMarkedCells": 1
+    },
+    "magic": "Timi's Minesweeper",
+    "version": "1.0"
+}

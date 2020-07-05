@@ -15,6 +15,9 @@ namespace minesweeper {
 // declaration of 'Cell' class, properly included in 'game.cpp' file
 class Cell;
 
+// this warning can be useful, but it does not support standard copy-swap idiom
+// (consider excluding this warning from the whole project)
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 class Game {
   private:
     // +---------+
@@ -57,9 +60,8 @@ class Game {
     // default destructor:
     ~Game();
 
-    // assignment operators:
+    // assignment operator:
     Game& operator=(Game other);
-    Game& operator=(Game&& other) noexcept;
 
     // swap:
     friend void swap(Game& first, Game& second);

@@ -36,6 +36,9 @@ class MinesweeperGameTest : public ::testing::Test {
 
         unfinishedSevenBySevenGameStr = fileContentsToString(
             minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json]);
+
+        invalidMarkAndLossNineByFiveGameStr = fileContentsToString(
+            minesweeper::TEST_DATA[minesweeper::invalidMarkLossGame_nineByFive_serialisation____json]);
     }
 
     // declarations:
@@ -46,6 +49,7 @@ class MinesweeperGameTest : public ::testing::Test {
     std::string lossFiveByThreeGameStr;
     std::string checkedWinFourByEightGameStr;
     std::string unfinishedSevenBySevenGameStr;
+    std::string invalidMarkAndLossNineByFiveGameStr;
 
     // utility methods
     std::string fileContentsToString(const std::string& filePath) const {
@@ -339,6 +343,517 @@ TEST_F(MinesweeperGameTest, ConstructorMineTest) {
     EXPECT_THROW(minesweeper::Game tooBigPropMinesGame6(78, 35, 12.0251522, &myRandom), std::out_of_range);
     EXPECT_THROW(minesweeper::Game tooBigPropMinesGame7(27, 39, 46.691851081, &myRandom), std::out_of_range);
     EXPECT_THROW(minesweeper::Game tooBigPropMinesGame8(35, 44, 85.0, &myRandom), std::out_of_range);
+}
+
+TEST_F(MinesweeperGameTest, CopyConstructorTest) {
+
+    // empty game with random
+    minesweeper::Game emptyGameWithRandom(0, 0, &myRandom);
+    minesweeper::Game emptyGameWithRandomCopy(emptyGameWithRandom);
+    EXPECT_EQ(serialiseToString(emptyGameWithRandom), serialiseToString(emptyGameWithRandomCopy));
+
+    // empty game without random
+    minesweeper::Game emptyGameWithoutRandom(0, 0);
+    minesweeper::Game emptyGameWithoutRandomCopy(emptyGameWithoutRandom);
+    EXPECT_EQ(serialiseToString(emptyGameWithoutRandom), serialiseToString(emptyGameWithoutRandomCopy));
+    EXPECT_EQ(serialiseToString(emptyGameWithoutRandom), serialiseToString(emptyGameWithRandom));
+
+    // simple unstarted game with random
+    minesweeper::Game simpleUnstartedGameWithRandom(11, 12, 37, &myRandom);
+    minesweeper::Game simpleUnstartedGameWithRandomCopy(simpleUnstartedGameWithRandom);
+    EXPECT_EQ(serialiseToString(simpleUnstartedGameWithRandom), serialiseToString(simpleUnstartedGameWithRandomCopy));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandom.checkInputCoordinates(6, 5));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy.checkInputCoordinates(6, 5));
+
+    // simple unstarted game without random
+    minesweeper::Game simpleUnstartedGameWithoutRandom(13, 10, 38);
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy(simpleUnstartedGameWithoutRandom);
+    EXPECT_EQ(serialiseToString(simpleUnstartedGameWithoutRandom),
+              serialiseToString(simpleUnstartedGameWithoutRandomCopy));
+    EXPECT_THROW(simpleUnstartedGameWithoutRandom.checkInputCoordinates(7, 3), std::invalid_argument);
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy.checkInputCoordinates(7, 3), std::invalid_argument);
+
+    // simple started game
+    minesweeper::Game simpleGame(9, 16, 29, &myRandom);
+    EXPECT_NO_THROW(simpleGame.checkInputCoordinates(2, 7));
+    minesweeper::Game simpleGameCopy(simpleGame);
+    EXPECT_EQ(serialiseToString(simpleGame), serialiseToString(simpleGameCopy));
+
+    // normal started game with checks and marks
+    // (Since the grid is randomly generated, this will check different grid each time.
+    //  Hence this might suddenly catch an unexpected error)
+    minesweeper::Game normalGame(13, 9, 0.5, &myRandom);
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(7, 1));
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(5, 5));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(1, 0));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(4, 11));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(2, 8));
+    minesweeper::Game normalGameCopy(normalGame);
+    EXPECT_EQ(serialiseToString(normalGame), serialiseToString(normalGameCopy));
+
+    // lost game with invalid mark (should explore/validate most of Game fields)
+    minesweeper::Game invalidMarkAndLossGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::invalidMarkLossGame_nineByFive_serialisation____json],
+                            invalidMarkAndLossGame));
+    EXPECT_NE(invalidMarkAndLossNineByFiveGameStr, "");
+    minesweeper::Game invalidMarkAndLossGameCopy(invalidMarkAndLossGame);
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy));
+}
+
+TEST_F(MinesweeperGameTest, MoveConstructorTest) {
+
+    // empty game with random
+    minesweeper::Game emptyGameWithRandom(0, 0, &myRandom);
+    std::string emptyGameWithRandomStr = serialiseToString(emptyGameWithRandom);
+    minesweeper::Game emptyGameWithRandomCopy(std::move(emptyGameWithRandom));
+    EXPECT_EQ(emptyGameWithRandomStr, serialiseToString(emptyGameWithRandomCopy));
+
+    // empty game without random
+    minesweeper::Game emptyGameWithoutRandom(0, 0);
+    std::string emptyGameWithoutRandomStr = serialiseToString(emptyGameWithoutRandom);
+    minesweeper::Game emptyGameWithoutRandomCopy(std::move(emptyGameWithoutRandom));
+    EXPECT_EQ(emptyGameWithoutRandomStr, serialiseToString(emptyGameWithoutRandomCopy));
+    EXPECT_EQ(emptyGameWithoutRandomStr, serialiseToString(emptyGameWithRandom));
+
+    // simple unstarted game with random
+    minesweeper::Game simpleUnstartedGameWithRandom(11, 12, 37, &myRandom);
+    std::string simpleUnstartedGameWithRandomStr = serialiseToString(simpleUnstartedGameWithRandom);
+    minesweeper::Game simpleUnstartedGameWithRandomCopy(std::move(simpleUnstartedGameWithRandom));
+    EXPECT_EQ(simpleUnstartedGameWithRandomStr, serialiseToString(simpleUnstartedGameWithRandomCopy));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy.checkInputCoordinates(6, 5));
+
+    // simple unstarted game without random
+    minesweeper::Game simpleUnstartedGameWithoutRandom(13, 10, 38);
+    std::string simpleUnstartedGameWithoutRandomStr = serialiseToString(simpleUnstartedGameWithoutRandom);
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy(std::move(simpleUnstartedGameWithoutRandom));
+    EXPECT_EQ(simpleUnstartedGameWithoutRandomStr, serialiseToString(simpleUnstartedGameWithoutRandomCopy));
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy.checkInputCoordinates(7, 3), std::invalid_argument);
+
+    // simple started game
+    minesweeper::Game simpleGame(9, 16, 29, &myRandom);
+    EXPECT_NO_THROW(simpleGame.checkInputCoordinates(2, 7));
+    std::string simpleGameStr = serialiseToString(simpleGame);
+    minesweeper::Game simpleGameCopy(std::move(simpleGame));
+    EXPECT_EQ(simpleGameStr, serialiseToString(simpleGameCopy));
+
+    // normal started game with checks and marks
+    // (Since the grid is randomly generated, this will check different grid each time.
+    //  Hence this might suddenly catch an unexpected error)
+    minesweeper::Game normalGame(13, 9, 0.5, &myRandom);
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(7, 1));
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(5, 5));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(1, 0));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(4, 11));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(2, 8));
+    std::string normalGameStr = serialiseToString(normalGame);
+    minesweeper::Game normalGameCopy(std::move(normalGame));
+    EXPECT_EQ(normalGameStr, serialiseToString(normalGameCopy));
+
+    // lost game with invalid mark (should explore/validate most of Game fields)
+    minesweeper::Game invalidMarkAndLossGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::invalidMarkLossGame_nineByFive_serialisation____json],
+                            invalidMarkAndLossGame));
+    EXPECT_NE(invalidMarkAndLossNineByFiveGameStr, "");
+    minesweeper::Game invalidMarkAndLossGameCopy(std::move(invalidMarkAndLossGame));
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy));
+}
+
+TEST_F(MinesweeperGameTest, CopyAssignmentTest) {
+
+    // empty game with random
+    minesweeper::Game emptyGameWithRandom(0, 0, &myRandom);
+    minesweeper::Game emptyGameWithRandomCopy(15, 20);
+    emptyGameWithRandomCopy = emptyGameWithRandom;
+    EXPECT_EQ(serialiseToString(emptyGameWithRandom), serialiseToString(emptyGameWithRandomCopy));
+
+    // empty game without random
+    minesweeper::Game emptyGameWithoutRandom(0, 0);
+    minesweeper::Game emptyGameWithoutRandomCopy(11, 12, 0.5, &myRandom);
+    emptyGameWithoutRandomCopy = emptyGameWithoutRandom;
+    EXPECT_EQ(serialiseToString(emptyGameWithoutRandom), serialiseToString(emptyGameWithoutRandomCopy));
+    EXPECT_EQ(serialiseToString(emptyGameWithoutRandom), serialiseToString(emptyGameWithRandom));
+
+    // +-----------------------------------+
+    // | simple unstarted game with random |
+    // +-----------------------------------+
+    minesweeper::Game simpleUnstartedGameWithRandom(11, 12, 37, &myRandom);
+    std::string simpleUnstartedGameWithRandomStr = serialiseToString(simpleUnstartedGameWithRandom);
+    // simple copy
+    minesweeper::Game simpleUnstartedGameWithRandomCopy1(9, 8, &myRandom);
+    simpleUnstartedGameWithRandomCopy1 = simpleUnstartedGameWithRandom;
+    // copy without random
+    minesweeper::Game simpleUnstartedGameWithRandomCopy2;
+    simpleUnstartedGameWithRandomCopy2 = simpleUnstartedGameWithRandom;
+    // copy with progress made already
+    minesweeper::Game simpleUnstartedGameWithRandomCopy3(10, 5, &myRandom);
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.checkInputCoordinates(2, 4));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.checkInputCoordinates(4, 7));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.markInputCoordinates(0, 0));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.markInputCoordinates(0, 8));
+    simpleUnstartedGameWithRandomCopy3 = simpleUnstartedGameWithRandom;
+    // checks
+    EXPECT_EQ(simpleUnstartedGameWithRandomStr, serialiseToString(simpleUnstartedGameWithRandomCopy1));
+    EXPECT_EQ(simpleUnstartedGameWithRandomStr, serialiseToString(simpleUnstartedGameWithRandomCopy2));
+    EXPECT_EQ(simpleUnstartedGameWithRandomStr, serialiseToString(simpleUnstartedGameWithRandomCopy3));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandom.checkInputCoordinates(6, 5));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy1.checkInputCoordinates(6, 5));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy2.checkInputCoordinates(6, 5));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.checkInputCoordinates(6, 5));
+
+    // +--------------------------------------+
+    // | simple unstarted game without random |
+    // +--------------------------------------+
+    minesweeper::Game simpleUnstartedGameWithoutRandom(13, 10, 38);
+    std::string simpleUnstartedGameWithoutRandomStr = serialiseToString(simpleUnstartedGameWithoutRandom);
+    // simple copy
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy1(10, 3, nullptr);
+    simpleUnstartedGameWithoutRandomCopy1 = simpleUnstartedGameWithoutRandom;
+    // copy with random
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy2(4, 7, &myRandom);
+    simpleUnstartedGameWithoutRandomCopy2 = simpleUnstartedGameWithoutRandom;
+    // copy with progress made already
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy3(9, 29, &myRandom);
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.checkInputCoordinates(4, 3));
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.checkInputCoordinates(0, 1));
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.markInputCoordinates(8, 7));
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.markInputCoordinates(5, 0));
+    simpleUnstartedGameWithoutRandomCopy3 = simpleUnstartedGameWithoutRandom;
+    // checks
+    EXPECT_EQ(simpleUnstartedGameWithoutRandomStr, serialiseToString(simpleUnstartedGameWithoutRandomCopy1));
+    EXPECT_EQ(simpleUnstartedGameWithoutRandomStr, serialiseToString(simpleUnstartedGameWithoutRandomCopy2));
+    EXPECT_EQ(simpleUnstartedGameWithoutRandomStr, serialiseToString(simpleUnstartedGameWithoutRandomCopy3));
+    EXPECT_THROW(simpleUnstartedGameWithoutRandom.checkInputCoordinates(7, 3), std::invalid_argument);
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy1.checkInputCoordinates(7, 3), std::invalid_argument);
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy2.checkInputCoordinates(7, 3), std::invalid_argument);
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy3.checkInputCoordinates(7, 3), std::invalid_argument);
+
+    // +---------------------+
+    // | simple started game |
+    // +---------------------+
+    minesweeper::Game simpleGame(9, 16, 29, &myRandom);
+    EXPECT_NO_THROW(simpleGame.checkInputCoordinates(2, 7));
+    std::string simpleGameStr = serialiseToString(simpleGame);
+    // simple copy
+    minesweeper::Game simpleGameCopy1(7, 0.6, &myRandom);
+    simpleGameCopy1 = simpleGame;
+    // copy without random
+    minesweeper::Game simpleGameCopy2(5, 7);
+    simpleGameCopy2 = simpleGame;
+    // copy with progress made already
+    minesweeper::Game simpleGameCopy3(8, 12, 24, &myRandom);
+    EXPECT_NO_THROW(simpleGameCopy3.checkInputCoordinates(2, 1));
+    EXPECT_NO_THROW(simpleGameCopy3.checkInputCoordinates(10, 4));
+    EXPECT_NO_THROW(simpleGameCopy3.markInputCoordinates(0, 6));
+    EXPECT_NO_THROW(simpleGameCopy3.markInputCoordinates(9, 5));
+    simpleGameCopy3 = simpleGame;
+    // checks
+    EXPECT_EQ(simpleGameStr, serialiseToString(simpleGameCopy1));
+    EXPECT_EQ(simpleGameStr, serialiseToString(simpleGameCopy2));
+    EXPECT_EQ(simpleGameStr, serialiseToString(simpleGameCopy3));
+    EXPECT_NO_THROW(simpleGame.checkInputCoordinates(11, 0));
+    EXPECT_NO_THROW(simpleGameCopy1.checkInputCoordinates(11, 0));
+    EXPECT_NO_THROW(simpleGameCopy2.checkInputCoordinates(11, 0));
+    EXPECT_NO_THROW(simpleGameCopy3.checkInputCoordinates(11, 0));
+
+    // +-------------------------------------------+
+    // | normal started game with checks and marks |
+    // +-------------------------------------------+
+    // (Since the grid is randomly generated, this will check different grid each time.
+    //  Hence this might suddenly catch an unexpected error)
+    minesweeper::Game normalGame(13, 9, 0.5, &myRandom);
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(7, 1));
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(5, 5));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(1, 0));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(4, 11));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(2, 8));
+    std::string normalGameStr = serialiseToString(normalGame);
+    // simple copy
+    minesweeper::Game normalGameCopy1(9, 14, 34, &myRandom);
+    normalGameCopy1 = normalGame;
+    // copy without random
+    minesweeper::Game normalGameCopy2(8, 7, 0.445'45);
+    normalGameCopy2 = normalGame;
+    // copy with progress made already
+    minesweeper::Game normalGameCopy3(11, 0.531, &myRandom);
+    EXPECT_NO_THROW(normalGameCopy3.checkInputCoordinates(8, 2));
+    EXPECT_NO_THROW(normalGameCopy3.checkInputCoordinates(2, 3));
+    EXPECT_NO_THROW(normalGameCopy3.markInputCoordinates(2, 7));
+    EXPECT_NO_THROW(normalGameCopy3.markInputCoordinates(5, 5));
+    normalGameCopy3 = normalGame;
+    // checks
+    EXPECT_EQ(normalGameStr, serialiseToString(normalGameCopy1));
+    EXPECT_EQ(normalGameStr, serialiseToString(normalGameCopy2));
+    EXPECT_EQ(normalGameStr, serialiseToString(normalGameCopy3));
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(4, 9));
+    EXPECT_NO_THROW(normalGameCopy1.checkInputCoordinates(4, 9));
+    EXPECT_NO_THROW(normalGameCopy2.checkInputCoordinates(4, 9));
+    EXPECT_NO_THROW(normalGameCopy3.checkInputCoordinates(4, 9));
+
+    // +-----------------------------+
+    // | lost game with invalid mark |
+    // +-----------------------------+
+    // (should explore/validate most of Game fields)
+    minesweeper::Game invalidMarkAndLossGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::invalidMarkLossGame_nineByFive_serialisation____json],
+                            invalidMarkAndLossGame));
+    EXPECT_NE(invalidMarkAndLossNineByFiveGameStr, "");
+    // simple copy
+    minesweeper::Game invalidMarkAndLossGameCopy1(13, 0.354, &myRandom);
+    invalidMarkAndLossGameCopy1 = invalidMarkAndLossGame;
+    // copy without random
+    minesweeper::Game invalidMarkAndLossGameCopy2(7, 11, 28);
+    invalidMarkAndLossGameCopy2 = invalidMarkAndLossGame;
+    // copy with progress made already
+    minesweeper::Game invalidMarkAndLossGameCopy3(8, 11, 28, &myRandom);
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.checkInputCoordinates(8, 2));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.checkInputCoordinates(2, 3));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.markInputCoordinates(2, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.markInputCoordinates(5, 5));
+    invalidMarkAndLossGameCopy3 = invalidMarkAndLossGame;
+    // checks
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy1));
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy2));
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy3));
+    EXPECT_NO_THROW(invalidMarkAndLossGame.checkInputCoordinates(1, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy1.checkInputCoordinates(1, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy2.checkInputCoordinates(1, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.checkInputCoordinates(1, 7));
+}
+
+TEST_F(MinesweeperGameTest, MoveAssignmentTest) {
+
+    //----------------------------------------------------------------------
+    // As it is, these tests a quite redundant, since they are almost straight up copies of 'CopyAssignmentTest'.
+    // They are left just as a precaution and/or in case copy and move assignment get separated later on.
+    //----------------------------------------------------------------------
+
+    // empty game with random
+    minesweeper::Game emptyGameWithRandom(0, 0, &myRandom);
+    std::string emptyGameWithRandomStr = serialiseToString(emptyGameWithRandom);
+    minesweeper::Game emptyGameWithRandomCopy(15, 20);
+    emptyGameWithRandomCopy = std::move(emptyGameWithRandom);
+    EXPECT_EQ(emptyGameWithRandomStr, serialiseToString(emptyGameWithRandomCopy));
+
+    // empty game without random
+    minesweeper::Game emptyGameWithoutRandom(0, 0);
+    minesweeper::Game emptyGameWithoutRandomCopy(11, 12, 0.5, &myRandom);
+    std::string emptyGameWithoutRandomStr = serialiseToString(emptyGameWithoutRandom);
+    emptyGameWithoutRandomCopy = std::move(emptyGameWithoutRandom);
+    EXPECT_EQ(emptyGameWithoutRandomStr, serialiseToString(emptyGameWithoutRandomCopy));
+    EXPECT_EQ(emptyGameWithoutRandomStr, emptyGameWithRandomStr);
+
+    // +-----------------------------------+
+    // | simple unstarted game with random |
+    // +-----------------------------------+
+    minesweeper::Game simpleUnstartedGameWithRandom(11, 12, 37, &myRandom);
+    std::string simpleUnstartedGameWithRandomStr = serialiseToString(simpleUnstartedGameWithRandom);
+    // simple copy
+    minesweeper::Game simpleUnstartedGameWithRandomCopy1(9, 8, &myRandom);
+    auto simpleUnstartedGameWithRandomCopy1BeforeMove = simpleUnstartedGameWithRandom;
+    simpleUnstartedGameWithRandomCopy1 = std::move(simpleUnstartedGameWithRandomCopy1BeforeMove);
+    // copy without random
+    minesweeper::Game simpleUnstartedGameWithRandomCopy2;
+    auto simpleUnstartedGameWithRandomCopy2BeforeMove = simpleUnstartedGameWithRandom;
+    simpleUnstartedGameWithRandomCopy2 = std::move(simpleUnstartedGameWithRandomCopy2BeforeMove);
+    // copy with progress made already
+    minesweeper::Game simpleUnstartedGameWithRandomCopy3(10, 5, &myRandom);
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.checkInputCoordinates(2, 4));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.checkInputCoordinates(4, 7));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.markInputCoordinates(0, 0));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.markInputCoordinates(0, 8));
+    auto simpleUnstartedGameWithRandomCopy3BeforeMove = simpleUnstartedGameWithRandom;
+    simpleUnstartedGameWithRandomCopy3 = std::move(simpleUnstartedGameWithRandomCopy3BeforeMove);
+    // checks
+    EXPECT_EQ(simpleUnstartedGameWithRandomStr, serialiseToString(simpleUnstartedGameWithRandomCopy1));
+    EXPECT_EQ(simpleUnstartedGameWithRandomStr, serialiseToString(simpleUnstartedGameWithRandomCopy2));
+    EXPECT_EQ(simpleUnstartedGameWithRandomStr, serialiseToString(simpleUnstartedGameWithRandomCopy3));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandom.checkInputCoordinates(6, 5));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy1.checkInputCoordinates(6, 5));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy2.checkInputCoordinates(6, 5));
+    EXPECT_NO_THROW(simpleUnstartedGameWithRandomCopy3.checkInputCoordinates(6, 5));
+
+    // +--------------------------------------+
+    // | simple unstarted game without random |
+    // +--------------------------------------+
+    minesweeper::Game simpleUnstartedGameWithoutRandom(13, 10, 38);
+    std::string simpleUnstartedGameWithoutRandomStr = serialiseToString(simpleUnstartedGameWithoutRandom);
+    // simple copy
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy1(10, 3, nullptr);
+    auto simpleUnstartedGameWithoutRandomCopy1BeforeMove = simpleUnstartedGameWithoutRandom;
+    simpleUnstartedGameWithoutRandomCopy1 = std::move(simpleUnstartedGameWithoutRandomCopy1BeforeMove);
+    // copy with random
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy2(4, 7, &myRandom);
+    auto simpleUnstartedGameWithoutRandomCopy2BeforeMove = simpleUnstartedGameWithoutRandom;
+    simpleUnstartedGameWithoutRandomCopy2 = std::move(simpleUnstartedGameWithoutRandomCopy2BeforeMove);
+    // copy with progress made already
+    minesweeper::Game simpleUnstartedGameWithoutRandomCopy3(9, 29, &myRandom);
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.checkInputCoordinates(4, 3));
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.checkInputCoordinates(0, 1));
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.markInputCoordinates(8, 7));
+    EXPECT_NO_THROW(simpleUnstartedGameWithoutRandomCopy3.markInputCoordinates(5, 0));
+    auto simpleUnstartedGameWithoutRandomCopy3BeforeMove = simpleUnstartedGameWithoutRandom;
+    simpleUnstartedGameWithoutRandomCopy3 = std::move(simpleUnstartedGameWithoutRandomCopy3BeforeMove);
+    // checks
+    EXPECT_EQ(simpleUnstartedGameWithoutRandomStr, serialiseToString(simpleUnstartedGameWithoutRandomCopy1));
+    EXPECT_EQ(simpleUnstartedGameWithoutRandomStr, serialiseToString(simpleUnstartedGameWithoutRandomCopy2));
+    EXPECT_EQ(simpleUnstartedGameWithoutRandomStr, serialiseToString(simpleUnstartedGameWithoutRandomCopy3));
+    EXPECT_THROW(simpleUnstartedGameWithoutRandom.checkInputCoordinates(7, 3), std::invalid_argument);
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy1.checkInputCoordinates(7, 3), std::invalid_argument);
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy2.checkInputCoordinates(7, 3), std::invalid_argument);
+    EXPECT_THROW(simpleUnstartedGameWithoutRandomCopy3.checkInputCoordinates(7, 3), std::invalid_argument);
+
+    // +---------------------+
+    // | simple started game |
+    // +---------------------+
+    minesweeper::Game simpleGame(9, 16, 29, &myRandom);
+    EXPECT_NO_THROW(simpleGame.checkInputCoordinates(2, 7));
+    std::string simpleGameStr = serialiseToString(simpleGame);
+    // simple copy
+    minesweeper::Game simpleGameCopy1(7, 0.6, &myRandom);
+    auto simpleGameCopy1BeforeMove = simpleGame;
+    simpleGameCopy1 = std::move(simpleGameCopy1BeforeMove);
+    // copy without random
+    minesweeper::Game simpleGameCopy2(5, 7);
+    auto simpleGameCopy2BeforeMove = simpleGame;
+    simpleGameCopy2 = std::move(simpleGameCopy2BeforeMove);
+    // copy with progress made already
+    minesweeper::Game simpleGameCopy3(8, 12, 24, &myRandom);
+    EXPECT_NO_THROW(simpleGameCopy3.checkInputCoordinates(2, 1));
+    EXPECT_NO_THROW(simpleGameCopy3.checkInputCoordinates(10, 4));
+    EXPECT_NO_THROW(simpleGameCopy3.markInputCoordinates(0, 6));
+    EXPECT_NO_THROW(simpleGameCopy3.markInputCoordinates(9, 5));
+    auto simpleGameCopy3BeforeMove = simpleGame;
+    simpleGameCopy3 = std::move(simpleGameCopy3BeforeMove);
+    // checks
+    EXPECT_EQ(simpleGameStr, serialiseToString(simpleGameCopy1));
+    EXPECT_EQ(simpleGameStr, serialiseToString(simpleGameCopy2));
+    EXPECT_EQ(simpleGameStr, serialiseToString(simpleGameCopy3));
+    EXPECT_NO_THROW(simpleGame.checkInputCoordinates(11, 0));
+    EXPECT_NO_THROW(simpleGameCopy1.checkInputCoordinates(11, 0));
+    EXPECT_NO_THROW(simpleGameCopy2.checkInputCoordinates(11, 0));
+    EXPECT_NO_THROW(simpleGameCopy3.checkInputCoordinates(11, 0));
+
+    // +-------------------------------------------+
+    // | normal started game with checks and marks |
+    // +-------------------------------------------+
+    // (Since the grid is randomly generated, this will check different grid each time.
+    //  Hence this might suddenly catch an unexpected error)
+    minesweeper::Game normalGame(13, 9, 0.5, &myRandom);
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(7, 1));
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(5, 5));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(1, 0));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(4, 11));
+    EXPECT_NO_THROW(normalGame.markInputCoordinates(2, 8));
+    std::string normalGameStr = serialiseToString(normalGame);
+    // simple copy
+    minesweeper::Game normalGameCopy1(9, 14, 34, &myRandom);
+    auto normalGameCopy1BeforeMove = normalGame;
+    normalGameCopy1 = std::move(normalGameCopy1BeforeMove);
+    // copy without random
+    minesweeper::Game normalGameCopy2(8, 7, 0.445'45);
+    auto normalGameCopy2BeforeMove = normalGame;
+    normalGameCopy2 = std::move(normalGameCopy2BeforeMove);
+    // copy with progress made already
+    minesweeper::Game normalGameCopy3(11, 0.531, &myRandom);
+    EXPECT_NO_THROW(normalGameCopy3.checkInputCoordinates(8, 2));
+    EXPECT_NO_THROW(normalGameCopy3.checkInputCoordinates(2, 3));
+    EXPECT_NO_THROW(normalGameCopy3.markInputCoordinates(2, 7));
+    EXPECT_NO_THROW(normalGameCopy3.markInputCoordinates(5, 5));
+    auto normalGameCopy3BeforeMove = normalGame;
+    normalGameCopy3 = std::move(normalGameCopy3BeforeMove);
+    // checks
+    EXPECT_EQ(normalGameStr, serialiseToString(normalGameCopy1));
+    EXPECT_EQ(normalGameStr, serialiseToString(normalGameCopy2));
+    EXPECT_EQ(normalGameStr, serialiseToString(normalGameCopy3));
+    EXPECT_NO_THROW(normalGame.checkInputCoordinates(4, 9));
+    EXPECT_NO_THROW(normalGameCopy1.checkInputCoordinates(4, 9));
+    EXPECT_NO_THROW(normalGameCopy2.checkInputCoordinates(4, 9));
+    EXPECT_NO_THROW(normalGameCopy3.checkInputCoordinates(4, 9));
+
+    // +-----------------------------+
+    // | lost game with invalid mark |
+    // +-----------------------------+
+    // (should explore/validate most of Game fields)
+    minesweeper::Game invalidMarkAndLossGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::invalidMarkLossGame_nineByFive_serialisation____json],
+                            invalidMarkAndLossGame));
+    EXPECT_NE(invalidMarkAndLossNineByFiveGameStr, "");
+    // simple copy
+    minesweeper::Game invalidMarkAndLossGameCopy1(13, 0.354, &myRandom);
+    auto invalidMarkAndLossGameCopy1BeforeMove = invalidMarkAndLossGame;
+    invalidMarkAndLossGameCopy1 = std::move(invalidMarkAndLossGameCopy1BeforeMove);
+    // copy without random
+    minesweeper::Game invalidMarkAndLossGameCopy2(7, 11, 28);
+    auto invalidMarkAndLossGameCopy2BeforeMove = invalidMarkAndLossGame;
+    invalidMarkAndLossGameCopy2 = std::move(invalidMarkAndLossGameCopy2BeforeMove);
+    // copy with progress made already
+    minesweeper::Game invalidMarkAndLossGameCopy3(8, 11, 28, &myRandom);
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.checkInputCoordinates(8, 2));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.checkInputCoordinates(2, 3));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.markInputCoordinates(2, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.markInputCoordinates(5, 5));
+    auto invalidMarkAndLossGameCopy3BeforeMove = invalidMarkAndLossGame;
+    invalidMarkAndLossGameCopy3 = std::move(invalidMarkAndLossGameCopy3BeforeMove);
+    // checks
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy1));
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy2));
+    EXPECT_EQ(invalidMarkAndLossNineByFiveGameStr, serialiseToString(invalidMarkAndLossGameCopy3));
+    EXPECT_NO_THROW(invalidMarkAndLossGame.checkInputCoordinates(1, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy1.checkInputCoordinates(1, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy2.checkInputCoordinates(1, 7));
+    EXPECT_NO_THROW(invalidMarkAndLossGameCopy3.checkInputCoordinates(1, 7));
+}
+
+TEST_F(MinesweeperGameTest, SwapTest) {
+    // +--------------------------------------------------------+
+    // | swap between empty game and simple started random game |
+    // +--------------------------------------------------------+
+    // empty game
+    minesweeper::Game emptyGame(0, 0);
+    std::string emptyGameBeforeSwapStr = serialiseToString(emptyGame);
+    EXPECT_NE(emptyGameBeforeSwapStr, "");
+    // simple game with random
+    minesweeper::Game simpleGameWithRandom(14, 5, 24, &myRandom);
+    EXPECT_NO_THROW(simpleGameWithRandom.checkInputCoordinates(2, 8));
+    EXPECT_NO_THROW(simpleGameWithRandom.checkInputCoordinates(4, 2));
+    EXPECT_NO_THROW(simpleGameWithRandom.markInputCoordinates(3, 5));
+    EXPECT_NO_THROW(simpleGameWithRandom.markInputCoordinates(1, 11));
+    std::string simpleGameWithRandomBeforeSwapStr = serialiseToString(simpleGameWithRandom);
+    EXPECT_NE(simpleGameWithRandomBeforeSwapStr, "");
+    EXPECT_NE(simpleGameWithRandomBeforeSwapStr, emptyGameBeforeSwapStr);
+    // swap
+    swap(emptyGame, simpleGameWithRandom);
+    // checks
+    EXPECT_EQ(serialiseToString(emptyGame), simpleGameWithRandomBeforeSwapStr);
+    EXPECT_EQ(serialiseToString(simpleGameWithRandom), emptyGameBeforeSwapStr);
+
+    // +--------------------------------------------------------------------------------+
+    // | swap between simple started random game (2) and premade invalid mark loss game |
+    // +--------------------------------------------------------------------------------+
+    // simple started random game
+    minesweeper::Game simpleGameWithRandom2(11, 7, 22, &myRandom);
+    EXPECT_NO_THROW(simpleGameWithRandom2.checkInputCoordinates(1, 7));
+    EXPECT_NO_THROW(simpleGameWithRandom2.checkInputCoordinates(0, 3));
+    EXPECT_NO_THROW(simpleGameWithRandom2.markInputCoordinates(6, 9));
+    EXPECT_NO_THROW(simpleGameWithRandom2.markInputCoordinates(6, 2));
+    std::string simpleGameWithRandom2BeforeSwapStr = serialiseToString(simpleGameWithRandom2);
+    EXPECT_NE(simpleGameWithRandom2BeforeSwapStr, "");
+    // premade invalid mark loss game
+    minesweeper::Game invalidMarkAndLossGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::invalidMarkLossGame_nineByFive_serialisation____json],
+                            invalidMarkAndLossGame));
+    std::string invalidMarkAndLossGameBeforeSwapStr = serialiseToString(invalidMarkAndLossGame);
+    EXPECT_NE(invalidMarkAndLossGameBeforeSwapStr, "");
+    // swap
+    swap(simpleGameWithRandom2, invalidMarkAndLossGame);
+    // checks
+    EXPECT_EQ(serialiseToString(simpleGameWithRandom2), invalidMarkAndLossGameBeforeSwapStr);
+    EXPECT_EQ(serialiseToString(invalidMarkAndLossGame), simpleGameWithRandom2BeforeSwapStr);
 }
 
 TEST_F(MinesweeperGameTest, CreateMinesAndNumsTest) {
@@ -647,7 +1162,7 @@ TEST_F(MinesweeperGameTest, ResetTest) {
     EXPECT_FALSE(premadeRemoveMinesAfterLossGame.playerHasLost());
 }
 
-TEST_F(MinesweeperGameTest, NewGameTest) { // TODO: add prop of mines 'newGames'
+TEST_F(MinesweeperGameTest, NewGameTest) {
 
     // unstarted game should not change after newGame with same gridsize and number of mines
     // (normal grid, number of mines)
