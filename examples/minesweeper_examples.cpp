@@ -10,6 +10,7 @@
 #include <minesweeper/game.h>
 #include <minesweeper/i_random.h>
 #include <minesweeper/random.h>
+#include <minesweeper/visual_minesweeper_cell.h>
 
 // Used for showing off the Minesweeper library and maybe writing some preliminary tests
 
@@ -66,17 +67,24 @@ int main() {
 
 void exampleOfSimplestSetup() {
 
-    // start by initialising instance of 'Random' class
+    // start by initialising an instance of 'Random' class
     // (can be initialised to stack or heap)
     minesweeper::Random myRandom;
 
     // pass grid size (10x10), number of mines(20) and pointer to 'Random'(&myRandom)
     // (can be initialised to stack or heap)
+    // (Number of mines can be an int between 0 and 'Game::maxNumOfMines(int gridHeight, int gridWidth)',
+    // which currently is: 'gridHeight * gridWidth - 9' .)
     minesweeper::Game myGame(10, 20, &myRandom);
 
     // you can also seperately specify width and height of the grid:
     // pass grid height (9), grid width (12), number of mines(22) and pointer to 'Random'(&myRandom)
     minesweeper::Game myGame2(9, 12, 22, &myRandom);
+
+    // you can also specify the amount of mines as a proportion instead:
+    // (The proportion can be a double between 0 and 'Game::maxProportionOfMines(int gridHeight, int gridWidth)',
+    //  which tends to 1 as grid gets larger.)
+    minesweeper::Game myGame3(11, 8, 0.3, &myRandom);
 
     // alternatively you can initialise 'Random' or 'Game' to heap:
     minesweeper::IRandom* myRandomPtr = new minesweeper::Random();
@@ -98,7 +106,7 @@ void exampleOfSimplestSetup() {
     // but beware that exposing the raw pointer from 'std::unique_ptr' is still dangerous.
     // So it might be advisable to use raw pointer for your 'Random' class instead.
 
-    // instead off assigning 'IRandom' for each instance of 'Game',
+    // Instead off assigning 'IRandom' for each instance of 'Game',
     // you can assign a default 'Random' to all instances of 'Game' class
     // this gets used if it is not specifically set for an instance of 'Random' class
     minesweeper::Random myStaticRandom;
@@ -112,8 +120,8 @@ void exampleOfSimplestSetup() {
     minesweeper::Random myRandom2;
     minesweeper::Game myGameOverridingStaticRandom(10, 20, &myRandom2);
 
-    // be free to use any of these ways to setup your Minesweeper 'Game'
-    // just make sure that 'Random' variable is alive throughout your usage of the Minesweeper 'Game' :)
+    // Be free to use any of these ways to setup your Minesweeper 'Game'.
+    // Just make sure that 'Random' variable is alive throughout your usage of the Minesweeper 'Game'. :)
 }
 
 void examplesOfRandomControllingSetup() {
@@ -165,7 +173,7 @@ void usageExamples() {
     //			bottom right corner (gridWidth - 1, gridHeight - 1)
 
     // When coordinates are needed as an argument to methods,
-    // 	x-coordinate is always given first, followed by y-coordinate
+    // x-coordinate is always given first, followed by y-coordinate
 
     // For reference, specific spots on the grid are known as 'Cell's.
 
@@ -174,28 +182,67 @@ void usageExamples() {
     // but you can (and should) just ignore this.
     // This method gets automatically called when you check/click coordinates.
 
-    // Player can check/click coordinates:
+    // Player can check/click coordinates with:
     myGame->checkInputCoordinates(5, 6);
 
-    // Player can mark coordinates:
+    // Player can also mark coordinates with:
     myGame->markInputCoordinates(3, 6);
 
 // We can do a number of checks: (to assist with visualisation of game etc.)
-// Small macro to print method names and values:
+
+// (This is just a small macro to help with printint method names and values:)
 #define PRINT_FUNC_RESULT(func) std::cout << #func << ": " << (func) << std::endl
 
+    std::cout << "\nWe can reset the game with the following methods:\n";
+    std::cout << "myGame->reset(bool keepCreatedMines = false)\n";
+    std::cout << "myGame->newGame(int gridSize, int numOfMines)\n";
+    std::cout << "myGame->newGame(int gridHeight, int gridWidth, int numOfMines)\n";
+    std::cout << "myGame->newGame(int gridSize, double proportionOfMines)\n";
+    std::cout << "myGame->newGame(int gridHeight, int gridWidth, double proportionOfMines)\n";
+
+    std::cout << "\nWe can serialise/deserialise (save/load) a game with:\n";
+    std::cout << "myGame->serialise(std::ostream & outStream) const\n";
+    std::cout << "myGame->deserialise(std::istream & inStream)\n";
+
+    std::cout << "\ngame progress information:\n";
     PRINT_FUNC_RESULT(myGame->playerHasWon());
     PRINT_FUNC_RESULT(myGame->playerHasLost());
+
+    std::cout << "\ncell information:\n";
     PRINT_FUNC_RESULT(myGame->isCellVisible(5, 6));
     PRINT_FUNC_RESULT(myGame->doesCellHaveMine(1, 3));
     PRINT_FUNC_RESULT(myGame->isCellMarked(3, 6));
     PRINT_FUNC_RESULT(myGame->numOfMinesAroundCell(4, 6));
 
+    std::cout << "\ngetters:\n";
+    PRINT_FUNC_RESULT(myGame->getGridHeight());
+    PRINT_FUNC_RESULT(myGame->getGridWidth());
+    PRINT_FUNC_RESULT(myGame->getNumOfMines());
+
+    std::cout << "\nget visual information of cell:\n";
+    std::cout << "myGame->visualiseCell<minesweeper::VisualMinesweeperCell>(int x, int y)\n";
+    PRINT_FUNC_RESULT(myGame->visualiseCell<int>(8, 3));
+
+    std::cout << "\nget visual information of each cell:\n";
+    std::cout << "myGame->visualiseCell<std::vector<minesweeper::VisualMinesweeperCell>>())n";
+    std::cout << "myGame->visualiseCell<std::vector<int>>()\n";
+    std::cout << "myGame->visualiseCell<std::vector<std::vector<<minesweeper::VisualMinesweeperCell>>>()\n";
+    std::cout << "myGame->visualiseCell<std::vector<std::vector<<int>>>()\n";
+
+    std::cout << "\nstatic min/max num/prop of mines methods:\n";
+    PRINT_FUNC_RESULT(minesweeper::Game::maxNumOfMines(10, 12));
+    PRINT_FUNC_RESULT(minesweeper::Game::maxProportionOfMines(5, 6));
+    PRINT_FUNC_RESULT(minesweeper::Game::minNumOfMines());
+    PRINT_FUNC_RESULT(minesweeper::Game::minNumOfMines(7, 8));
+    PRINT_FUNC_RESULT(minesweeper::Game::minProportionOfMines());
+    PRINT_FUNC_RESULT(minesweeper::Game::minProportionOfMines(9, 5));
+
 #undef PRINT_FUNC_RESULT
 
     // All of these are quite self-explanatory.
     // There is quite a few improvements and additions on the way.
-    // Again, for more info, check 'game.h' file. (include/minesweeper/game.h as of writing this.
+    // Again, for more info, check 'game.h' file. (include/minesweeper/game.h as of writing this.)
+    // For details on 'VisualMinesweeperCell' check 'visual_minesweeper_cell.h' file.
 }
 
 // +-----------------------------------+

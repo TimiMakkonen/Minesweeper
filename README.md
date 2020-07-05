@@ -58,6 +58,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 * Added 'type_traits' to help with template type checking at
   compile-time.
 * Prettified headers.
+* Updated ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp).
 * Fixed some throw messages.
 * Made 'clang-tidy' to actually work on headers.
   * Fixed bunch of new warnings/errors identified by this.
