@@ -5,6 +5,15 @@
 
 C++ library containing the core logic of Minesweeper game.
 
+## Table of contents
+
+* [Installation](#installation)
+* [How to use](#how-to-use)
+* [External libraries](#external-libraries)
+* [Version history](#version-history)
+* [Pre console separaration version history](#pre-console-separaration-version-history)
+* [Fixes and features left to consider/implement](#fixes-and-features-left-to-considerimplement)
+
 ## Installation
 
 If you want to clone this git repository, use
@@ -27,7 +36,19 @@ If you are truly lazy, and/or you do not need to have/control randomness elsewhe
 
 You can check 'examples' functions in ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['game.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/game.h) for the main interface.
 
-## Version History
+## External libraries
+
+* [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) (v3.8.0) for JSON (de)serialisation
+  * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
+* [google/googletest](https://github.com/google/googletest) for unit tests
+
+## Version history
+
+### Version 8.4.1
+
+* Updated external ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule from 'v.3.7.3' to 'v3.8.0'.
+  * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
+* Added 'External libraries' and 'Table of contents' sections to 'README.MD'.
 
 ### Version 8.4.0
 
@@ -128,7 +149,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
     (Class field set by constructor has the priority.)
 * Slightly improved readability of code.
 
-## Pre Separaration Version History
+## Pre console separaration version history
 
 ### Version 6.1.1
 
