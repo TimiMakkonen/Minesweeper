@@ -69,7 +69,7 @@
         "xutility": "cpp",
         "fstream": "cpp",
         "*.h.in": "cpp",
-        "CMakeLists.txt.in": "cmake",
+        "*_CMakeLists.txt.in": "cmake",
         "deque": "cpp",
         "unordered_set": "cpp",
         "*.in": "cpp"
