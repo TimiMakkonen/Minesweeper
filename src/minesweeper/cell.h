@@ -3,7 +3,7 @@
 
 #include <iostream> // std::istream, std::ostream
 
-#include <nlohmann/json.hpp> // nlohmann::json
+#include <json.hpp> // nlohmann::json
 
 #include <minesweeper/visual_minesweeper_cell.h>
 

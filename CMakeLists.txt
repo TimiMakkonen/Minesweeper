@@ -123,7 +123,7 @@ endif()
 
 
 # The external json library is here
-add_subdirectory(extern/nlohmann_json_cmake_fetchcontent)
+add_subdirectory(extern/astoeckel)
 
 
 

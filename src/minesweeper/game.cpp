@@ -8,7 +8,7 @@
 #include <string>    // std::string
 #include <vector>    // std::vector
 
-#include <nlohmann/json.hpp> // nlohmann::json
+#include <json.hpp> // nlohmann::json
 
 #include <minesweeper/cell.h>
 #include <minesweeper/game.h>

@@ -4,7 +4,7 @@
 #include <stdexcept> // std::invalid_argument
 #include <string>    // std::string
 
-#include <nlohmann/json.hpp> // nlohmann::json
+#include <json.hpp> // nlohmann::json
 
 #include <minesweeper/cell.h>
 #include <minesweeper/visual_minesweeper_cell.h>

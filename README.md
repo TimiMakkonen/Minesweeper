@@ -38,13 +38,23 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## External libraries
 
-* [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) (v3.8.0) for JSON (de)serialisation
+* [astoeckel/json](https://github.com/astoeckel/json) (v3.8.0) for JSON (de)serialisation
   * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
 * [google/googletest](https://github.com/google/googletest) for unit tests
 
 ## Version history
 
-### Version 8.4.1
+### Version 8.4.2
+
+* Urgent fix for the broken ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule in 'v8.4.1'.
+* Switched from ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule to ['astoeckel/json'](https://github.com/astoeckel/json) submodule ('v3.8.0').
+  * Both of these repositories are lightweight copies of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
+  * ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) is mainly meant/supported to be used with cmake's 'FetchContent' (and 'ExternalProject').
+  * ['astoeckel/json'](https://github.com/astoeckel/json) on the other hand is meant/supported to be used with git submodules.
+  * Change necessary to ensure sustainability of previous versions in this library for the releases to come.
+    * Since cmake's 'FetchContent' (and 'ExternalProject') use tags instead of specific hashes, the owner of ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) repository does not mind reassigning tags. (After some updates to their own code.) Hence the previous version/commit, 'v8.4.1', was too easy for me to break.
+
+### Version 8.4.1 (Broken submodule)
 
 * Updated external ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule from 'v.3.7.3' to 'v3.8.0'.
   * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
