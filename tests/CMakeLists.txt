@@ -83,6 +83,7 @@ add_executable("${TEST_APP_NAME}" ${TEST_SOURCE_LIST} "${CMAKE_CURRENT_BINARY_DI
 # We need this directory
 target_include_directories("${TEST_APP_NAME}" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
+# The target itself requires at least C++14
 target_compile_features("${TEST_APP_NAME}" PRIVATE cxx_std_14)
 
 # Link test executable with library and gtest

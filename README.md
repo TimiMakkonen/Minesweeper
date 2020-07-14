@@ -7,12 +7,23 @@ C++ library containing the core logic of Minesweeper game.
 
 ## Table of contents
 
+* [C++ version required](#c-version-required)
 * [Installation](#installation)
 * [How to use](#how-to-use)
 * [External libraries](#external-libraries)
 * [Version history](#version-history)
 * [Pre console separaration version history](#pre-console-separaration-version-history)
 * [Fixes and features left to consider/implement](#fixes-and-features-left-to-considerimplement)
+
+## C++ version required
+
+Minimum C++ version required: C++14.
+
+C++14 required for:
+
+* 'std::make_unique'.
+
+C++11 required for multiple modern features.
 
 ## Installation
 
@@ -28,8 +39,6 @@ Then you can use this library as part of your own CMake project as you desire.
 
 ## How to use
 
-Minimum C++ version required: C++11.
-
 To use this Minesweeper game library, pass your implementation of provided 'IRandom' pure virtual class to 'Game' class or alternatively pass it as an default option to the 'Game' class statically, so that it can be used by all the instances of 'Game' class.
 
 If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass 'Random' (provided implementation of 'IRandom' that uses 'std::mt19937') as instructed above.
@@ -43,6 +52,15 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 * [google/googletest](https://github.com/google/googletest) for unit tests
 
 ## Version history
+
+### Version 8.4.3
+
+* Urgently corrected C++ version required to C++14.
+  * Failed to realise 'std::make_unique' was included in C++14.
+    * Could also be replaced by some C++11 alternative later on, if needed.
+* Removed 'std::'-prefix accidently left in front of 'void_t<>' in 'type_traits.h'.
+* Added CMake option to build shared libraries within the project
+* Fixed a typo in 'examples/CMakeLists.txt'.
 
 ### Version 8.4.2
 

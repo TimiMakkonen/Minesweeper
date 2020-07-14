@@ -12,7 +12,7 @@ using void_t = void;
 
 // template helper function to decide if type is an expandable sequence container
 // (eg. std::vector, std::string, std::deque, std::list)
-template <typename, typename = std::void_t<>>
+template <typename, typename = void_t<>>
 struct is_expandable_sequence_container : std::false_type {};
 
 template <typename T>

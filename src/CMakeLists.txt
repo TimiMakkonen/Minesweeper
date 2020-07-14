@@ -50,7 +50,10 @@ target_include_directories("${LIBRARY_NAME}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR
 target_link_libraries("${LIBRARY_NAME}" PRIVATE nlohmann_json::nlohmann_json)
 
 # All users of this library will need at least C++11
-target_compile_features("${LIBRARY_NAME}" PUBLIC cxx_std_11)
+target_compile_features("${LIBRARY_NAME}" INTERFACE cxx_std_11)
+
+# The target itself requires at least C++14
+target_compile_features("${LIBRARY_NAME}" PRIVATE cxx_std_14)
 
 # If CLANG_TIDY_EXE found and enabled, use it
 if(CLANG_TIDY_EXE AND MINESWEEPER_CLANG_TIDY)

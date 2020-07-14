@@ -2,17 +2,23 @@
 cmake_minimum_required (VERSION 3.8)
 
 project(Minesweeper 
-        VERSION 8.4.2
+        VERSION 8.4.3
         #DESCRIPTION "Minesweeper library"
         LANGUAGES CXX)
 
 
 set(LIBRARY_NAME "libminesweeper")
 
-
+# Options:
+option(MINESWEEPER_BUILD_SHARED_LIBS "Build shared libraries instead of static ones" OFF)
 option(MINESWEEPER_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." OFF)
 option(MINESWEEPER_CLANG_TIDY "Use 'clang-tidy' on project source files." OFF)
 option(MINESWEEPER_CLANG_TIDY_EXAMPLES "Use 'clang-tidy' on examples files." OFF)
+
+
+if(MINESWEEPER_BUILD_SHARED_LIBS)
+  set(BUILD_SHARED_LIBS ON)
+endif()
 
 # Setting up clang-tidy if it is installed and enabled
 if(MINESWEEPER_CLANG_TIDY OR MINESWEEPER_CLANG_TIDY_EXAMPLES)

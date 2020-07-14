@@ -1,7 +1,7 @@
 #include <algorithm> // std::max
 #include <cassert>   // assert
 #include <iomanip>   // std::setw
-#include <memory>    // std::unique_ptr
+#include <memory>    // std::unique_ptr, std::make_unique (C++14)
 #include <numeric>   // std::iota
 #include <sstream>   // std::ostringstream
 #include <stdexcept> // std::out_of_range
