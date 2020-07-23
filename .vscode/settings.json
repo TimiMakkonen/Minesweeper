@@ -78,5 +78,8 @@
     "markdown.extension.toc.omittedFromToc": {
     "README.md": ["## Table of contents"]
     },
-    "markdown.extension.toc.unorderedList.marker": "*"
+    "markdown.extension.toc.unorderedList.marker": "*",
+    "cSpell.words": [
+        "considerimplement"
+    ]
 }

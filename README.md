@@ -12,7 +12,7 @@ C++ library containing the core logic of Minesweeper game.
 * [How to use](#how-to-use)
 * [External libraries](#external-libraries)
 * [Version history](#version-history)
-* [Pre console separaration version history](#pre-console-separaration-version-history)
+* [Pre console separation version history](#pre-console-separation-version-history)
 * [Fixes and features left to consider/implement](#fixes-and-features-left-to-considerimplement)
 
 ## C++ version required
@@ -58,7 +58,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 * Urgently corrected C++ version required to C++14.
   * Failed to realise 'std::make_unique' was included in C++14.
     * Could also be replaced by some C++11 alternative later on, if needed.
-* Removed 'std::'-prefix accidently left in front of 'void_t<>' in 'type_traits.h'.
+* Removed 'std::'-prefix accidentally left in front of 'void_t<>' in 'type_traits.h'.
 * Added CMake option to build shared libraries within the project
 * Fixed a typo in 'examples/CMakeLists.txt'.
 
@@ -106,9 +106,9 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 * Added option to add mines by proportion instead of number.
   * Added new constructors and 'newGame' overloads to support this.
 * Added 'Game' copy/move constructors, friend swap and
-  copy/move assigment operator.
+  copy/move assignment operator.
 * Added 'IRandom' default constructors, destructor and
-  assigment operators.
+  assignment operators.
 * Added 'type_traits' to help with template type checking at
   compile-time.
 * Prettified headers.
@@ -182,7 +182,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
     (Class field set by constructor has the priority.)
 * Slightly improved readability of code.
 
-## Pre console separaration version history
+## Pre console separation version history
 
 ### Version 6.1.1
 
@@ -196,7 +196,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 ### Version 6.0
 
 * Moved print functionality from 'Grid' to 'Game'.
-* Changed cerr's into asserts and throws.
+* Changed "cerr's" into asserts and throws.
 * Moved and changed some of the game logic.
 
 ### Version 5.2
@@ -261,4 +261,4 @@ Initial version of the game. Mostly in working condition.
 * Make "Game's" deserialise method safer by guaranteeing that 'Game' is left in valid condition even if if throws.
 * Add more tests.
 * Implement Pimpl to clear up the public API.
-* Add doxygen.
+* Add Doxygen.
