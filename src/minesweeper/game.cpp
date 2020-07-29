@@ -487,7 +487,7 @@ void Game::markInputCoordinates(const int x, const int y) {
 
     if (!this->_minesHaveBeenSet) {
         throw std::invalid_argument("Game::markInputCoordinates(const int x, const int y): "
-                                    "Trying to mark a cell before mines hava been initialised. \n\t"
+                                    "Trying to mark a cell before mines have been initialised. \n\t"
                                     "(Initialise mines by calling: "
                                     "createMinesAndNums(const int initChosenX, const int initChosenY) or "
                                     "checkInputCoordinates(const int x, const int y).)");

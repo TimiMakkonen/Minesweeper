@@ -77,7 +77,7 @@ void exampleOfSimplestSetup() {
     // which currently is: 'gridHeight * gridWidth - 9' .)
     minesweeper::Game myGame(10, 20, &myRandom);
 
-    // you can also seperately specify width and height of the grid:
+    // you can also separately specify width and height of the grid:
     // pass grid height (9), grid width (12), number of mines(22) and pointer to 'Random'(&myRandom)
     minesweeper::Game myGame2(9, 12, 22, &myRandom);
 
@@ -129,7 +129,7 @@ void examplesOfRandomControllingSetup() {
     // I recommend quickly reading through 'exampleOfSimplestSetup()' first to learn basic setup options.
 
     // 'Random' uses 'std::mt19937'
-    // This is automatically seeded by 'std::random_device' when 'Random' gets contructed.
+    // This is automatically seeded by 'std::random_device' when 'Random' gets constructed.
 
     // Instead of using provided 'Random' class, you can write your own class which implements abstract 'IRandom' class.
     // This allows you to take control of how you handle randomness.

@@ -2532,8 +2532,8 @@ TEST_F(MinesweeperGameTest, Visualise) {
         {1, 1, 0}, {10, 2, 1}, {2, 3, 10}, {9, -1, 3}, {-1, -1, -1}};
     EXPECT_EQ(premadeFiveByThreeLossGame.visualise<std::vector<std::vector<int>>>(),
               premadeFiveByThreeVisualMatrixExpected);
-    std::vector<int> premadeFiveByThreVvisualVectorExpected{1, 1, 0, 10, 2, 1, 2, 3, 10, 9, -1, 3, -1, -1, -1};
-    EXPECT_EQ(premadeFiveByThreeLossGame.visualise<std::vector<int>>(), premadeFiveByThreVvisualVectorExpected);
+    std::vector<int> premadeFiveByThreeVisualVectorExpected{1, 1, 0, 10, 2, 1, 2, 3, 10, 9, -1, 3, -1, -1, -1};
+    EXPECT_EQ(premadeFiveByThreeLossGame.visualise<std::vector<int>>(), premadeFiveByThreeVisualVectorExpected);
 
     // empty and unstarted 8x4 game
     minesweeper::Game emptyGame(8, 4, 12, &myRandom);

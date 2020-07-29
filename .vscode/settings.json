@@ -80,6 +80,10 @@
     },
     "markdown.extension.toc.unorderedList.marker": "*",
     "cSpell.words": [
-        "considerimplement"
+        "NOLINTNEXTLINE",
+        "Xand",
+        "chrono",
+        "considerimplement",
+        "unstarted"
     ]
 }
