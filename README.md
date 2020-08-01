@@ -59,6 +59,16 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
   * Work the same way as normal visualisation methods, except that they
     return the solution information instead of the current visualisation
     information.
+* Add 'completeAroundInputCoordinates' method to automatically
+  check/show trivial unchecked cells around chosen coordinates.
+  * For example, if we use this on a visible cell that has 2 mines
+    around, and we have already marked two mines around this visible
+    cell, then we will check/show the rest of cells around this visible
+    cell.
+  * If the player has wrongly marked one of the mines around the visible
+    cell this method is used on, this method will end up checking a mine
+    and the player will lose the game.
+* Removed repetition related to checking valid neighbours around a cell.
 * Fix some minor typos.
 
 ### Version 8.4.3
@@ -270,12 +280,3 @@ Initial version of the game. Mostly in working condition.
 * Add more tests.
 * Implement Pimpl to clear up the public API.
 * Add Doxygen.
-* Add 'completeAroundInputCoordinates' method to automatically
-  check/show trivial unchecked cells around chosen coordinates.
-  * For example, if we use this on a visible cells that has 2 mines
-    around, and we have already marked two mines around this visible
-    cell, then we will check/show the rest of cells around this visible
-    cell.
-  * If the player has wrongly marked one of the mines around the visible
-    cell this method is used on, this method will end up checking a
-    mine, and the player will lose the game.

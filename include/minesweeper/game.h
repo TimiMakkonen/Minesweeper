@@ -4,6 +4,7 @@
 #include <iostream>    // std::istream, std::ostream
 #include <memory>      // std::unique_ptr
 #include <type_traits> // std::enable_if
+#include <utility>     // std::pair
 #include <vector>      // std::vector
 
 #include <minesweeper/i_random.h>
@@ -81,6 +82,9 @@ class Game {
 
     // to mark (or unmark) given coordinates, and keeping track of marked and wrongly marked mines
     void markInputCoordinates(int x, int y);
+
+    // checks trivial cells around already visible cell coordinates
+    void completeAroundInputCoordinates(int x, int y);
 
     // game progress information:
     bool playerHasWon() const;
@@ -212,6 +216,8 @@ class Game {
     bool doesCellHaveMine_(int x, int y) const;
     bool isCellMarked_(int x, int y) const;
     int numOfMinesAroundCell_(int x, int y) const;
+    int numOfMarkedCellsAroundCell_(int x, int y) const;
+    std::vector<std::pair<int, int>> neighbourCells_(int x, int y) const;
 
     // private visual cell information:
     VisualMinesweeperCell visualiseCell_(int x, int y) const;

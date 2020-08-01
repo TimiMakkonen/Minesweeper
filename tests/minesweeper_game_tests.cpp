@@ -1565,6 +1565,8 @@ TEST_F(MinesweeperGameTest, MarkInputCoordinatesTest) {
     EXPECT_FALSE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
 }
 
+TEST_F(MinesweeperGameTest, CompleteAroundInputCoordinatesTest) { // TODO: Add tests
+}
 TEST_F(MinesweeperGameTest, PlayerHasWonTest) {
 
     // empty win
@@ -2423,7 +2425,7 @@ TEST_F(MinesweeperGameTest, SerialiseAndDeserialiseTest) {
     EXPECT_EQ(simpleGameStr, simpleGameCopyStr);
 }
 
-TEST_F(MinesweeperGameTest, VisualiseCell) {
+TEST_F(MinesweeperGameTest, VisualiseCellTest) {
 
     // negative x and y
     minesweeper::Game negativeXandYCheckInputCoordsGame(13, 15, 50, &myRandom);
@@ -2493,7 +2495,7 @@ TEST_F(MinesweeperGameTest, VisualiseCell) {
     EXPECT_EQ(premadeFiveByThreeLossGame.visualiseCell(1, 1), minesweeper::VisualMinesweeperCell::TWO);
 }
 
-TEST_F(MinesweeperGameTest, Visualise) {
+TEST_F(MinesweeperGameTest, VisualiseTest) {
 
     // valid/expected template types
     minesweeper::Game validTemplateTypes(13, 8, 48, &myRandom);
@@ -2546,10 +2548,10 @@ TEST_F(MinesweeperGameTest, Visualise) {
               emptyVisualVectorListExpected);
 }
 
-TEST_F(MinesweeperGameTest, VisualiseCellSolution) { // TODO: Add tests
+TEST_F(MinesweeperGameTest, VisualiseCellSolutionTest) { // TODO: Add tests
 }
 
-TEST_F(MinesweeperGameTest, VisualiseSolution) { // TODO: Add tests
+TEST_F(MinesweeperGameTest, VisualiseSolutionTest) { // TODO: Add tests
 }
 
 TEST_F(MinesweeperGameTest, DefaultRandomTest) {

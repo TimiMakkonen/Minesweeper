@@ -6,6 +6,7 @@
 #include <sstream>   // std::ostringstream
 #include <stdexcept> // std::out_of_range, std::invalid_argument
 #include <string>    // std::string
+#include <utility>   // std::pair, std::make_pair
 #include <vector>    // std::vector
 
 #include <json.hpp> // nlohmann::json
@@ -329,45 +330,10 @@ void Game::chooseRandomMineCells_(std::vector<int>& mineSpots, const int initCho
     // to remove bad gridspots (those on and around chosen initial spot)
     mineSpots.erase(std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->_gridWidth + initChosenX)),
                     mineSpots.end());
-    if (initChosenX > 0) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->_gridWidth + initChosenX - 1)),
-            mineSpots.end()); // left
-    }
-    if (initChosenX < this->_gridWidth - 1) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), (initChosenY * this->_gridWidth + initChosenX + 1)),
-            mineSpots.end()); // right
-    }
-    if (initChosenY > 0) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->_gridWidth + initChosenX)),
-            mineSpots.end()); // top
-    }
-    if (initChosenY < this->_gridHeight - 1) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->_gridWidth + initChosenX)),
-            mineSpots.end()); // bottom
-    }
-    if (initChosenY > 0 && initChosenX > 0) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->_gridWidth + initChosenX - 1)),
-            mineSpots.end()); // top left
-    }
-    if (initChosenY > 0 && initChosenX < this->_gridWidth - 1) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY - 1) * this->_gridWidth + initChosenX + 1)),
-            mineSpots.end()); // top right
-    }
-    if (initChosenY < this->_gridHeight - 1 && initChosenX > 0) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->_gridWidth + initChosenX - 1)),
-            mineSpots.end()); // bottom left
-    }
-    if (initChosenY < this->_gridHeight - 1 && initChosenX < this->_gridWidth - 1) {
-        mineSpots.erase(
-            std::remove(mineSpots.begin(), mineSpots.end(), ((initChosenY + 1) * this->_gridWidth + initChosenX + 1)),
-            mineSpots.end()); // bottom right
+    for (auto const& neighbourCell : this->neighbourCells_(initChosenX, initChosenY)) {
+        mineSpots.erase(std::remove(mineSpots.begin(), mineSpots.end(),
+                                    neighbourCell.second * this->_gridWidth + neighbourCell.first),
+                        mineSpots.end());
     }
 }
 
@@ -394,29 +360,9 @@ void Game::createMine_(const int x, const int y) {
 void Game::incrNumsAroundMine_(const int x, const int y) {
 
     assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
-    if (x > 0) {
-        this->_cells[y][x - 1]->incrNumOfMinesAround(); // left
-    }
-    if (x < this->_gridWidth - 1) {
-        this->_cells[y][x + 1]->incrNumOfMinesAround(); // right
-    }
-    if (y > 0) {
-        this->_cells[y - 1][x]->incrNumOfMinesAround(); // top
-    }
-    if (y < this->_gridHeight - 1) {
-        this->_cells[y + 1][x]->incrNumOfMinesAround(); // bottom
-    }
-    if (y > 0 && x > 0) {
-        this->_cells[y - 1][x - 1]->incrNumOfMinesAround(); // top left
-    }
-    if (y > 0 && x < this->_gridWidth - 1) {
-        this->_cells[y - 1][x + 1]->incrNumOfMinesAround(); // top right
-    }
-    if (y < this->_gridHeight - 1 && x > 0) {
-        this->_cells[y + 1][x - 1]->incrNumOfMinesAround(); // bottom left
-    }
-    if (y < this->_gridHeight - 1 && x < this->_gridWidth - 1) {
-        this->_cells[y + 1][x + 1]->incrNumOfMinesAround(); // bottom right
+
+    for (auto const& neighbourCell : this->neighbourCells_(x, y)) {
+        this->_cells[neighbourCell.second][neighbourCell.first]->incrNumOfMinesAround();
     }
 }
 
@@ -670,30 +616,78 @@ void Game::checkInputCoordinates_(const int x, const int y) {
 void Game::checkAroundCoordinate_(const int x, const int y) {
 
     assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+
+    for (auto const& neighbourCell : this->neighbourCells_(x, y)) {
+        this->checkInputCoordinates_(neighbourCell.first, neighbourCell.second);
+    }
+}
+
+void Game::completeAroundInputCoordinates(const int x, const int y) {
+
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
+        throw std::out_of_range("Game::completeAroundInputCoordinates(const int x, const int y): "
+                                "Trying to complete around a cell outside grid.");
+    }
+
+    if (!this->isCellVisible_(x, y)) {
+        throw std::invalid_argument("Game::completeAroundInputCoordinates(const int x, const int y): "
+                                    "Trying to complete around a cell that is not visible.");
+    }
+
+    // if cell has a mine
+    //   OR the number of marked mines around cell does not match the actual number of mines around cell,
+    // do nothing
+    // else check unchecked and unmarked cells around given coordinates
+    if (!this->doesCellHaveMine_(x, y) &&
+        (this->numOfMarkedCellsAroundCell_(x, y) == this->numOfMinesAroundCell_(x, y))) {
+
+        this->checkAroundCoordinate_(x, y);
+    }
+}
+
+int Game::numOfMarkedCellsAroundCell_(const int x, const int y) const {
+
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    int output = 0;
+    for (auto const& neighbourCell : this->neighbourCells_(x, y)) {
+        if (this->isCellMarked_(x, y)) {
+            ++output;
+        }
+    }
+    return output;
+}
+
+std::vector<std::pair<int, int>> Game::neighbourCells_(const int x, const int y) const {
+
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    std::vector<std::pair<int, int>> neighbours;
+
     if (x > 0) {
-        this->checkInputCoordinates_(x - 1, y); // left
+        neighbours.emplace_back(x - 1, y); // left
     }
     if (x < this->_gridWidth - 1) {
-        this->checkInputCoordinates_(x + 1, y); // right
+        neighbours.emplace_back(x + 1, y); // right
     }
     if (y > 0) {
-        this->checkInputCoordinates_(x, y - 1); // top
+        neighbours.emplace_back(x, y - 1); // top
     }
     if (y < this->_gridHeight - 1) {
-        this->checkInputCoordinates_(x, y + 1); // bottom
+        neighbours.emplace_back(x, y + 1); // bottom
     }
     if (x > 0 && y > 0) {
-        this->checkInputCoordinates_(x - 1, y - 1); // top left
+        neighbours.emplace_back(x - 1, y - 1); // top left
     }
     if (y > 0 && x < this->_gridWidth - 1) {
-        this->checkInputCoordinates_(x + 1, y - 1); // top right
+        neighbours.emplace_back(x + 1, y - 1); // top right
     }
     if (y < this->_gridHeight - 1 && x > 0) {
-        this->checkInputCoordinates_(x - 1, y + 1); // bottom left
+        neighbours.emplace_back(x - 1, y + 1); // bottom left
     }
     if (x < this->_gridWidth - 1 && y < this->_gridHeight - 1) {
-        this->checkInputCoordinates_(x + 1, y + 1); // bottom right
+        neighbours.emplace_back(x + 1, y + 1); // bottom right
     }
+
+    return neighbours;
 }
 
 int Game::getGridHeight() const { return this->_gridHeight; }
