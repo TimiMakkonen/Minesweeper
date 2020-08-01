@@ -24,6 +24,7 @@ void serialisationTest();
 void serialiseGameToFile(const minesweeper::Game& gameToPrint, const std::string& gameSerPath,
                          const std::string& gamePrintPath);
 void gamePrinter(std::ostream& outStream, minesweeper::Game const* const gameToPrint);
+void gameSolutionToFile(const minesweeper::Game& game, const std::string& gameSolPrintPath);
 void playGround1();
 void playGround2();
 void playGround3();
@@ -190,7 +191,7 @@ void usageExamples() {
 
 // We can do a number of checks: (to assist with visualisation of game etc.)
 
-// (This is just a small macro to help with printint method names and values:)
+// (This is just a small macro to help with printing method names and values:)
 #define PRINT_FUNC_RESULT(func) std::cout << #func << ": " << (func) << std::endl
 
     std::cout << "\nWe can reset the game with the following methods:\n";
@@ -219,15 +220,25 @@ void usageExamples() {
     PRINT_FUNC_RESULT(myGame->getGridWidth());
     PRINT_FUNC_RESULT(myGame->getNumOfMines());
 
-    std::cout << "\nget visual information of cell:\n";
+    std::cout << "\nget visual information of a cell:\n";
     std::cout << "myGame->visualiseCell<minesweeper::VisualMinesweeperCell>(int x, int y)\n";
     PRINT_FUNC_RESULT(myGame->visualiseCell<int>(8, 3));
 
     std::cout << "\nget visual information of each cell:\n";
-    std::cout << "myGame->visualiseCell<std::vector<minesweeper::VisualMinesweeperCell>>())n";
-    std::cout << "myGame->visualiseCell<std::vector<int>>()\n";
-    std::cout << "myGame->visualiseCell<std::vector<std::vector<<minesweeper::VisualMinesweeperCell>>>()\n";
-    std::cout << "myGame->visualiseCell<std::vector<std::vector<<int>>>()\n";
+    std::cout << "myGame->visualise<std::vector<minesweeper::VisualMinesweeperCell>>()\n";
+    std::cout << "myGame->visualise<std::vector<int>>()\n";
+    std::cout << "myGame->visualise<std::vector<std::vector<<minesweeper::VisualMinesweeperCell>>>()\n";
+    std::cout << "myGame->visualise<std::vector<std::vector<<int>>>()\n";
+
+    std::cout << "\nget visual solution information of a cell:\n";
+    std::cout << "myGame->visualiseCellSolution<minesweeper::VisualMinesweeperCell>(int x, int y)\n";
+    PRINT_FUNC_RESULT(myGame->visualiseCellSolution<int>(8, 3));
+
+    std::cout << "\nget visual solution information of each cell:\n";
+    std::cout << "myGame->visualiseSolution<std::vector<minesweeper::VisualMinesweeperCell>>()\n";
+    std::cout << "myGame->visualiseSolution<std::vector<int>>()\n";
+    std::cout << "myGame->visualiseSolution<std::vector<std::vector<<minesweeper::VisualMinesweeperCell>>>()\n";
+    std::cout << "myGame->visualiseSolution<std::vector<std::vector<<int>>>()\n";
 
     std::cout << "\nstatic min/max num/prop of mines methods:\n";
     PRINT_FUNC_RESULT(minesweeper::Game::maxNumOfMines(10, 12));
@@ -347,6 +358,8 @@ void playGround2() {
     myGame.checkInputCoordinates(4, 2);
 
     serialiseGameToFile(myGame, "__game_serialisation2.json", "__game_print2.txt");
+
+    gameSolutionToFile(myGame, "__game_solution2.txt");
 }
 
 void playGround3() {
@@ -455,4 +468,25 @@ void serialiseGameToFile(const minesweeper::Game& gameToPrint, const std::string
     // print game visualisation on file
     std::ofstream gamePrintFile(gamePrintPath);
     gamePrinter(gamePrintFile, &gameToPrint);
+}
+
+void gameSolutionToFile(const minesweeper::Game& game, const std::string& gameSolPrintPath) {
+
+    const char MINESYMBOL = '*';
+    const char NO_MINES_AROUND_SYMBOL = '.';
+
+    auto gameSolution = game.visualiseSolution<std::vector<std::vector<int>>>();
+    std::ofstream outFile(gameSolPrintPath);
+    for (auto const& solutionRow : gameSolution) {
+        for (auto const solutionCell : solutionRow) {
+            if (solutionCell == 9) {
+                outFile << MINESYMBOL;
+            } else if (solutionCell == 0) {
+                outFile << NO_MINES_AROUND_SYMBOL;
+            } else {
+                outFile << solutionCell;
+            }
+        }
+        outFile << "\n";
+    }
 }

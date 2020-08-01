@@ -4,7 +4,7 @@
 #include <memory>    // std::unique_ptr, std::make_unique (C++14)
 #include <numeric>   // std::iota
 #include <sstream>   // std::ostringstream
-#include <stdexcept> // std::out_of_range
+#include <stdexcept> // std::out_of_range, std::invalid_argument
 #include <string>    // std::string
 #include <vector>    // std::vector
 
@@ -628,6 +628,11 @@ void Game::unmarkCell_(const int x, const int y) {
 VisualMinesweeperCell Game::visualiseCell_(const int x, const int y) const {
     assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
     return this->_cells[y][x]->visualise();
+}
+
+VisualMinesweeperCell Game::visualiseCellSolution_(const int x, const int y) const {
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    return this->_cells[y][x]->visualiseSolution();
 }
 
 // to check user given coordinates, and make it visible

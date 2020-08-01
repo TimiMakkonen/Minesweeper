@@ -65,8 +65,11 @@ class Cell {
     std::istream& deserialise(std::istream& inStream);
     void deserialise(const nlohmann::json& j);
 
-    // visualise to 'VisualMinesweeperCell' method
+    // visualise as 'VisualMinesweeperCell' -method
     VisualMinesweeperCell visualise() const;
+
+    // visualise solution as 'VisualMinesweeperCell' -method
+    VisualMinesweeperCell visualiseSolution() const;
 
   private:
     // +----------------------+

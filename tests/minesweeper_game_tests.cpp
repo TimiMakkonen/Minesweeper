@@ -2546,6 +2546,12 @@ TEST_F(MinesweeperGameTest, Visualise) {
               emptyVisualVectorListExpected);
 }
 
+TEST_F(MinesweeperGameTest, VisualiseCellSolution) { // TODO: Add tests
+}
+
+TEST_F(MinesweeperGameTest, VisualiseSolution) { // TODO: Add tests
+}
+
 TEST_F(MinesweeperGameTest, DefaultRandomTest) {
 
     // reset default static random to nullptr

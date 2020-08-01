@@ -160,4 +160,16 @@ VisualMinesweeperCell Cell::visualise() const {
     return output;
 }
 
+VisualMinesweeperCell Cell::visualiseSolution() const {
+
+    VisualMinesweeperCell output;
+    if (this->_hasMine) {
+        output = VisualMinesweeperCell::MINE;
+    } else {
+        output = static_cast<VisualMinesweeperCell>(this->_numOfMinesAround);
+    }
+
+    return output;
+}
+
 } // namespace minesweeper

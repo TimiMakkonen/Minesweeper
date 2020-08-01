@@ -103,7 +103,7 @@ class Game {
     // load game:
     std::istream& deserialise(std::istream& inStream);
 
-    // get visual information of cell:
+    // get visual information of a cell:
     template <class T = VisualMinesweeperCell>
     T visualiseCell(int x, int y) const;
 
@@ -114,6 +114,18 @@ class Game {
     template <class Container,
               typename std::enable_if<is_expandable_2d_sequence_container<Container>::value, int>::type = 0>
     Container visualise() const;
+
+    // get visual solution information of a cell:
+    template <class T = VisualMinesweeperCell>
+    T visualiseCellSolution(int x, int y) const;
+
+    // get visual solution information of each cell:
+    template <class Container,
+              typename std::enable_if<is_expandable_1d_sequence_container<Container>::value, int>::type = 0>
+    Container visualiseSolution() const;
+    template <class Container,
+              typename std::enable_if<is_expandable_2d_sequence_container<Container>::value, int>::type = 0>
+    Container visualiseSolution() const;
 
     // +------------------------+
     // | public static methods: |
@@ -203,6 +215,15 @@ class Game {
 
     // private visual cell information:
     VisualMinesweeperCell visualiseCell_(int x, int y) const;
+
+    // private visual cell solution information:
+    VisualMinesweeperCell visualiseCellSolution_(int x, int y) const;
+
+    // private visualisation details:
+    template <class Container>
+    Container visualisationDetailIn1d_(VisualMinesweeperCell (Game::*cellVisualisationMethod)(int, int) const) const;
+    template <class Container>
+    Container visualisationDetailIn2d_(VisualMinesweeperCell (Game::*cellVisualisationMethod)(int, int) const) const;
 
     // +-------------------------+
     // | private static methods: |
