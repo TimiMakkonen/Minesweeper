@@ -59,7 +59,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
   * Work the same way as normal visualisation methods, except that they
     return the solution information instead of the current visualisation
     information.
-* Add 'completeAroundInputCoordinates' method to automatically
+* Added 'completeAroundInputCoordinates' method to automatically
   check/show trivial unchecked cells around chosen coordinates.
   * For example, if we use this on a visible cell that has 2 mines
     around, and we have already marked two mines around this visible
@@ -69,7 +69,8 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
     cell this method is used on, this method will end up checking a mine
     and the player will lose the game.
 * Removed repetition related to checking valid neighbours around a cell.
-* Fix some minor typos.
+* Fixed some minor typos.
+* Added CodeCounter.
 
 ### Version 8.4.3
 

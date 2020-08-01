@@ -92,6 +92,8 @@
         "**/.vscode/**",
         "**/node_modules/**",
         "**/build/**",
-        "**/extern/**"
+        "**/extern/**",
+        "**/.gitmodules",
+        "**/.gitattributes"
     ]
 }

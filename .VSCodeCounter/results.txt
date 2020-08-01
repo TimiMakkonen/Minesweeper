@@ -1,0 +1,66 @@
+Date : 2020-08-01 22:04:54
+Directory : e:\Programming\Cplusplus\minesweeper\minesweeper
+Total : 32 files,  8513 codes, 921 comments, 1099 blanks, all 10533 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| JSON     |         16 |      4,316 |          0 |         17 |      4,333 |
+| C++      |         15 |      3,978 |        921 |      1,017 |      5,916 |
+| Markdown |          1 |        219 |          0 |         65 |        284 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                 | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                    |         32 |      8,513 |        921 |      1,099 |     10,533 |
+| examples                                                                                                             |          1 |        275 |         98 |        119 |        492 |
+| include                                                                                                              |          6 |        283 |         71 |        108 |        462 |
+| include\minesweeper                                                                                                  |          6 |        283 |         71 |        108 |        462 |
+| src                                                                                                                  |          4 |        782 |        102 |        300 |      1,184 |
+| src\minesweeper                                                                                                      |          4 |        782 |        102 |        300 |      1,184 |
+| tests                                                                                                                |         20 |      6,954 |        650 |        507 |      8,111 |
+| tests\data                                                                                                           |         16 |      4,316 |          0 |         17 |      4,333 |
+| tests\data\invalid-serialisation                                                                                     |          7 |      1,264 |          0 |          8 |      1,272 |
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                             | language | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| e:\Programming\Cplusplus\minesweeper\minesweeper\README.md                                                           | Markdown |        219 |          0 |         65 |        284 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\examples\minesweeper_examples.cpp                                   | C++      |        275 |         98 |        119 |        492 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.h                                          | C++      |        139 |         63 |         54 |        256 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.tpp                                        | C++      |         65 |          0 |         26 |         91 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\i_random.h                                      | C++      |         16 |          0 |          7 |         23 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\random.h                                        | C++      |         16 |          0 |          8 |         24 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\type_traits.h                                   | C++      |         28 |          8 |          9 |         45 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\visual_minesweeper_cell.h                       | C++      |         19 |          0 |          4 |         23 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\cell.cpp                                            | C++      |        110 |         13 |         52 |        175 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\cell.h                                              | C++      |         46 |         26 |         26 |         98 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\game.cpp                                            | C++      |        620 |         63 |        216 |        899 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\random.cpp                                          | C++      |          6 |          0 |          6 |         12 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\checkedWinGame_fourByEight_serialisation.json            | JSON     |        356 |          0 |          1 |        357 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\emptyGame_serialisation.json                             | JSON     |         14 |          0 |          1 |         15 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidGridsize.json               | JSON     |         14 |          0 |          1 |         15 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingBrace.json       | JSON     |        150 |          0 |          2 |        152 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingCellTag.json     | JSON     |        315 |          0 |          1 |        316 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingCommaInCell.json | JSON     |        286 |          0 |          1 |        287 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidMagic.json                  | JSON     |        471 |          0 |          1 |        472 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidNumOfMines.json             | JSON     |         14 |          0 |          1 |         15 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidVersion.json                | JSON     |         14 |          0 |          1 |         15 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalidMarkLossGame_nineByFive_serialisation.json        | JSON     |        511 |          0 |          1 |        512 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\lossGame_fiveByThree_serialisation.json                  | JSON     |        191 |          0 |          1 |        192 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\markedWinGame_fiveByFour_serialisation.json              | JSON     |        241 |          0 |          1 |        242 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\startedGame_fiveBySix_serialisation.json                 | JSON     |        341 |          0 |          1 |        342 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\startedGame_sixByEight_serialisation.json                | JSON     |        526 |          0 |          1 |        527 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unfinishedGame_sevenBySeven_serialisation.json           | JSON     |        541 |          0 |          1 |        542 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unstartedGame_sevenByFour_serialisation.json             | JSON     |        331 |          0 |          1 |        332 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_game_tests.cpp                                    | C++      |      1,809 |        545 |        412 |      2,766 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_random_tests.cpp                                  | C++      |         17 |          4 |          8 |         29 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_type_traits_tests.cpp                             | C++      |        800 |        100 |         61 |        961 |
+| e:\Programming\Cplusplus\minesweeper\minesweeper\tests\test_config.h.in                                              | C++      |         12 |          1 |          9 |         22 |
+| Total                                                                                                                |          |      8,513 |        921 |      1,099 |     10,533 |
++----------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
