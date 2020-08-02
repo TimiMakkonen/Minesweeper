@@ -53,7 +53,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version history
 
-### Version DEVELOP
+### Version 8.5.0
 
 * Added solution visualisation methods.
   * Work the same way as normal visualisation methods, except that they
@@ -68,6 +68,8 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
   * If the player has wrongly marked one of the mines around the visible
     cell this method is used on, this method will end up checking a mine
     and the player will lose the game.
+  * If this method is used on a cell that is not visible yet, this
+    method throws.
 * Removed repetition related to checking valid neighbours around a cell.
 * Fixed some minor typos.
 * Added CodeCounter.

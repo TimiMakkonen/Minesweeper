@@ -1,10 +1,10 @@
 # Details
 
-Date : 2020-08-01 22:04:54
+Date : 2020-08-02 20:28:35
 
 Directory e:\Programming\Cplusplus\minesweeper\minesweeper
 
-Total : 32 files,  8513 codes, 921 comments, 1099 blanks, all 10533 lines
+Total : 32 files,  8747 codes, 983 comments, 1138 blanks, all 10868 lines
 
 [summary](results.md)
 
@@ -12,7 +12,7 @@ Total : 32 files,  8513 codes, 921 comments, 1099 blanks, all 10533 lines
 | filename | language | code | comment | blank | total |
 | :--- | :--- | ---: | ---: | ---: | ---: |
 | [README.md](/README.md) | Markdown | 219 | 0 | 65 | 284 |
-| [examples/minesweeper_examples.cpp](/examples/minesweeper_examples.cpp) | C++ | 275 | 98 | 119 | 492 |
+| [examples/minesweeper_examples.cpp](/examples/minesweeper_examples.cpp) | C++ | 276 | 108 | 120 | 504 |
 | [include/minesweeper/game.h](/include/minesweeper/game.h) | C++ | 139 | 63 | 54 | 256 |
 | [include/minesweeper/game.tpp](/include/minesweeper/game.tpp) | C++ | 65 | 0 | 26 | 91 |
 | [include/minesweeper/i_random.h](/include/minesweeper/i_random.h) | C++ | 16 | 0 | 7 | 23 |
@@ -39,7 +39,7 @@ Total : 32 files,  8513 codes, 921 comments, 1099 blanks, all 10533 lines
 | [tests/data/startedGame_sixByEight_serialisation.json](/tests/data/startedGame_sixByEight_serialisation.json) | JSON | 526 | 0 | 1 | 527 |
 | [tests/data/unfinishedGame_sevenBySeven_serialisation.json](/tests/data/unfinishedGame_sevenBySeven_serialisation.json) | JSON | 541 | 0 | 1 | 542 |
 | [tests/data/unstartedGame_sevenByFour_serialisation.json](/tests/data/unstartedGame_sevenByFour_serialisation.json) | JSON | 331 | 0 | 1 | 332 |
-| [tests/minesweeper_game_tests.cpp](/tests/minesweeper_game_tests.cpp) | C++ | 1,809 | 545 | 412 | 2,766 |
+| [tests/minesweeper_game_tests.cpp](/tests/minesweeper_game_tests.cpp) | C++ | 2,042 | 597 | 450 | 3,089 |
 | [tests/minesweeper_random_tests.cpp](/tests/minesweeper_random_tests.cpp) | C++ | 17 | 4 | 8 | 29 |
 | [tests/minesweeper_type_traits_tests.cpp](/tests/minesweeper_type_traits_tests.cpp) | C++ | 800 | 100 | 61 | 961 |
 | [tests/test_config.h.in](/tests/test_config.h.in) | C++ | 12 | 1 | 9 | 22 |

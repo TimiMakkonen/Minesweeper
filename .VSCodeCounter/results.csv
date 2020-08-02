@@ -1,6 +1,6 @@
 "filename", "language", "Markdown", "C++", "JSON", "comment", "blank", "total"
 "e:\Programming\Cplusplus\minesweeper\minesweeper\README.md", "Markdown", 219, 0, 0, 0, 65, 284
-"e:\Programming\Cplusplus\minesweeper\minesweeper\examples\minesweeper_examples.cpp", "C++", 0, 275, 0, 98, 119, 492
+"e:\Programming\Cplusplus\minesweeper\minesweeper\examples\minesweeper_examples.cpp", "C++", 0, 276, 0, 108, 120, 504
 "e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.h", "C++", 0, 139, 0, 63, 54, 256
 "e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.tpp", "C++", 0, 65, 0, 0, 26, 91
 "e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\i_random.h", "C++", 0, 16, 0, 0, 7, 23
@@ -27,8 +27,8 @@
 "e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\startedGame_sixByEight_serialisation.json", "JSON", 0, 0, 526, 0, 1, 527
 "e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unfinishedGame_sevenBySeven_serialisation.json", "JSON", 0, 0, 541, 0, 1, 542
 "e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unstartedGame_sevenByFour_serialisation.json", "JSON", 0, 0, 331, 0, 1, 332
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_game_tests.cpp", "C++", 0, 1809, 0, 545, 412, 2766
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_game_tests.cpp", "C++", 0, 2042, 0, 597, 450, 3089
 "e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_random_tests.cpp", "C++", 0, 17, 0, 4, 8, 29
 "e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_type_traits_tests.cpp", "C++", 0, 800, 0, 100, 61, 961
 "e:\Programming\Cplusplus\minesweeper\minesweeper\tests\test_config.h.in", "C++", 0, 12, 0, 1, 9, 22
-"Total", "-", 219, 3978, 4316, 921, 1099, 10533
+"Total", "-", 219, 4212, 4316, 983, 1138, 10868
