@@ -2607,46 +2607,52 @@ TEST_F(MinesweeperGameTest, SerialiseAndDeserialiseTest) {
 TEST_F(MinesweeperGameTest, VisualiseCellTest) {
 
     // negative x and y
-    minesweeper::Game negativeXandYCheckInputCoordsGame(13, 15, 50, &myRandom);
-    EXPECT_THROW(negativeXandYCheckInputCoordsGame.visualiseCell(-8, -3), std::out_of_range);
+    minesweeper::Game negativeXandYVisualiseCellGame(13, 15, 50, &myRandom);
+    EXPECT_THROW(negativeXandYVisualiseCellGame.visualiseCell(-8, -3), std::out_of_range);
 
     // negative x
-    minesweeper::Game negativeXCheckInputCoordsGame(18, 7, 65, &myRandom);
-    EXPECT_THROW(negativeXCheckInputCoordsGame.visualiseCell(-2, 8), std::out_of_range);
+    minesweeper::Game negativeXVisualiseCellGame(18, 7, 65, &myRandom);
+    EXPECT_THROW(negativeXVisualiseCellGame.visualiseCell(-2, 8), std::out_of_range);
 
     // negative y
-    minesweeper::Game negativeYCheckInputCoordsGame(22, 98, &myRandom);
-    EXPECT_THROW(negativeYCheckInputCoordsGame.visualiseCell(11, -8), std::out_of_range);
+    minesweeper::Game negativeYVisualiseCellGame(22, 98, &myRandom);
+    EXPECT_THROW(negativeYVisualiseCellGame.visualiseCell(11, -8), std::out_of_range);
 
     // too large x and y
-    minesweeper::Game tooLargeXandYCheckInputCoordsGame(123, 3'514, &myRandom);
-    EXPECT_THROW(tooLargeXandYCheckInputCoordsGame.visualiseCell(140, 132), std::out_of_range);
+    minesweeper::Game tooLargeXandYVisualiseCellGame(123, 3'514, &myRandom);
+    EXPECT_THROW(tooLargeXandYVisualiseCellGame.visualiseCell(140, 132), std::out_of_range);
 
     // too large x
-    minesweeper::Game tooLargeXCheckInputCoordsGame(44, 18, 652, &myRandom);
-    EXPECT_THROW(tooLargeXCheckInputCoordsGame.visualiseCell(18, 23), std::out_of_range);
+    minesweeper::Game tooLargeXVisualiseCellGame(44, 18, 652, &myRandom);
+    EXPECT_THROW(tooLargeXVisualiseCellGame.visualiseCell(18, 23), std::out_of_range);
 
     // too large y
-    minesweeper::Game tooLargeYCheckInputCoordsGame(54, 617, &myRandom);
-    EXPECT_THROW(tooLargeYCheckInputCoordsGame.visualiseCell(13, 261), std::out_of_range);
+    minesweeper::Game tooLargeYVisualiseCellGame(54, 617, &myRandom);
+    EXPECT_THROW(tooLargeYVisualiseCellGame.visualiseCell(13, 261), std::out_of_range);
 
     // too large x and negative y
-    minesweeper::Game tooLargeXandNegativeYCheckInputCoordsGame(23, 12, 94, &myRandom);
-    EXPECT_THROW(tooLargeXandNegativeYCheckInputCoordsGame.visualiseCell(15, -2), std::out_of_range);
+    minesweeper::Game tooLargeXandNegativeYVisualiseCellGame(23, 12, 94, &myRandom);
+    EXPECT_THROW(tooLargeXandNegativeYVisualiseCellGame.visualiseCell(15, -2), std::out_of_range);
 
     // valid/expected template types
     minesweeper::Game validTemplateTypes(12, 32, &myRandom);
-    validTemplateTypes.checkInputCoordinates(5, 6);
-    validTemplateTypes.visualiseCell<minesweeper::VisualMinesweeperCell>(4, 6);
-    validTemplateTypes.visualiseCell<int>(4, 6);
-    validTemplateTypes.visualiseCell<char>(4, 6);
+    EXPECT_NO_THROW(validTemplateTypes.checkInputCoordinates(5, 6));
+    minesweeper::VisualMinesweeperCell cellVisualisation;
+    EXPECT_NO_THROW(cellVisualisation = validTemplateTypes.visualiseCell<minesweeper::VisualMinesweeperCell>(4, 6));
+    int cellIntVisualisation;
+    EXPECT_NO_THROW(cellIntVisualisation = validTemplateTypes.visualiseCell<int>(4, 6));
+    char cellCharVisualisation;
+    EXPECT_NO_THROW(cellCharVisualisation = validTemplateTypes.visualiseCell<char>(4, 6));
+    EXPECT_EQ(static_cast<int>(cellVisualisation), cellIntVisualisation);
+    EXPECT_EQ(static_cast<int>(cellCharVisualisation), cellIntVisualisation);
+    EXPECT_EQ(static_cast<minesweeper::VisualMinesweeperCell>(cellCharVisualisation), cellVisualisation);
 
     // custom template type
     class VisualTestCell {
       public:
         VisualTestCell(minesweeper::VisualMinesweeperCell x) {}
     };
-    validTemplateTypes.visualiseCell<VisualTestCell>(4, 6);
+    EXPECT_NO_THROW(validTemplateTypes.visualiseCell<VisualTestCell>(4, 6));
 
     // unfinished 7x7 game
     minesweeper::Game premadeUnfinishedSevenBySevenGame;
@@ -2678,17 +2684,17 @@ TEST_F(MinesweeperGameTest, VisualiseTest) {
 
     // valid/expected template types
     minesweeper::Game validTemplateTypes(13, 8, 48, &myRandom);
-    validTemplateTypes.checkInputCoordinates(2, 7);
-    validTemplateTypes.visualise<std::vector<minesweeper::VisualMinesweeperCell>>();
-    validTemplateTypes.visualise<std::vector<std::vector<minesweeper::VisualMinesweeperCell>>>();
-    validTemplateTypes.visualise<std::vector<int>>();
-    validTemplateTypes.visualise<std::vector<std::vector<int>>>();
-    validTemplateTypes.visualise<std::string>();
-    validTemplateTypes.visualise<std::vector<std::string>>();
-    validTemplateTypes.visualise<std::list<int>>();
-    validTemplateTypes.visualise<std::list<minesweeper::VisualMinesweeperCell>>();
-    validTemplateTypes.visualise<std::vector<std::list<int>>>();
-    validTemplateTypes.visualise<std::list<std::vector<minesweeper::VisualMinesweeperCell>>>();
+    EXPECT_NO_THROW(validTemplateTypes.checkInputCoordinates(2, 7));
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::vector<minesweeper::VisualMinesweeperCell>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::vector<std::vector<minesweeper::VisualMinesweeperCell>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::vector<int>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::vector<std::vector<int>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::string>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::vector<std::string>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::list<int>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::list<minesweeper::VisualMinesweeperCell>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::vector<std::list<int>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualise<std::list<std::vector<minesweeper::VisualMinesweeperCell>>>());
 
     // custom template type (with minimal requirements)
     class CustomExpandSeqContainer {
@@ -2702,7 +2708,7 @@ TEST_F(MinesweeperGameTest, VisualiseTest) {
         // not needed for anything, but expected for any serious container
         size_t size() { return 0; }
     };
-    validTemplateTypes.visualise<CustomExpandSeqContainer>();
+    EXPECT_NO_THROW(validTemplateTypes.visualise<CustomExpandSeqContainer>());
 
     // premade lost 5x3 game
     minesweeper::Game premadeFiveByThreeLossGame;
@@ -2727,10 +2733,148 @@ TEST_F(MinesweeperGameTest, VisualiseTest) {
               emptyVisualVectorListExpected);
 }
 
-TEST_F(MinesweeperGameTest, VisualiseCellSolutionTest) { // TODO: Add tests
+TEST_F(MinesweeperGameTest, VisualiseCellSolutionTest) {
+
+    // negative x and y
+    minesweeper::Game negativeXandYVisualiseCellSolutionGame(10, 16, 0.24, &myRandom);
+    EXPECT_THROW(negativeXandYVisualiseCellSolutionGame.visualiseCellSolution(-5, -7), std::out_of_range);
+
+    // negative x
+    minesweeper::Game negativeXVisualiseCellSolutionGame(15, 24, &myRandom);
+    EXPECT_THROW(negativeXVisualiseCellSolutionGame.visualiseCellSolution(-11, 7), std::out_of_range);
+
+    // negative y
+    minesweeper::Game negativeYVisualiseCellSolutionGame(7, 8, 0.4455, &myRandom);
+    EXPECT_THROW(negativeYVisualiseCellSolutionGame.visualiseCellSolution(2, -1), std::out_of_range);
+
+    // too large x and y
+    minesweeper::Game tooLargeXandYVisualiseCellSolutionGame(12, 7, 43, &myRandom);
+    EXPECT_THROW(tooLargeXandYVisualiseCellSolutionGame.visualiseCellSolution(9, 22), std::out_of_range);
+
+    // too large x
+    minesweeper::Game tooLargeXVisualiseCellSolutionGame(11, 0.1232, &myRandom);
+    EXPECT_THROW(tooLargeXVisualiseCellSolutionGame.visualiseCellSolution(11, 6), std::out_of_range);
+
+    // too large y
+    minesweeper::Game tooLargeYVisualiseCellSolutionGame(8, 7, 18, &myRandom);
+    EXPECT_THROW(tooLargeYVisualiseCellSolutionGame.visualiseCellSolution(0, 14), std::out_of_range);
+
+    // negative x and too large y
+    minesweeper::Game negativeXandTooLargeYVisualiseCellSolutionGame(24, 7, 0.34, &myRandom);
+    EXPECT_THROW(negativeXandTooLargeYVisualiseCellSolutionGame.visualiseCellSolution(-1, 27), std::out_of_range);
+
+    // valid/expected template types
+    minesweeper::Game validTemplateTypes(9, 12, 0.423, &myRandom);
+    EXPECT_NO_THROW(validTemplateTypes.checkInputCoordinates(6, 3));
+    minesweeper::VisualMinesweeperCell cellSolutionVisualisation;
+    EXPECT_NO_THROW(cellSolutionVisualisation =
+                        validTemplateTypes.visualiseCellSolution<minesweeper::VisualMinesweeperCell>(7, 4));
+    int cellIntSolutionVisualisation;
+    EXPECT_NO_THROW(cellIntSolutionVisualisation = validTemplateTypes.visualiseCellSolution<int>(7, 4));
+    char cellCharSolutionVisualisation;
+    EXPECT_NO_THROW(cellCharSolutionVisualisation = validTemplateTypes.visualiseCellSolution<char>(7, 4));
+    EXPECT_EQ(static_cast<int>(cellSolutionVisualisation), cellIntSolutionVisualisation);
+    EXPECT_EQ(static_cast<int>(cellCharSolutionVisualisation), cellIntSolutionVisualisation);
+    EXPECT_EQ(static_cast<minesweeper::VisualMinesweeperCell>(cellCharSolutionVisualisation),
+              cellSolutionVisualisation);
+
+    // custom template type
+    class VisualTestCell {
+      public:
+        VisualTestCell(minesweeper::VisualMinesweeperCell x) {}
+    };
+    EXPECT_NO_THROW(validTemplateTypes.visualiseCellSolution<VisualTestCell>(7, 4));
+
+    // unfinished 7x7 game
+    minesweeper::Game premadeUnfinishedSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeUnfinishedSevenBySevenGame));
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(0, 0), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(6, 4), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(1, 4), minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(3, 2), minesweeper::VisualMinesweeperCell::TWO);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(3, 5), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(5, 6), minesweeper::VisualMinesweeperCell::FOUR);
+
+    // started 5x6 game
+    minesweeper::Game premadeStartedFiveBySixGame;
+    ASSERT_NO_THROW(deserialiseFromFile(
+        minesweeper::TEST_DATA[minesweeper::startedGame_fiveBySix_serialisation____json], premadeStartedFiveBySixGame));
+    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(4, 3), minesweeper::VisualMinesweeperCell::FOUR);
+    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(2, 1), minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(5, 0), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(1, 3), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(3, 3), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(1, 2), minesweeper::VisualMinesweeperCell::TWO);
+
+    // lost 5x3 game
+    minesweeper::Game premadeLostFiveByThreeGame;
+    ASSERT_NO_THROW(deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::lossGame_fiveByThree_serialisation____json],
+                                        premadeLostFiveByThreeGame));
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(2, 1), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(0, 1), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(1, 3), minesweeper::VisualMinesweeperCell::FIVE);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(2, 4), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(1, 1), minesweeper::VisualMinesweeperCell::TWO);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(2, 0), minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(1, 2), minesweeper::VisualMinesweeperCell::THREE);
 }
 
-TEST_F(MinesweeperGameTest, VisualiseSolutionTest) { // TODO: Add tests
+TEST_F(MinesweeperGameTest, VisualiseSolutionTest) {
+
+    // valid/expected template types
+    minesweeper::Game validTemplateTypes(12, 0.4, &myRandom);
+    EXPECT_NO_THROW(validTemplateTypes.checkInputCoordinates(8, 3));
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::vector<minesweeper::VisualMinesweeperCell>>());
+    EXPECT_NO_THROW(
+        validTemplateTypes.visualiseSolution<std::vector<std::vector<minesweeper::VisualMinesweeperCell>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::vector<int>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::vector<std::vector<int>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::string>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::vector<std::string>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::list<int>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::list<minesweeper::VisualMinesweeperCell>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::vector<std::list<int>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<std::list<std::vector<minesweeper::VisualMinesweeperCell>>>());
+
+    // custom template type (with minimal requirements)
+    class CustomExpandSeqContainer {
+      public:
+        // needed to deduce type of values to cast from minesweeper::VisualMinesweeperCell
+        using value_type = int;
+
+        // needed to push_back values
+        void push_back(value_type x) {}
+
+        // not needed for anything, but expected for any serious container
+        size_t size() { return 0; }
+    };
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolution<CustomExpandSeqContainer>());
+
+    // premade marked-win 5x4 game
+    minesweeper::Game premadeFiveByFourMarkedWinGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::markedWinGame_fiveByFour_serialisation____json],
+                            premadeFiveByFourMarkedWinGame));
+    std::vector<std::vector<int>> premadeFiveByFourSolutionMatrixExpected{
+        {9, 9, 3, 9}, {3, 9, 3, 1}, {1, 1, 1, 0}, {2, 2, 1, 0}, {9, 9, 1, 0}};
+    EXPECT_EQ(premadeFiveByFourMarkedWinGame.visualiseSolution<std::vector<std::vector<int>>>(),
+              premadeFiveByFourSolutionMatrixExpected);
+    std::vector<int> premadeFiveByFourSolutionVectorExpected{9, 9, 3, 9, 3, 9, 3, 1, 1, 1,
+                                                             1, 0, 2, 2, 1, 0, 9, 9, 1, 0};
+    EXPECT_EQ(premadeFiveByFourMarkedWinGame.visualiseSolution<std::vector<int>>(),
+              premadeFiveByFourSolutionVectorExpected);
+
+    // empty and unstarted 7x3 game
+    minesweeper::Game emptyGame(7, 3, 0.33, &myRandom);
+    std::list<minesweeper::VisualMinesweeperCell> emptySolutionListExpected(21,
+                                                                            minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(emptyGame.visualiseSolution<std::list<minesweeper::VisualMinesweeperCell>>(), emptySolutionListExpected);
+    std::vector<std::list<minesweeper::VisualMinesweeperCell>> emptySolutionVectorListExpected(
+        7, std::list<minesweeper::VisualMinesweeperCell>(3, minesweeper::VisualMinesweeperCell::EMPTY));
+    EXPECT_EQ(emptyGame.visualiseSolution<std::vector<std::list<minesweeper::VisualMinesweeperCell>>>(),
+              emptySolutionVectorListExpected);
 }
 
 TEST_F(MinesweeperGameTest, DefaultRandomTest) {
