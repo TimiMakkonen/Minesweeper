@@ -189,7 +189,19 @@ void usageExamples() {
     // Player can also mark coordinates with:
     myGame->markInputCoordinates(3, 6);
 
-// We can do a number of checks: (to assist with visualisation of game etc.)
+    // Player can also complete around coordinates with:
+    myGame->completeAroundInputCoordinates(4, 6);
+    // This method automatically checks/shows trivial unchecked cells around chosen coordinates.
+    // * For example, if we use this on a visible cell that has 2 mines
+    //   around, and we have already marked two mines around this visible
+    //   cell, then we will check/show the rest of cells around this visible
+    //   cell.
+    // * If the player has wrongly marked one of the mines around the visible
+    //   cell this method is used on, this method will end up checking a mine
+    //   and the player will lose the game.
+    // * If this method is used on a cell that is not visible yet, this method throws.
+
+    // We can do a number of checks: (to assist with visualisation of game etc.)
 
 // (This is just a small macro to help with printing method names and values:)
 #define PRINT_FUNC_RESULT(func) std::cout << #func << ": " << (func) << std::endl
