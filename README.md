@@ -1,6 +1,6 @@
 # Minesweeper game library
 
-[![GitHub License](https://img.shields.io/github/license/TimiMakkonen/minesweeper)](https://github.com/TimiMakkonen/minesweeper/LICENSE.MIT)
+[![GitHub License](https://img.shields.io/github/license/TimiMakkonen/minesweeper)](/LICENSE)
 ![GitHub Latest Release Tag](https://img.shields.io/github/v/tag/TimiMakkonen/minesweeper)
 
 C++ library containing the core logic of Minesweeper game.
