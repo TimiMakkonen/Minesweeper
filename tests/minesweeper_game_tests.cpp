@@ -1498,42 +1498,42 @@ TEST_F(MinesweeperGameTest, MarkInputCoordinatesTest) {
 
     // negative x and y
     minesweeper::Game negativeXandYMarkInputCoordsGame(10, 23, &myRandom);
-    negativeXandYMarkInputCoordsGame.checkInputCoordinates(1, 8);
+    EXPECT_NO_THROW(negativeXandYMarkInputCoordsGame.checkInputCoordinates(1, 8));
     EXPECT_THROW(negativeXandYMarkInputCoordsGame.markInputCoordinates(-2, -3), std::out_of_range);
 
     // negative x
     minesweeper::Game negativeXMarkInputCoordsGame(9, 6, 15, &myRandom);
-    negativeXMarkInputCoordsGame.checkInputCoordinates(1, 8);
+    EXPECT_NO_THROW(negativeXMarkInputCoordsGame.checkInputCoordinates(1, 8));
     EXPECT_THROW(negativeXMarkInputCoordsGame.markInputCoordinates(-4, 3), std::out_of_range);
 
     // negative y
     minesweeper::Game negativeYMarkInputCoordsGame(5, 8, 14, &myRandom);
-    negativeYMarkInputCoordsGame.checkInputCoordinates(1, 0);
+    EXPECT_NO_THROW(negativeYMarkInputCoordsGame.checkInputCoordinates(1, 0));
     EXPECT_THROW(negativeYMarkInputCoordsGame.markInputCoordinates(3, -1), std::out_of_range);
 
     // too large x and y
     minesweeper::Game tooLargeXandYMarkInputCoordsGame(9, 30, &myRandom);
-    tooLargeXandYMarkInputCoordsGame.checkInputCoordinates(8, 7);
+    EXPECT_NO_THROW(tooLargeXandYMarkInputCoordsGame.checkInputCoordinates(8, 7));
     EXPECT_THROW(tooLargeXandYMarkInputCoordsGame.markInputCoordinates(10, 15), std::out_of_range);
 
     // too large x
     minesweeper::Game tooLargeXMarkInputCoordsGame(16, 70, &myRandom);
-    tooLargeXMarkInputCoordsGame.checkInputCoordinates(14, 10);
+    EXPECT_NO_THROW(tooLargeXMarkInputCoordsGame.checkInputCoordinates(14, 10));
     EXPECT_THROW(tooLargeXMarkInputCoordsGame.markInputCoordinates(35, 0), std::out_of_range);
 
     // too large y
     minesweeper::Game tooLargeYMarkInputCoordsGame(50, 500, &myRandom);
-    tooLargeYMarkInputCoordsGame.checkInputCoordinates(35, 41);
+    EXPECT_NO_THROW(tooLargeYMarkInputCoordsGame.checkInputCoordinates(35, 41));
     EXPECT_THROW(tooLargeYMarkInputCoordsGame.markInputCoordinates(16, 50), std::out_of_range);
 
     // negative x and too large y
     minesweeper::Game negativeXandTooLargeYMarkInputCoordsGame(45, 80, 600, &myRandom);
-    negativeXandTooLargeYMarkInputCoordsGame.checkInputCoordinates(50, 30);
+    EXPECT_NO_THROW(negativeXandTooLargeYMarkInputCoordsGame.checkInputCoordinates(50, 30));
     EXPECT_THROW(negativeXandTooLargeYMarkInputCoordsGame.markInputCoordinates(-14, 90), std::out_of_range);
 
     // valid check set mark
     minesweeper::Game validMarkInputCoordsGame(11, 13, 30, &myRandom);
-    validMarkInputCoordsGame.checkInputCoordinates(5, 7);
+    EXPECT_NO_THROW(validMarkInputCoordsGame.checkInputCoordinates(5, 7));
     EXPECT_FALSE(validMarkInputCoordsGame.isCellMarked(8, 2));
     EXPECT_NO_THROW(validMarkInputCoordsGame.markInputCoordinates(8, 2));
     if (!validMarkInputCoordsGame.isCellVisible(8, 2)) {
@@ -1542,7 +1542,7 @@ TEST_F(MinesweeperGameTest, MarkInputCoordinatesTest) {
 
     // valid 'createMinesAndNums' set mark
     minesweeper::Game validCreateMinesAndNumsYMarkInputCoordsGame(47, 35, 700, &myRandom);
-    validCreateMinesAndNumsYMarkInputCoordsGame.createMinesAndNums(25, 35);
+    EXPECT_NO_THROW(validCreateMinesAndNumsYMarkInputCoordsGame.createMinesAndNums(25, 35));
     EXPECT_FALSE(validCreateMinesAndNumsYMarkInputCoordsGame.isCellMarked(30, 42));
     EXPECT_NO_THROW(validCreateMinesAndNumsYMarkInputCoordsGame.markInputCoordinates(30, 42));
     if (!validCreateMinesAndNumsYMarkInputCoordsGame.isCellVisible(30, 42)) {
@@ -1554,19 +1554,198 @@ TEST_F(MinesweeperGameTest, MarkInputCoordinatesTest) {
     EXPECT_THROW(notSetMinesMarkInputCoordsGame.markInputCoordinates(50, 68), std::invalid_argument);
 
     // unmark
-    minesweeper::Game UnmarkMarkInputCoordsGame(15, 32, 105, &myRandom);
-    UnmarkMarkInputCoordsGame.checkInputCoordinates(20, 7);
-    EXPECT_FALSE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
-    EXPECT_NO_THROW(UnmarkMarkInputCoordsGame.markInputCoordinates(18, 10));
-    if (!UnmarkMarkInputCoordsGame.isCellVisible(18, 10)) {
-        EXPECT_TRUE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
+    minesweeper::Game unmarkMarkInputCoordsGame(15, 32, 105, &myRandom);
+    EXPECT_NO_THROW(unmarkMarkInputCoordsGame.checkInputCoordinates(20, 7));
+    EXPECT_FALSE(unmarkMarkInputCoordsGame.isCellMarked(18, 10));
+    EXPECT_NO_THROW(unmarkMarkInputCoordsGame.markInputCoordinates(18, 10));
+    if (!unmarkMarkInputCoordsGame.isCellVisible(18, 10)) {
+        EXPECT_TRUE(unmarkMarkInputCoordsGame.isCellMarked(18, 10));
     }
-    EXPECT_NO_THROW(UnmarkMarkInputCoordsGame.markInputCoordinates(18, 10));
-    EXPECT_FALSE(UnmarkMarkInputCoordsGame.isCellMarked(18, 10));
+    EXPECT_NO_THROW(unmarkMarkInputCoordsGame.markInputCoordinates(18, 10));
+    EXPECT_FALSE(unmarkMarkInputCoordsGame.isCellMarked(18, 10));
 }
 
-TEST_F(MinesweeperGameTest, CompleteAroundInputCoordinatesTest) { // TODO: Add tests
+TEST_F(MinesweeperGameTest, CompleteAroundInputCoordinatesTest) {
+
+    // +------------------------+
+    // | Invalid Argument Tests |
+    // +------------------------+
+
+    // negative x and y
+    minesweeper::Game negativeXandYCompleteAroundGame(21, 11, 0.1545, &myRandom);
+    EXPECT_THROW(negativeXandYCompleteAroundGame.completeAroundInputCoordinates(-4, -11), std::out_of_range);
+    EXPECT_NO_THROW(negativeXandYCompleteAroundGame.checkInputCoordinates(3, 8));
+    EXPECT_THROW(negativeXandYCompleteAroundGame.completeAroundInputCoordinates(-1, -7), std::out_of_range);
+
+    // negative x
+    minesweeper::Game negativeXCompleteAroundGame(8, 13, 28, &myRandom);
+    EXPECT_THROW(negativeXCompleteAroundGame.completeAroundInputCoordinates(-2, 5), std::out_of_range);
+    EXPECT_NO_THROW(negativeXCompleteAroundGame.checkInputCoordinates(2, 6));
+    EXPECT_THROW(negativeXCompleteAroundGame.completeAroundInputCoordinates(-9, 3), std::out_of_range);
+
+    // negative x and y
+    minesweeper::Game negativeYCompleteAroundGame(9, 22, 64, &myRandom);
+    EXPECT_THROW(negativeYCompleteAroundGame.completeAroundInputCoordinates(11, -4), std::out_of_range);
+    EXPECT_NO_THROW(negativeYCompleteAroundGame.checkInputCoordinates(10, 1));
+    EXPECT_THROW(negativeYCompleteAroundGame.completeAroundInputCoordinates(18, -9), std::out_of_range);
+
+    // too large x and y
+    minesweeper::Game tooLargeXandYCompleteAroundGame(34, 0.2345, &myRandom);
+    EXPECT_THROW(tooLargeXandYCompleteAroundGame.completeAroundInputCoordinates(88, 45), std::out_of_range);
+    EXPECT_NO_THROW(tooLargeXandYCompleteAroundGame.checkInputCoordinates(19, 17));
+    EXPECT_THROW(tooLargeXandYCompleteAroundGame.completeAroundInputCoordinates(36, 34), std::out_of_range);
+
+    // too large x
+    minesweeper::Game tooLargeXCompleteAroundGame(14, 45, &myRandom);
+    EXPECT_THROW(tooLargeXCompleteAroundGame.completeAroundInputCoordinates(15, 8), std::out_of_range);
+    EXPECT_NO_THROW(tooLargeXCompleteAroundGame.checkInputCoordinates(1, 5));
+    EXPECT_THROW(tooLargeXCompleteAroundGame.completeAroundInputCoordinates(24, 1), std::out_of_range);
+
+    // too large y
+    minesweeper::Game tooLargeYCompleteAroundGame(9, 21, 0.425, &myRandom);
+    EXPECT_THROW(tooLargeYCompleteAroundGame.completeAroundInputCoordinates(19, 16), std::out_of_range);
+    EXPECT_NO_THROW(tooLargeYCompleteAroundGame.checkInputCoordinates(18, 0));
+    EXPECT_THROW(tooLargeYCompleteAroundGame.completeAroundInputCoordinates(7, 9), std::out_of_range);
+
+    // too large x and negative y
+    minesweeper::Game tooLargeXandNegativeYCompleteAroundGame(26, 0.31, &myRandom);
+    EXPECT_THROW(tooLargeXandNegativeYCompleteAroundGame.completeAroundInputCoordinates(26, -7), std::out_of_range);
+    EXPECT_NO_THROW(tooLargeXandNegativeYCompleteAroundGame.checkInputCoordinates(19, 4));
+    EXPECT_THROW(tooLargeXandNegativeYCompleteAroundGame.completeAroundInputCoordinates(67, -1), std::out_of_range);
+
+    // game has not started (using method on a cell that is not visible should throw)
+    minesweeper::Game unstartedGameCompleteAroundGame(10, 32, &myRandom);
+    EXPECT_THROW(unstartedGameCompleteAroundGame.completeAroundInputCoordinates(0, 8), std::invalid_argument);
+    EXPECT_THROW(unstartedGameCompleteAroundGame.completeAroundInputCoordinates(8, 5), std::invalid_argument);
+    EXPECT_THROW(unstartedGameCompleteAroundGame.completeAroundInputCoordinates(1, 2), std::invalid_argument);
+
+    // game has not started 2 (using method on a cell that is not visible should throw)
+    minesweeper::Game unstartedGameCompleteAroundGame2(18, 16, 0.4, &myRandom);
+    EXPECT_THROW(unstartedGameCompleteAroundGame2.completeAroundInputCoordinates(9, 5), std::invalid_argument);
+    EXPECT_THROW(unstartedGameCompleteAroundGame2.completeAroundInputCoordinates(11, 17), std::invalid_argument);
+    EXPECT_THROW(unstartedGameCompleteAroundGame2.completeAroundInputCoordinates(0, 16), std::invalid_argument);
+
+    // cell is not visible (using method on a cell that is not visible should throw)
+    minesweeper::Game notVisibleCellCompleteAroundGame(8, 11, 26, &myRandom);
+    EXPECT_NO_THROW(notVisibleCellCompleteAroundGame.checkInputCoordinates(6, 3));
+    for (int y = 0; y < notVisibleCellCompleteAroundGame.getGridHeight(); ++y) {
+        for (int x = 0; x < notVisibleCellCompleteAroundGame.getGridWidth(); ++x) {
+            if (!notVisibleCellCompleteAroundGame.isCellVisible(x, y)) {
+                EXPECT_THROW(notVisibleCellCompleteAroundGame.completeAroundInputCoordinates(x, y),
+                             std::invalid_argument);
+            }
+        }
+    }
+
+    // is cell visible
+    // (using method on a valid cell should either throw or not, depending on if it is not visible or visible)
+    minesweeper::Game isCellVisibleCompleteAroundGame(14, 7, 31, &myRandom);
+    EXPECT_NO_THROW(isCellVisibleCompleteAroundGame.checkInputCoordinates(4, 7));
+    for (int y = 0; y < isCellVisibleCompleteAroundGame.getGridHeight(); ++y) {
+        for (int x = 0; x < isCellVisibleCompleteAroundGame.getGridWidth(); ++x) {
+            if (!isCellVisibleCompleteAroundGame.isCellVisible(x, y)) {
+                EXPECT_THROW(isCellVisibleCompleteAroundGame.completeAroundInputCoordinates(x, y),
+                             std::invalid_argument);
+            } else {
+                EXPECT_NO_THROW(isCellVisibleCompleteAroundGame.completeAroundInputCoordinates(x, y));
+            }
+        }
+    }
+
+    // +-------------------+
+    // | Valid Usage Tests |
+    // +-------------------+
+
+    // complete around initial cell
+    // (since standard first move already guarantees that cells around get checked, using this method on initial cell
+    //  should be useless)
+    minesweeper::Game initialCellCompleteAroundGame(14, 0.24, &myRandom);
+    EXPECT_NO_THROW(initialCellCompleteAroundGame.checkInputCoordinates(8, 5));
+    auto initialCellCompleteAroundGameStr = serialiseToString(initialCellCompleteAroundGame);
+    EXPECT_NO_THROW(initialCellCompleteAroundGame.completeAroundInputCoordinates(8, 5));
+    EXPECT_EQ(serialiseToString(initialCellCompleteAroundGame), initialCellCompleteAroundGameStr);
+
+    // complete around initial cell 2
+    minesweeper::Game initialCellCompleteAroundGame2(14, 9, 37, &myRandom);
+    EXPECT_NO_THROW(initialCellCompleteAroundGame2.checkInputCoordinates(6, 11));
+    auto initialCellCompleteAroundGame2Str = serialiseToString(initialCellCompleteAroundGame2);
+    EXPECT_NO_THROW(initialCellCompleteAroundGame2.completeAroundInputCoordinates(6, 11));
+    EXPECT_EQ(serialiseToString(initialCellCompleteAroundGame2), initialCellCompleteAroundGame2Str);
+
+    // +-----------------------------+
+    // | premade unfinished 7x7 game |
+    // +-----------------------------+
+
+    minesweeper::Game premadeUnfinishedSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeUnfinishedSevenBySevenGame));
+    // method on invisible cells
+    EXPECT_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(0, 1), std::invalid_argument);
+    EXPECT_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(0, 6), std::invalid_argument);
+    EXPECT_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(2, 2), std::invalid_argument);
+    EXPECT_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(6, 4), std::invalid_argument);
+    // method on useless cells
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(3, 4));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(1, 3));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(2, 5));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(1, 5));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(0, 5));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(4, 4));
+    EXPECT_EQ(serialiseToString(premadeUnfinishedSevenBySevenGame),
+              unfinishedSevenBySevenGameStr); // no change expected
+    // method on cells which are not useful yet
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(0, 2));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(2, 1));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(4, 1));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(4, 5));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(5, 2));
+    EXPECT_EQ(serialiseToString(premadeUnfinishedSevenBySevenGame),
+              unfinishedSevenBySevenGameStr); // no change expected
+    // useful usage
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellVisible(5, 1)); // usage 1
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(4, 2));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellVisible(5, 1));  // end of usage 1
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellVisible(5, 6)); // usage 2
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.markInputCoordinates(4, 6));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.markInputCoordinates(5, 5));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(4, 5));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellVisible(5, 6));  // end of usage 2
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellVisible(0, 1)); // usage 3
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellVisible(0, 4));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.markInputCoordinates(3, 0));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(3, 1));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellVisible(0, 2));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellVisible(0, 4)); // end of usage 3
+    // wrongly marked usage
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.playerHasLost());
+    EXPECT_FALSE(premadeUnfinishedSevenBySevenGame.isCellVisible(1, 1));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.markInputCoordinates(0, 1));
+    EXPECT_NO_THROW(premadeUnfinishedSevenBySevenGame.completeAroundInputCoordinates(1, 2));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.isCellVisible(1, 1));
+    EXPECT_TRUE(premadeUnfinishedSevenBySevenGame.playerHasLost());
+
+    // +-----------------------+
+    // | premade 5x3 loss game |
+    // +-----------------------+
+
+    minesweeper::Game premadeLossFiveByThreeGame;
+    ASSERT_NO_THROW(deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::lossGame_fiveByThree_serialisation____json],
+                                        premadeLossFiveByThreeGame));
+    EXPECT_FALSE(premadeLossFiveByThreeGame.isCellVisible(0, 4));
+    EXPECT_FALSE(premadeLossFiveByThreeGame.isCellVisible(1, 3));
+    EXPECT_NO_THROW(premadeLossFiveByThreeGame.completeAroundInputCoordinates(0, 3));
+    EXPECT_EQ(serialiseToString(premadeLossFiveByThreeGame), lossFiveByThreeGameStr);
+    EXPECT_FALSE(premadeLossFiveByThreeGame.isCellVisible(0, 4));
+    EXPECT_FALSE(premadeLossFiveByThreeGame.isCellVisible(1, 3));
+    EXPECT_NO_THROW(premadeLossFiveByThreeGame.markInputCoordinates(0, 4));
+    EXPECT_NO_THROW(premadeLossFiveByThreeGame.markInputCoordinates(1, 4));
+    EXPECT_NO_THROW(premadeLossFiveByThreeGame.completeAroundInputCoordinates(0, 3));
+    EXPECT_FALSE(premadeLossFiveByThreeGame.isCellVisible(1, 3)); // good
+    EXPECT_NO_THROW(premadeLossFiveByThreeGame.completeAroundInputCoordinates(1, 2));
+    EXPECT_FALSE(premadeLossFiveByThreeGame.isCellVisible(1, 3));
 }
+
 TEST_F(MinesweeperGameTest, PlayerHasWonTest) {
 
     // empty win

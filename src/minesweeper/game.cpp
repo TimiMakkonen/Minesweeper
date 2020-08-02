@@ -650,7 +650,7 @@ int Game::numOfMarkedCellsAroundCell_(const int x, const int y) const {
     assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
     int output = 0;
     for (auto const& neighbourCell : this->neighbourCells_(x, y)) {
-        if (this->isCellMarked_(x, y)) {
+        if (this->isCellMarked_(neighbourCell.first, neighbourCell.second)) {
             ++output;
         }
     }
