@@ -2790,7 +2790,8 @@ TEST_F(MinesweeperGameTest, VisualiseCellSolutionTest) {
     ASSERT_NO_THROW(
         deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
                             premadeUnfinishedSevenBySevenGame));
-    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(0, 0), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(0, 0),
+              minesweeper::VisualMinesweeperCell::MARKED);
     EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(6, 4), minesweeper::VisualMinesweeperCell::THREE);
     EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(1, 4), minesweeper::VisualMinesweeperCell::EMPTY);
     EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolution(3, 2), minesweeper::VisualMinesweeperCell::TWO);
@@ -2804,7 +2805,7 @@ TEST_F(MinesweeperGameTest, VisualiseCellSolutionTest) {
     EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(4, 3), minesweeper::VisualMinesweeperCell::FOUR);
     EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(2, 1), minesweeper::VisualMinesweeperCell::EMPTY);
     EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(5, 0), minesweeper::VisualMinesweeperCell::ONE);
-    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(1, 3), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(1, 3), minesweeper::VisualMinesweeperCell::MARKED);
     EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(3, 3), minesweeper::VisualMinesweeperCell::THREE);
     EXPECT_EQ(premadeStartedFiveBySixGame.visualiseCellSolution(1, 2), minesweeper::VisualMinesweeperCell::TWO);
 
@@ -2813,9 +2814,9 @@ TEST_F(MinesweeperGameTest, VisualiseCellSolutionTest) {
     ASSERT_NO_THROW(deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::lossGame_fiveByThree_serialisation____json],
                                         premadeLostFiveByThreeGame));
     EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(2, 1), minesweeper::VisualMinesweeperCell::ONE);
-    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(0, 1), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(0, 1), minesweeper::VisualMinesweeperCell::MARKED);
     EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(1, 3), minesweeper::VisualMinesweeperCell::FIVE);
-    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(2, 4), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(2, 4), minesweeper::VisualMinesweeperCell::MARKED);
     EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(1, 1), minesweeper::VisualMinesweeperCell::TWO);
     EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(2, 0), minesweeper::VisualMinesweeperCell::EMPTY);
     EXPECT_EQ(premadeLostFiveByThreeGame.visualiseCellSolution(1, 2), minesweeper::VisualMinesweeperCell::THREE);
@@ -2858,11 +2859,11 @@ TEST_F(MinesweeperGameTest, VisualiseSolutionTest) {
         deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::markedWinGame_fiveByFour_serialisation____json],
                             premadeFiveByFourMarkedWinGame));
     std::vector<std::vector<int>> premadeFiveByFourSolutionMatrixExpected{
-        {9, 9, 3, 9}, {3, 9, 3, 1}, {1, 1, 1, 0}, {2, 2, 1, 0}, {9, 9, 1, 0}};
+        {10, 10, 3, 10}, {3, 10, 3, 1}, {1, 1, 1, 0}, {2, 2, 1, 0}, {10, 10, 1, 0}};
     EXPECT_EQ(premadeFiveByFourMarkedWinGame.visualiseSolution<std::vector<std::vector<int>>>(),
               premadeFiveByFourSolutionMatrixExpected);
-    std::vector<int> premadeFiveByFourSolutionVectorExpected{9, 9, 3, 9, 3, 9, 3, 1, 1, 1,
-                                                             1, 0, 2, 2, 1, 0, 9, 9, 1, 0};
+    std::vector<int> premadeFiveByFourSolutionVectorExpected{10, 10, 3, 10, 3, 10, 3,  1,  1, 1,
+                                                             1,  0,  2, 2,  1, 0,  10, 10, 1, 0};
     EXPECT_EQ(premadeFiveByFourMarkedWinGame.visualiseSolution<std::vector<int>>(),
               premadeFiveByFourSolutionVectorExpected);
 
@@ -2875,6 +2876,172 @@ TEST_F(MinesweeperGameTest, VisualiseSolutionTest) {
         7, std::list<minesweeper::VisualMinesweeperCell>(3, minesweeper::VisualMinesweeperCell::EMPTY));
     EXPECT_EQ(emptyGame.visualiseSolution<std::vector<std::list<minesweeper::VisualMinesweeperCell>>>(),
               emptySolutionVectorListExpected);
+}
+
+TEST_F(MinesweeperGameTest, VisualiseCellSolutionDataTest) {
+
+    // negative x and y
+    minesweeper::Game negativeXandYVisualiseCellSolutionGame(11, 0.244, &myRandom);
+    EXPECT_THROW(negativeXandYVisualiseCellSolutionGame.visualiseCellSolutionData(-5, -1), std::out_of_range);
+
+    // negative x
+    minesweeper::Game negativeXVisualiseCellSolutionGame(10, 8, 14, &myRandom);
+    EXPECT_THROW(negativeXVisualiseCellSolutionGame.visualiseCellSolutionData(-3, 5), std::out_of_range);
+
+    // negative y
+    minesweeper::Game negativeYVisualiseCellSolutionGame(9, 34, &myRandom);
+    EXPECT_THROW(negativeYVisualiseCellSolutionGame.visualiseCellSolutionData(0, -1), std::out_of_range);
+
+    // too large x and y
+    minesweeper::Game tooLargeXandYVisualiseCellSolutionGame(6, 8, 0.2, &myRandom);
+    EXPECT_THROW(tooLargeXandYVisualiseCellSolutionGame.visualiseCellSolutionData(9, 71), std::out_of_range);
+
+    // too large x
+    minesweeper::Game tooLargeXVisualiseCellSolutionGame(16, 6, 0.54, &myRandom);
+    EXPECT_THROW(tooLargeXVisualiseCellSolutionGame.visualiseCellSolutionData(6, 8), std::out_of_range);
+
+    // too large y
+    minesweeper::Game tooLargeYVisualiseCellSolutionGame(7, 0.33, &myRandom);
+    EXPECT_THROW(tooLargeYVisualiseCellSolutionGame.visualiseCellSolutionData(1, 77), std::out_of_range);
+
+    // too large x and negative y
+    minesweeper::Game tooLargeXandNegativeYVisualiseCellSolutionGame(10, 10, 33, &myRandom);
+    EXPECT_THROW(tooLargeXandNegativeYVisualiseCellSolutionGame.visualiseCellSolutionData(15, -6), std::out_of_range);
+
+    // valid/expected template types
+    minesweeper::Game validTemplateTypes(9, 0.45, &myRandom);
+    EXPECT_NO_THROW(validTemplateTypes.checkInputCoordinates(5, 7));
+    minesweeper::VisualMinesweeperCell cellSolutionDataVisualisation;
+    EXPECT_NO_THROW(cellSolutionDataVisualisation =
+                        validTemplateTypes.visualiseCellSolutionData<minesweeper::VisualMinesweeperCell>(4, 6));
+    int cellIntSolutionDataVisualisation;
+    EXPECT_NO_THROW(cellIntSolutionDataVisualisation = validTemplateTypes.visualiseCellSolutionData<int>(4, 6));
+    char cellCharSolutionDataVisualisation;
+    EXPECT_NO_THROW(cellCharSolutionDataVisualisation = validTemplateTypes.visualiseCellSolutionData<char>(4, 6));
+    EXPECT_EQ(static_cast<int>(cellSolutionDataVisualisation), cellIntSolutionDataVisualisation);
+    EXPECT_EQ(static_cast<int>(cellCharSolutionDataVisualisation), cellIntSolutionDataVisualisation);
+    EXPECT_EQ(static_cast<minesweeper::VisualMinesweeperCell>(cellCharSolutionDataVisualisation),
+              cellSolutionDataVisualisation);
+
+    // custom template type
+    class VisualTestCell {
+      public:
+        VisualTestCell(minesweeper::VisualMinesweeperCell x) {}
+    };
+    EXPECT_NO_THROW(validTemplateTypes.visualiseCellSolutionData<VisualTestCell>(4, 6));
+
+    // unfinished 7x7 game
+    minesweeper::Game premadeUnfinishedSevenBySevenGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::unfinishedGame_sevenBySeven_serialisation____json],
+                            premadeUnfinishedSevenBySevenGame));
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolutionData(3, 0),
+              minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolutionData(4, 2),
+              minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolutionData(5, 6),
+              minesweeper::VisualMinesweeperCell::FOUR);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolutionData(1, 2),
+              minesweeper::VisualMinesweeperCell::TWO);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolutionData(6, 4),
+              minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeUnfinishedSevenBySevenGame.visualiseCellSolutionData(2, 5),
+              minesweeper::VisualMinesweeperCell::EMPTY);
+
+    // started 6x8 game
+    minesweeper::Game premadeStartedSixByEightGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::startedGame_sixByEight_serialisation____json],
+                            premadeStartedSixByEightGame));
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(3, 5), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(5, 0), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(0, 1), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(2, 3), minesweeper::VisualMinesweeperCell::FIVE);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(0, 2), minesweeper::VisualMinesweeperCell::FOUR);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(4, 3), minesweeper::VisualMinesweeperCell::TWO);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(5, 4), minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(7, 3), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeStartedSixByEightGame.visualiseCellSolutionData(0, 0), minesweeper::VisualMinesweeperCell::TWO);
+
+    // lost 9x5 game
+    minesweeper::Game premadeLostNineByFiveGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::invalidMarkLossGame_nineByFive_serialisation____json],
+                            premadeLostNineByFiveGame));
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(4, 6), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(1, 5), minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(2, 3), minesweeper::VisualMinesweeperCell::TWO);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(2, 0), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(1, 1), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(1, 0), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(1, 8), minesweeper::VisualMinesweeperCell::MINE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(0, 1), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(3, 8), minesweeper::VisualMinesweeperCell::ONE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(3, 5), minesweeper::VisualMinesweeperCell::THREE);
+    EXPECT_EQ(premadeLostNineByFiveGame.visualiseCellSolutionData(3, 1), minesweeper::VisualMinesweeperCell::TWO);
+}
+
+TEST_F(MinesweeperGameTest, VisualiseSolutionDataTest) {
+
+    // valid/expected template types
+    minesweeper::Game validTemplateTypes(9, 6, 14, &myRandom);
+    EXPECT_NO_THROW(validTemplateTypes.checkInputCoordinates(3, 6));
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::vector<minesweeper::VisualMinesweeperCell>>());
+    EXPECT_NO_THROW(
+        validTemplateTypes.visualiseSolutionData<std::vector<std::vector<minesweeper::VisualMinesweeperCell>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::vector<int>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::vector<std::vector<int>>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::string>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::vector<std::string>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::list<int>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::list<minesweeper::VisualMinesweeperCell>>());
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<std::vector<std::list<int>>>());
+    EXPECT_NO_THROW(
+        validTemplateTypes.visualiseSolutionData<std::list<std::vector<minesweeper::VisualMinesweeperCell>>>());
+
+    // custom template type (with minimal requirements)
+    class CustomExpandSeqContainer {
+      public:
+        // needed to deduce type of values to cast from minesweeper::VisualMinesweeperCell
+        using value_type = int;
+
+        // needed to push_back values
+        void push_back(value_type x) {}
+
+        // not needed for anything, but expected for any serious container
+        size_t size() { return 0; }
+    };
+    EXPECT_NO_THROW(validTemplateTypes.visualiseSolutionData<CustomExpandSeqContainer>());
+
+    // premade marked-win 4x8 game
+    minesweeper::Game premadeFourByEightCheckedWinGame;
+    ASSERT_NO_THROW(
+        deserialiseFromFile(minesweeper::TEST_DATA[minesweeper::checkedWinGame_fourByEight_serialisation____json],
+                            premadeFourByEightCheckedWinGame));
+    std::vector<std::vector<int>> premadeFourByEightSolutionDataMatrixExpected{
+        {1, 9, 9, 3, 1, 0, 1, 1},
+        {2, 4, 9, 9, 1, 0, 1, 9},
+        {9, 3, 3, 2, 2, 1, 2, 1},
+        {2, 9, 1, 0, 1, 9, 1, 0},
+    };
+    EXPECT_EQ(premadeFourByEightCheckedWinGame.visualiseSolutionData<std::vector<std::vector<int>>>(),
+              premadeFourByEightSolutionDataMatrixExpected);
+    std::vector<int> premadeFourByEightSolutionDataVectorExpected{
+        1, 9, 9, 3, 1, 0, 1, 1, 2, 4, 9, 9, 1, 0, 1, 9, 9, 3, 3, 2, 2, 1, 2, 1, 2, 9, 1, 0, 1, 9, 1, 0,
+    };
+    EXPECT_EQ(premadeFourByEightCheckedWinGame.visualiseSolutionData<std::vector<int>>(),
+              premadeFourByEightSolutionDataVectorExpected);
+
+    // empty and unstarted 8x6 game
+    minesweeper::Game emptyGame(8, 6, 0.47, &myRandom);
+    std::list<minesweeper::VisualMinesweeperCell> emptySolutionDataListExpected(
+        48, minesweeper::VisualMinesweeperCell::EMPTY);
+    EXPECT_EQ(emptyGame.visualiseSolutionData<std::list<minesweeper::VisualMinesweeperCell>>(),
+              emptySolutionDataListExpected);
+    std::vector<std::list<minesweeper::VisualMinesweeperCell>> emptySolutionDataVectorListExpected(
+        8, std::list<minesweeper::VisualMinesweeperCell>(6, minesweeper::VisualMinesweeperCell::EMPTY));
+    EXPECT_EQ(emptyGame.visualiseSolutionData<std::vector<std::list<minesweeper::VisualMinesweeperCell>>>(),
+              emptySolutionDataVectorListExpected);
 }
 
 TEST_F(MinesweeperGameTest, DefaultRandomTest) {
