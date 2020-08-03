@@ -71,6 +71,9 @@ class Cell {
     // visualise solution as 'VisualMinesweeperCell' -method
     VisualMinesweeperCell visualiseSolution() const;
 
+    // visualise solution data as 'VisualMinesweeperCell' -method
+    VisualMinesweeperCell visualiseSolutionData() const;
+
   private:
     // +----------------------+
     // | static const fields: |

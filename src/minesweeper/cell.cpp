@@ -164,6 +164,18 @@ VisualMinesweeperCell Cell::visualiseSolution() const {
 
     VisualMinesweeperCell output;
     if (this->_hasMine) {
+        output = VisualMinesweeperCell::MARKED;
+    } else {
+        output = static_cast<VisualMinesweeperCell>(this->_numOfMinesAround);
+    }
+
+    return output;
+}
+
+VisualMinesweeperCell Cell::visualiseSolutionData() const {
+
+    VisualMinesweeperCell output;
+    if (this->_hasMine) {
         output = VisualMinesweeperCell::MINE;
     } else {
         output = static_cast<VisualMinesweeperCell>(this->_numOfMinesAround);

@@ -120,16 +120,32 @@ class Game {
     Container visualise() const;
 
     // get visual solution information of a cell:
+    // (every cell marked as: empty, number or marked)
     template <class T = VisualMinesweeperCell>
     T visualiseCellSolution(int x, int y) const;
 
     // get visual solution information of each cell:
+    // (every cell marked as: empty, number or marked)
     template <class Container,
               typename std::enable_if<is_expandable_1d_sequence_container<Container>::value, int>::type = 0>
     Container visualiseSolution() const;
     template <class Container,
               typename std::enable_if<is_expandable_2d_sequence_container<Container>::value, int>::type = 0>
     Container visualiseSolution() const;
+
+    // get visual solution data information of a cell:
+    // (every cell marked as: empty, number or mine)
+    template <class T = VisualMinesweeperCell>
+    T visualiseCellSolutionData(int x, int y) const;
+
+    // get visual solution data information of each cell:
+    // (every cell marked as: empty, number or mine)
+    template <class Container,
+              typename std::enable_if<is_expandable_1d_sequence_container<Container>::value, int>::type = 0>
+    Container visualiseSolutionData() const;
+    template <class Container,
+              typename std::enable_if<is_expandable_2d_sequence_container<Container>::value, int>::type = 0>
+    Container visualiseSolutionData() const;
 
     // +------------------------+
     // | public static methods: |
@@ -224,6 +240,9 @@ class Game {
 
     // private visual cell solution information:
     VisualMinesweeperCell visualiseCellSolution_(int x, int y) const;
+
+    // private visual cell solution data information:
+    VisualMinesweeperCell visualiseCellSolutionData_(int x, int y) const;
 
     // private visualisation details:
     template <class Container>

@@ -52,6 +52,27 @@ Container Game::visualiseSolution() const {
     return this->visualisationDetailIn2d_<Container>(&Game::visualiseCellSolution_);
 }
 
+template <class T>
+T Game::visualiseCellSolutionData(const int x, const int y) const {
+
+    if (x < 0 || y < 0 || x >= this->_gridWidth || y >= this->_gridHeight) {
+        throw std::out_of_range("Game::visualiseCellSolutionData(const int X, const int Y): "
+                                "Trying to visualise solution data of a cell outside the grid.");
+    }
+
+    return static_cast<T>(this->visualiseCellSolutionData_(x, y));
+}
+
+template <class Container, typename std::enable_if<is_expandable_1d_sequence_container<Container>::value, int>::type>
+Container Game::visualiseSolutionData() const {
+    return this->visualisationDetailIn1d_<Container>(&Game::visualiseCellSolutionData_);
+}
+
+template <class Container, typename std::enable_if<is_expandable_2d_sequence_container<Container>::value, int>::type>
+Container Game::visualiseSolutionData() const {
+    return this->visualisationDetailIn2d_<Container>(&Game::visualiseCellSolutionData_);
+}
+
 template <class Container>
 Container Game::visualisationDetailIn1d_(VisualMinesweeperCell (Game::*cellVisualisationMethod)(int, int) const) const {
 

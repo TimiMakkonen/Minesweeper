@@ -581,6 +581,11 @@ VisualMinesweeperCell Game::visualiseCellSolution_(const int x, const int y) con
     return this->_cells[y][x]->visualiseSolution();
 }
 
+VisualMinesweeperCell Game::visualiseCellSolutionData_(const int x, const int y) const {
+    assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
+    return this->_cells[y][x]->visualiseSolutionData();
+}
+
 // to check user given coordinates, and make it visible
 void Game::checkInputCoordinates(const int x, const int y) {
 

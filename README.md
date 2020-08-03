@@ -53,6 +53,30 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version history
 
+### Version DEVELOP
+
+* Changed behaviour of solution visualisation methods.
+  * 'visualiseSolution' and 'visualiseCellSolution' originally returned
+    visualisation showing every cell either as:
+    * a mine (if they contained a mine),
+    * a cell with neighbouring mines i.e. a number
+      (if they did not have a mine but had neighbouring mines), or
+    * an empty cell (if all other options did not apply).
+  * Now these old methods have been renamed into 'visualiseSolutionData'
+    and 'visualiseCellSolutionData', respectively.
+  * The new 'visualiseSolution' and 'visualiseCellSolution' methods now
+    return a visualisation which is identical to the previous one, but
+    now show mines as marked instead of bare mines.
+  * These changes should represent and emphasise their actual meaning
+    much better.
+  * In summary:
+    * old 'visualiseSolution' is now 'visualiseSolutionData',
+    * old 'visualiseCellSolution' is now 'visualiseCellSolutionData',
+    * new 'visualiseSolution' is identical to old one,
+      but shows mines as marked,
+    * new 'visualiseCellSolution' is identical to old one,
+      but shows mines as marked.
+
 ### Version 8.5.0
 
 * Added solution visualisation methods.
