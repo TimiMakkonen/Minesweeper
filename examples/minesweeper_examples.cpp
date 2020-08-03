@@ -243,14 +243,28 @@ void usageExamples() {
     std::cout << "myGame->visualise<std::vector<std::vector<<int>>>()\n";
 
     std::cout << "\nget visual solution information of a cell:\n";
+    std::cout << "\n(every cell marked as: empty, number or marked)\n";
     std::cout << "myGame->visualiseCellSolution<minesweeper::VisualMinesweeperCell>(int x, int y)\n";
     PRINT_FUNC_RESULT(myGame->visualiseCellSolution<int>(8, 3));
 
     std::cout << "\nget visual solution information of each cell:\n";
+    std::cout << "\n(every cell marked as: empty, number or marked)\n";
     std::cout << "myGame->visualiseSolution<std::vector<minesweeper::VisualMinesweeperCell>>()\n";
     std::cout << "myGame->visualiseSolution<std::vector<int>>()\n";
     std::cout << "myGame->visualiseSolution<std::vector<std::vector<<minesweeper::VisualMinesweeperCell>>>()\n";
     std::cout << "myGame->visualiseSolution<std::vector<std::vector<<int>>>()\n";
+
+    std::cout << "\nget visual solution data information of a cell:\n";
+    std::cout << "\n(every cell marked as: empty, number or mine)\n";
+    std::cout << "myGame->visualiseCellSolutionData<minesweeper::VisualMinesweeperCell>(int x, int y)\n";
+    PRINT_FUNC_RESULT(myGame->visualiseCellSolutionData<int>(8, 3));
+
+    std::cout << "\nget visual solution data information of each cell:\n";
+    std::cout << "\n(every cell marked as: empty, number or mine)\n";
+    std::cout << "myGame->visualiseSolutionData<std::vector<minesweeper::VisualMinesweeperCell>>()\n";
+    std::cout << "myGame->visualiseSolutionData<std::vector<int>>()\n";
+    std::cout << "myGame->visualiseSolutionData<std::vector<std::vector<<minesweeper::VisualMinesweeperCell>>>()\n";
+    std::cout << "myGame->visualiseSolutionData<std::vector<std::vector<<int>>>()\n";
 
     std::cout << "\nstatic min/max num/prop of mines methods:\n";
     PRINT_FUNC_RESULT(minesweeper::Game::maxNumOfMines(10, 12));

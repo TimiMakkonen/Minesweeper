@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 project(Minesweeper 
-        VERSION 8.5.0
+        VERSION 8.5.1
         #DESCRIPTION "Minesweeper library"
         LANGUAGES CXX)
 

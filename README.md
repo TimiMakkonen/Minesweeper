@@ -53,7 +53,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version history
 
-### Version DEVELOP
+### Version 8.5.1
 
 * Changed behaviour of solution visualisation methods.
   * 'visualiseSolution' and 'visualiseCellSolution' originally returned
