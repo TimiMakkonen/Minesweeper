@@ -1,30 +1,30 @@
 # Summary
 
-Date : 2020-08-02 20:28:35
+Date : 2020-08-23 17:57:35
 
 Directory e:\Programming\Cplusplus\minesweeper\minesweeper
 
-Total : 32 files,  8747 codes, 983 comments, 1138 blanks, all 10868 lines
+Total : 32 files,  8966 codes, 1011 comments, 1181 blanks, all 11158 lines
 
 [details](details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
+| C++ | 15 | 4,403 | 1,011 | 1,095 | 6,509 |
 | JSON | 16 | 4,316 | 0 | 17 | 4,333 |
-| C++ | 15 | 4,212 | 983 | 1,056 | 6,251 |
-| Markdown | 1 | 219 | 0 | 65 | 284 |
+| Markdown | 1 | 247 | 0 | 69 | 316 |
 
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 32 | 8,747 | 983 | 1,138 | 10,868 |
-| examples | 1 | 276 | 108 | 120 | 504 |
-| include | 6 | 283 | 71 | 108 | 462 |
-| include\minesweeper | 6 | 283 | 71 | 108 | 462 |
-| src | 4 | 782 | 102 | 300 | 1,184 |
-| src\minesweeper | 4 | 782 | 102 | 300 | 1,184 |
-| tests | 20 | 7,187 | 702 | 545 | 8,434 |
+| . | 32 | 8,966 | 1,011 | 1,181 | 11,158 |
+| examples | 1 | 288 | 108 | 122 | 518 |
+| include | 6 | 311 | 79 | 117 | 507 |
+| include\minesweeper | 6 | 311 | 79 | 117 | 507 |
+| src | 4 | 805 | 103 | 308 | 1,216 |
+| src\minesweeper | 4 | 805 | 103 | 308 | 1,216 |
+| tests | 20 | 7,315 | 721 | 565 | 8,601 |
 | tests\data | 16 | 4,316 | 0 | 17 | 4,333 |
 | tests\data\invalid-serialisation | 7 | 1,264 | 0 | 8 | 1,272 |
 

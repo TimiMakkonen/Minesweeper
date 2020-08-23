@@ -1,27 +1,27 @@
 # Details
 
-Date : 2020-08-02 20:28:35
+Date : 2020-08-23 17:57:35
 
 Directory e:\Programming\Cplusplus\minesweeper\minesweeper
 
-Total : 32 files,  8747 codes, 983 comments, 1138 blanks, all 10868 lines
+Total : 32 files,  8966 codes, 1011 comments, 1181 blanks, all 11158 lines
 
 [summary](results.md)
 
 ## Files
 | filename | language | code | comment | blank | total |
 | :--- | :--- | ---: | ---: | ---: | ---: |
-| [README.md](/README.md) | Markdown | 219 | 0 | 65 | 284 |
-| [examples/minesweeper_examples.cpp](/examples/minesweeper_examples.cpp) | C++ | 276 | 108 | 120 | 504 |
-| [include/minesweeper/game.h](/include/minesweeper/game.h) | C++ | 139 | 63 | 54 | 256 |
-| [include/minesweeper/game.tpp](/include/minesweeper/game.tpp) | C++ | 65 | 0 | 26 | 91 |
+| [README.md](/README.md) | Markdown | 247 | 0 | 69 | 316 |
+| [examples/minesweeper_examples.cpp](/examples/minesweeper_examples.cpp) | C++ | 288 | 108 | 122 | 518 |
+| [include/minesweeper/game.h](/include/minesweeper/game.h) | C++ | 151 | 71 | 58 | 280 |
+| [include/minesweeper/game.tpp](/include/minesweeper/game.tpp) | C++ | 81 | 0 | 31 | 112 |
 | [include/minesweeper/i_random.h](/include/minesweeper/i_random.h) | C++ | 16 | 0 | 7 | 23 |
 | [include/minesweeper/random.h](/include/minesweeper/random.h) | C++ | 16 | 0 | 8 | 24 |
 | [include/minesweeper/type_traits.h](/include/minesweeper/type_traits.h) | C++ | 28 | 8 | 9 | 45 |
 | [include/minesweeper/visual_minesweeper_cell.h](/include/minesweeper/visual_minesweeper_cell.h) | C++ | 19 | 0 | 4 | 23 |
-| [src/minesweeper/cell.cpp](/src/minesweeper/cell.cpp) | C++ | 110 | 13 | 52 | 175 |
-| [src/minesweeper/cell.h](/src/minesweeper/cell.h) | C++ | 46 | 26 | 26 | 98 |
-| [src/minesweeper/game.cpp](/src/minesweeper/game.cpp) | C++ | 620 | 63 | 216 | 899 |
+| [src/minesweeper/cell.cpp](/src/minesweeper/cell.cpp) | C++ | 119 | 13 | 55 | 187 |
+| [src/minesweeper/cell.h](/src/minesweeper/cell.h) | C++ | 47 | 27 | 27 | 101 |
+| [src/minesweeper/game.cpp](/src/minesweeper/game.cpp) | C++ | 633 | 63 | 220 | 916 |
 | [src/minesweeper/random.cpp](/src/minesweeper/random.cpp) | C++ | 6 | 0 | 6 | 12 |
 | [tests/data/checkedWinGame_fourByEight_serialisation.json](/tests/data/checkedWinGame_fourByEight_serialisation.json) | JSON | 356 | 0 | 1 | 357 |
 | [tests/data/emptyGame_serialisation.json](/tests/data/emptyGame_serialisation.json) | JSON | 14 | 0 | 1 | 15 |
@@ -39,7 +39,7 @@ Total : 32 files,  8747 codes, 983 comments, 1138 blanks, all 10868 lines
 | [tests/data/startedGame_sixByEight_serialisation.json](/tests/data/startedGame_sixByEight_serialisation.json) | JSON | 526 | 0 | 1 | 527 |
 | [tests/data/unfinishedGame_sevenBySeven_serialisation.json](/tests/data/unfinishedGame_sevenBySeven_serialisation.json) | JSON | 541 | 0 | 1 | 542 |
 | [tests/data/unstartedGame_sevenByFour_serialisation.json](/tests/data/unstartedGame_sevenByFour_serialisation.json) | JSON | 331 | 0 | 1 | 332 |
-| [tests/minesweeper_game_tests.cpp](/tests/minesweeper_game_tests.cpp) | C++ | 2,042 | 597 | 450 | 3,089 |
+| [tests/minesweeper_game_tests.cpp](/tests/minesweeper_game_tests.cpp) | C++ | 2,170 | 616 | 470 | 3,256 |
 | [tests/minesweeper_random_tests.cpp](/tests/minesweeper_random_tests.cpp) | C++ | 17 | 4 | 8 | 29 |
 | [tests/minesweeper_type_traits_tests.cpp](/tests/minesweeper_type_traits_tests.cpp) | C++ | 800 | 100 | 61 | 961 |
 | [tests/test_config.h.in](/tests/test_config.h.in) | C++ | 12 | 1 | 9 | 22 |

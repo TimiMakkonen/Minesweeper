@@ -47,16 +47,17 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## External libraries
 
-* [astoeckel/json](https://github.com/astoeckel/json) (v3.8.0) for JSON (de)serialisation
+* [astoeckel/json](https://github.com/astoeckel/json) (v3.9.1) for JSON (de)serialisation
   * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
 * [google/googletest](https://github.com/google/googletest) for unit tests
 
 ## Version history
 
-### Version DEVELOP
+### Version 8.5.2
 
 * Fixed potential stack overflow in large grids caused by recursion
   when checking around input coordinates.
+* Updated external [astoeckel/json](https://github.com/astoeckel/json) submodule from 'v3.8.0' to 'v3.9.1'.
 
 ### Version 8.5.1
 
@@ -129,7 +130,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ### Version 8.4.1 (Broken submodule)
 
-* Updated external ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule from 'v.3.7.3' to 'v3.8.0'.
+* Updated external ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule from 'v3.7.3' to 'v3.8.0'.
   * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
 * Added 'External libraries' and 'Table of contents' sections to 'README.MD'.
 
