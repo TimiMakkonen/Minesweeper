@@ -53,6 +53,11 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 
 ## Version history
 
+### Version DEVELOP
+
+* Fixed potential stack overflow in large grids caused by recursion
+  when checking around input coordinates.
+
 ### Version 8.5.1
 
 * Changed behaviour of solution visualisation methods.

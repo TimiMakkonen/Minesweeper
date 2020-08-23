@@ -594,7 +594,17 @@ void Game::checkInputCoordinates(const int x, const int y) {
             "Game::checkInputCoordinates(const int x, const int y): Trying to check cell outside grid.");
     }
 
-    this->checkInputCoordinates_(x, y);
+    this->_cellCoordsToCheck.emplace(x, y);
+    this->handleCellCoordsToCheckQueue_();
+}
+
+void Game::handleCellCoordsToCheckQueue_() {
+
+    while (!this->_cellCoordsToCheck.empty()) {
+        auto coordsToCheck = this->_cellCoordsToCheck.front();
+        this->_cellCoordsToCheck.pop();
+        this->checkInputCoordinates_(coordsToCheck.first, coordsToCheck.second);
+    }
 }
 
 void Game::checkInputCoordinates_(const int x, const int y) {
@@ -622,8 +632,8 @@ void Game::checkAroundCoordinate_(const int x, const int y) {
 
     assert(x >= 0 && y >= 0 && x < this->_gridWidth && y < this->_gridHeight);
 
-    for (auto const& neighbourCell : this->neighbourCells_(x, y)) {
-        this->checkInputCoordinates_(neighbourCell.first, neighbourCell.second);
+    for (auto&& neighbourCell : this->neighbourCells_(x, y)) {
+        this->_cellCoordsToCheck.push(neighbourCell);
     }
 }
 
@@ -647,6 +657,8 @@ void Game::completeAroundInputCoordinates(const int x, const int y) {
         (this->numOfMarkedCellsAroundCell_(x, y) == this->numOfMinesAroundCell_(x, y))) {
 
         this->checkAroundCoordinate_(x, y);
+
+        this->handleCellCoordsToCheckQueue_();
     }
 }
 

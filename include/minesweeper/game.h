@@ -3,6 +3,7 @@
 
 #include <iostream>    // std::istream, std::ostream
 #include <memory>      // std::unique_ptr
+#include <queue>       // std::queue
 #include <type_traits> // std::enable_if
 #include <utility>     // std::pair
 #include <vector>      // std::vector
@@ -43,6 +44,9 @@ class Game {
     // only used if IRandom not specifically set for an instance
     // set with setDefaultRandom(IRandom* random)
     static IRandom* defaultRandom;
+
+    // queue of cell coordinates to be checked
+    std::queue<std::pair<const int, const int>> _cellCoordsToCheck;
 
   public:
     // +-----------------+
@@ -212,6 +216,7 @@ class Game {
     void checkInputCoordinates_(int x, int y);
     void checkAroundCoordinate_(int x, int y);
     void makeCellVisible_(int x, int y);
+    void handleCellCoordsToCheckQueue_();
 
     // private mark cell methods:
     void markCell_(int x, int y);

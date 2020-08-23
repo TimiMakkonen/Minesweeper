@@ -72,7 +72,8 @@
         "*_CMakeLists.txt.in": "cmake",
         "deque": "cpp",
         "unordered_set": "cpp",
-        "*.in": "cpp"
+        "*.in": "cpp",
+        "queue": "cpp"
     },
     "markdown.extension.toc.levels": "2..2",
     "markdown.extension.toc.omittedFromToc": {
