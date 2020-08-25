@@ -23,7 +23,7 @@ C++14 required for:
 
 * 'std::make_unique'.
 
-C++11 required for multiple modern features.
+C++11 required for numerous modern features.
 
 ## Installation
 
@@ -33,7 +33,7 @@ If you want to clone this git repository, use
 git clone --recurse-submodules https://github.com/TimiMakkonen/minesweeper.git
 ```
 
-or something similar to ensure that ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule gets cloned properly.
+or something similar to ensure that [astoeckel/json](https://github.com/astoeckel/json) submodule gets cloned properly.
 
 Then you can use this library as part of your own CMake project as you desire.
 
@@ -43,7 +43,7 @@ To use this Minesweeper game library, pass your implementation of provided 'IRan
 
 If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass 'Random' (provided implementation of 'IRandom' that uses 'std::mt19937') as instructed above.
 
-You can check 'examples' functions in ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['game.h'](https://github.com/TimiMakkonen/minesweeper/include/minesweeper/game.h) for the main interface.
+You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['game.h'](/include/minesweeper/game.h) for the main interface.
 
 ## External libraries
 
@@ -163,7 +163,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 * Added 'type_traits' to help with template type checking at
   compile-time.
 * Prettified headers.
-* Updated ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp).
+* Updated ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp).
 * Fixed some throw messages.
 * Made 'clang-tidy' to actually work on headers.
   * Fixed bunch of new warnings/errors identified by this.
@@ -203,7 +203,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](https://githu
 * Added getters for grid height, width and number of mines.
 * Added some tests.
 * Added verifications to some methods.
-* Updated ['minesweeper_examples.cpp'](https://github.com/TimiMakkonen/minesweeper/examples/minesweeper_examples.cpp).
+* Updated ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp).
 * Slightly edited 'README.MD'.
 
 ### Version 8.0.0
