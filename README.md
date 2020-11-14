@@ -53,6 +53,11 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 
 ## Version history
 
+### Version DEVELOP
+
+* Fixed some standard '#include' directives and checked which classes
+  and functions use them.
+
 ### Version 8.5.2
 
 * Fixed potential stack overflow in large grids caused by recursion
