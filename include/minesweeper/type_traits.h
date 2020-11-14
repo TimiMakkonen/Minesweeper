@@ -1,7 +1,8 @@
 #ifndef MINESWEEPER_TYPE_TRAITS_H
 #define MINESWEEPER_TYPE_TRAITS_H
 
-#include <type_traits> // std::enable_if, std::integral_constant
+#include <type_traits> // std::enable_if, std::false_type, std::true_type
+#include <utility> // std::declval
 
 namespace minesweeper {
 

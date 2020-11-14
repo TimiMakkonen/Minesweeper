@@ -1,11 +1,12 @@
-
-#include <algorithm> // std::reverse, std::iter_swap
+#include <algorithm> // std::reverse, std::iter_swap, std::find
 #include <chrono>    // std::chrono
 #include <fstream>   // std::ofstream
 #include <iomanip>   // std::setw
-#include <iostream>  // std::cout
+#include <iostream>  // std::ostream, std::cout, std::endl
 #include <iterator>  // std::vector<int>::iterator
-#include <sstream>   // std::ostringstream
+#include <sstream>   // std::stringstream
+#include <utility> // std::move
+#include <memory>    // std::unique_ptr, std::make_unique (C++14)
 
 #include <minesweeper/game.h>
 #include <minesweeper/i_random.h>
