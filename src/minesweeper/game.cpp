@@ -1,11 +1,11 @@
 #include <algorithm> // std::max, std::remove
 #include <cassert>   // assert
 #include <iomanip>   // std::setw
+#include <iostream>  // std::istream, std::ostream, std::endl
 #include <memory>    // std::unique_ptr, std::make_unique (C++14)
 #include <numeric>   // std::iota
-#include <iostream>    // std::istream, std::ostream, std::endl
 #include <stdexcept> // std::out_of_range, std::invalid_argument
-#include <string>  // std::string, std::to_string
+#include <string>    // std::string, std::to_string
 #include <utility>   // std::pair, std::move
 #include <vector>    // std::vector
 

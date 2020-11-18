@@ -1,12 +1,12 @@
-#include <fstream> // std::ifstream
-#include <list>    // std::list
-#include <sstream> // std::stringstream, std::ostringstream, std::istringstream
-#include <string>  // std::string, std::to_string
-#include <vector>  // std::vector
 #include <algorithm> // std::find, std::iter_swap
+#include <cmath>     // std::abs
+#include <fstream>   // std::ifstream
+#include <list>      // std::list
+#include <sstream>   // std::stringstream, std::ostringstream, std::istringstream
 #include <stdexcept> // std::out_of_range, std::invalid_argument
-#include <utility> // std::move
-#include <cmath> // std::abs
+#include <string>    // std::string, std::to_string
+#include <utility>   // std::move
+#include <vector>    // std::vector
 
 #include <gtest/gtest.h>
 
