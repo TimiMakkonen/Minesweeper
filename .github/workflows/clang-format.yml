@@ -9,6 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
+        submodules: true
         # This is needed together with PAT to allow triggering push workflow event from this action.
         # https://github.community/t/push-from-action-does-not-trigger-subsequent-action/16854
         persist-credentials: false
