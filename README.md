@@ -57,6 +57,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 
 * Fixed some standard '#include' directives and checked which classes
   and functions use them.
+* Fixed 'HeaderFilterRegex' for 'clang-tidy'.
 
 ### Version 8.5.2
 

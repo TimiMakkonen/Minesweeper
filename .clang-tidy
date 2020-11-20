@@ -9,7 +9,7 @@ Checks: '*,
 
 WarningsAsErrors: '*'
 
-HeaderFilterRegex: 'minesweeper\/.*\.(h|hpp)$'
+HeaderFilterRegex: 'minesweeper\/[^\\\/]+\.(h|hpp|tpp)$'
 
 CheckOptions:
   - key: readability-identifier-naming.ClassCase
