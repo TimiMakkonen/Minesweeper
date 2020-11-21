@@ -1,5 +1,7 @@
 # Minesweeper game library
 
+[![CMake Status](https://github.com/TimiMakkonen/minesweeper/workflows/CMake/badge.svg)](https://github.com/TimiMakkonen/minesweeper/actions?query=workflow%3ACMake)
+[![clang-tidy Status](https://github.com/TimiMakkonen/minesweeper/workflows/clang-tidy/badge.svg)](https://github.com/TimiMakkonen/minesweeper/actions?query=workflow%3Aclang-tidy)
 [![GitHub License](https://img.shields.io/github/license/TimiMakkonen/minesweeper)](/LICENSE)
 ![GitHub Latest Release Tag](https://img.shields.io/github/v/tag/TimiMakkonen/minesweeper)
 
