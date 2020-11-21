@@ -57,6 +57,14 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 
 * Fixed some standard '#include' directives and checked which classes
   and functions use them.
+* Fixed 'HeaderFilterRegex' for 'clang-tidy'.
+* Excluded some unhelpful 'clang-tidy' checks and also gave explanations
+  to all of the excludes.
+* Added ['cmake.yml'](/.github/workflows/cmake.yml), ['clang-format.yml'](/.github/workflows/clang-format.yml) and ['clang-tidy.yml'](/.github/workflows/clang-tidy.yml) GitHub
+  action workflows.
+  * ['cmake.yml'](/.github/workflows/cmake.yml) builds tests on different platforms.
+  * ['clang-format.yml'](/.github/workflows/clang-format.yml) automatically formats the code using 'clang-format'.
+  * ['clang-tidy.yml'](/.github/workflows/clang-tidy.yml) checks the code for typical programming errors.
 
 ### Version 8.5.2
 

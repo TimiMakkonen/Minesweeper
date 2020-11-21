@@ -275,6 +275,6 @@ class Game {
 
 } // namespace minesweeper
 
-#include "game.tpp"
+#include <minesweeper/game.tpp>
 
 #endif // MINESWEEPER_GAME_H

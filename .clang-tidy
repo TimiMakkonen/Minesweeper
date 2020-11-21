@@ -1,15 +1,52 @@
 ---
+
+# Check exclude reasoning:
+#
+# * [modernize-use-trailing-return-type]:
+#       "use a trailing return type for this function" (applies to all functions)
+# * [fuchsia-default-arguments-calls]:
+#       "calling a function that uses a default argument is disallowed"
+# * [fuchsia-default-arguments-declarations]:
+#       "Warns if a function or method is declared with default parameters."
+# * [llvm-header-guard]:
+#       does not work properly on Windows style paths?
+# * [google-runtime-references]:
+#       "non-const reference parameter, make it const or use a pointer"
+# * [hicpp-special-member-functions]:
+#       alias of 'cppcoreguidelines-special-member-functions'
+# * [cppcoreguidelines-pro-bounds-array-to-pointer-decay]:
+#       triggered by 'assert'
+# * [hicpp-no-array-decay]:
+#       alias of 'cppcoreguidelines-pro-bounds-array-to-pointer-decay'
+# * [llvmlibc-restrict-system-libc-headers]:
+#       triggered by system includes
+# * [llvmlibc-callee-namespace]:
+#       "Checks all calls resolve to functions within __llvm_libc namespace."
+# * [llvmlibc-implementation-in-namespace]:
+#       "'__llvm_libc' needs to be the outermost namespace"
+# * [cppcoreguidelines-avoid-non-const-global-variables]:
+#       causes problems with private static fields
+#         * https://bugs.llvm.org/show_bug.cgi?id=48040
+#         * https://stackoverflow.com/questions/64680769/c-core-guidelines-for-static-member-variables
+
+
 Checks: '*,
         -modernize-use-trailing-return-type,
         -fuchsia-default-arguments-calls,
         -fuchsia-default-arguments-declarations,
         -llvm-header-guard,
         -google-runtime-references,
-        -hicpp-special-member-functions'
+        -hicpp-special-member-functions,
+        -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+        -hicpp-no-array-decay,
+        -llvmlibc-restrict-system-libc-headers,
+        -llvmlibc-callee-namespace,
+        -llvmlibc-implementation-in-namespace,
+        -cppcoreguidelines-avoid-non-const-global-variables'
 
 WarningsAsErrors: '*'
 
-HeaderFilterRegex: 'minesweeper\/.*\.(h|hpp)$'
+HeaderFilterRegex: 'minesweeper\/[^\\\/]+\.(h|hpp|tpp)$'
 
 CheckOptions:
   - key: readability-identifier-naming.ClassCase

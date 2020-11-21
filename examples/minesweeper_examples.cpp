@@ -4,9 +4,9 @@
 #include <iomanip>   // std::setw
 #include <iostream>  // std::ostream, std::cout, std::endl
 #include <iterator>  // std::vector<int>::iterator
-#include <sstream>   // std::stringstream
-#include <utility> // std::move
 #include <memory>    // std::unique_ptr, std::make_unique (C++14)
+#include <sstream>   // std::stringstream
+#include <utility>   // std::move
 
 #include <minesweeper/game.h>
 #include <minesweeper/i_random.h>
