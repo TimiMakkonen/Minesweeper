@@ -1,34 +1,37 @@
-"filename", "language", "C++", "JSON", "Markdown", "comment", "blank", "total"
-"e:\Programming\Cplusplus\minesweeper\minesweeper\README.md", "Markdown", 0, 0, 247, 0, 69, 316
-"e:\Programming\Cplusplus\minesweeper\minesweeper\examples\minesweeper_examples.cpp", "C++", 288, 0, 0, 108, 122, 518
-"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.h", "C++", 151, 0, 0, 71, 58, 280
-"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.tpp", "C++", 81, 0, 0, 0, 31, 112
-"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\i_random.h", "C++", 16, 0, 0, 0, 7, 23
-"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\random.h", "C++", 16, 0, 0, 0, 8, 24
-"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\type_traits.h", "C++", 28, 0, 0, 8, 9, 45
-"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\visual_minesweeper_cell.h", "C++", 19, 0, 0, 0, 4, 23
-"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\cell.cpp", "C++", 119, 0, 0, 13, 55, 187
-"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\cell.h", "C++", 47, 0, 0, 27, 27, 101
-"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\game.cpp", "C++", 633, 0, 0, 63, 220, 916
-"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\random.cpp", "C++", 6, 0, 0, 0, 6, 12
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\checkedWinGame_fourByEight_serialisation.json", "JSON", 0, 356, 0, 0, 1, 357
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\emptyGame_serialisation.json", "JSON", 0, 14, 0, 0, 1, 15
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidGridsize.json", "JSON", 0, 14, 0, 0, 1, 15
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingBrace.json", "JSON", 0, 150, 0, 0, 2, 152
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingCellTag.json", "JSON", 0, 315, 0, 0, 1, 316
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingCommaInCell.json", "JSON", 0, 286, 0, 0, 1, 287
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidMagic.json", "JSON", 0, 471, 0, 0, 1, 472
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidNumOfMines.json", "JSON", 0, 14, 0, 0, 1, 15
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidVersion.json", "JSON", 0, 14, 0, 0, 1, 15
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalidMarkLossGame_nineByFive_serialisation.json", "JSON", 0, 511, 0, 0, 1, 512
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\lossGame_fiveByThree_serialisation.json", "JSON", 0, 191, 0, 0, 1, 192
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\markedWinGame_fiveByFour_serialisation.json", "JSON", 0, 241, 0, 0, 1, 242
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\startedGame_fiveBySix_serialisation.json", "JSON", 0, 341, 0, 0, 1, 342
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\startedGame_sixByEight_serialisation.json", "JSON", 0, 526, 0, 0, 1, 527
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unfinishedGame_sevenBySeven_serialisation.json", "JSON", 0, 541, 0, 0, 1, 542
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unstartedGame_sevenByFour_serialisation.json", "JSON", 0, 331, 0, 0, 1, 332
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_game_tests.cpp", "C++", 2170, 0, 0, 616, 470, 3256
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_random_tests.cpp", "C++", 17, 0, 0, 4, 8, 29
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_type_traits_tests.cpp", "C++", 800, 0, 0, 100, 61, 961
-"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\test_config.h.in", "C++", 12, 0, 0, 1, 9, 22
-"Total", "-", 4403, 4316, 247, 1011, 1181, 11158
+"filename", "language", "C++", "JSON", "Markdown", "YAML", "comment", "blank", "total"
+"e:\Programming\Cplusplus\minesweeper\minesweeper\.github\workflows\clang-format.yml", "YAML", 0, 0, 0, 24, 3, 5, 32
+"e:\Programming\Cplusplus\minesweeper\minesweeper\.github\workflows\clang-tidy.yml", "YAML", 0, 0, 0, 34, 10, 12, 56
+"e:\Programming\Cplusplus\minesweeper\minesweeper\.github\workflows\cmake.yml", "YAML", 0, 0, 0, 27, 14, 8, 49
+"e:\Programming\Cplusplus\minesweeper\minesweeper\README.md", "Markdown", 0, 0, 258, 0, 0, 71, 329
+"e:\Programming\Cplusplus\minesweeper\minesweeper\examples\minesweeper_examples.cpp", "C++", 290, 0, 0, 0, 108, 121, 519
+"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.h", "C++", 151, 0, 0, 0, 71, 58, 280
+"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\game.tpp", "C++", 81, 0, 0, 0, 0, 31, 112
+"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\i_random.h", "C++", 16, 0, 0, 0, 0, 7, 23
+"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\random.h", "C++", 16, 0, 0, 0, 0, 8, 24
+"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\type_traits.h", "C++", 29, 0, 0, 0, 8, 9, 46
+"e:\Programming\Cplusplus\minesweeper\minesweeper\include\minesweeper\visual_minesweeper_cell.h", "C++", 19, 0, 0, 0, 0, 4, 23
+"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\cell.cpp", "C++", 119, 0, 0, 0, 13, 55, 187
+"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\cell.h", "C++", 47, 0, 0, 0, 27, 27, 101
+"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\game.cpp", "C++", 633, 0, 0, 0, 63, 220, 916
+"e:\Programming\Cplusplus\minesweeper\minesweeper\src\minesweeper\random.cpp", "C++", 6, 0, 0, 0, 0, 6, 12
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\checkedWinGame_fourByEight_serialisation.json", "JSON", 0, 356, 0, 0, 0, 1, 357
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\emptyGame_serialisation.json", "JSON", 0, 14, 0, 0, 0, 1, 15
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidGridsize.json", "JSON", 0, 14, 0, 0, 0, 1, 15
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingBrace.json", "JSON", 0, 150, 0, 0, 0, 2, 152
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingCellTag.json", "JSON", 0, 315, 0, 0, 0, 1, 316
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidJsonMissingCommaInCell.json", "JSON", 0, 286, 0, 0, 0, 1, 287
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidMagic.json", "JSON", 0, 471, 0, 0, 0, 1, 472
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidNumOfMines.json", "JSON", 0, 14, 0, 0, 0, 1, 15
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalid-serialisation\invalidVersion.json", "JSON", 0, 14, 0, 0, 0, 1, 15
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\invalidMarkLossGame_nineByFive_serialisation.json", "JSON", 0, 511, 0, 0, 0, 1, 512
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\lossGame_fiveByThree_serialisation.json", "JSON", 0, 191, 0, 0, 0, 1, 192
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\markedWinGame_fiveByFour_serialisation.json", "JSON", 0, 241, 0, 0, 0, 1, 242
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\startedGame_fiveBySix_serialisation.json", "JSON", 0, 341, 0, 0, 0, 1, 342
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\startedGame_sixByEight_serialisation.json", "JSON", 0, 526, 0, 0, 0, 1, 527
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unfinishedGame_sevenBySeven_serialisation.json", "JSON", 0, 541, 0, 0, 0, 1, 542
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\data\unstartedGame_sevenByFour_serialisation.json", "JSON", 0, 331, 0, 0, 0, 1, 332
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_game_tests.cpp", "C++", 2174, 0, 0, 0, 616, 470, 3260
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_random_tests.cpp", "C++", 17, 0, 0, 0, 4, 8, 29
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\minesweeper_type_traits_tests.cpp", "C++", 800, 0, 0, 0, 100, 61, 961
+"e:\Programming\Cplusplus\minesweeper\minesweeper\tests\test_config.h.in", "C++", 12, 0, 0, 0, 1, 9, 22
+"Total", "-", 4410, 4316, 258, 85, 1038, 1207, 11314

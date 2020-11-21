@@ -96,5 +96,6 @@
         "**/extern/**",
         "**/.gitmodules",
         "**/.gitattributes"
-    ]
+    ],
+    "VSCodeCounter.history": 0
 }

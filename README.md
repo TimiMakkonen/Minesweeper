@@ -53,7 +53,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 
 ## Version history
 
-### Version DEVELOP
+### Version 8.5.3
 
 * Fixed some standard '#include' directives and checked which classes
   and functions use them.
