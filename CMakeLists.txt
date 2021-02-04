@@ -131,7 +131,7 @@ if(((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) OR MINESWEEPER_LIB_BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
-# The examples executable code is here Only available if this is the main app
+# The examples executable code is here. Only available if this is the main app.
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   add_subdirectory(examples)
 endif()
