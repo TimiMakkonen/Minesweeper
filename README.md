@@ -39,6 +39,32 @@ or something similar to ensure that [astoeckel/json](https://github.com/astoecke
 
 Then you can use this library as part of your own CMake project as you desire.
 
+### How to build
+
+You can follow these simple instructions to build this library:
+
+1. Make sure you have [CMake](https://cmake.org/download/) installed. (version 3.8 or later)
+2. Create and change to a 'build'-directory by running these commands:
+
+    ```console
+    cd <path to this directory>
+    mkdir build
+    cd build
+    ```
+
+3. Configure CMake and build this library by running these commands:
+
+    ```console
+    cmake ..
+    cmake --build .
+    ```
+
+After this you can run 'ctest'-command or the resulting 'MinesweeperTests.exe' (which can be found somewhere in 'build/tests/') to run tests.
+
+Alternatively you can run 'MinesweeperExamples.exe' (which can be found somewhere in 'build/examples/') to run ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp), so that you can follow the examples or play with this library as you please.
+
+Naturally, if you make any changes in the code, you have to build the project again by deleting the contents of 'build'-directory and running commands in step 3 again.
+
 ## How to use
 
 To use this Minesweeper game library, pass your implementation of provided 'IRandom' pure virtual class to 'Game' class or alternatively pass it as an default option to the 'Game' class statically, so that it can be used by all the instances of 'Game' class.

@@ -86,6 +86,8 @@
         "Xand",
         "chrono",
         "considerimplement",
+        "ctest",
+        "mkdir",
         "unstarted"
     ],
     "VSCodeCounter.exclude": [
