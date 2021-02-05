@@ -23,7 +23,7 @@ Minimum C++ version required: C++14.
 
 C++14 required for:
 
-* 'std::make_unique'.
+* `std::make_unique`.
 
 C++11 required for numerous modern features.
 
@@ -44,7 +44,7 @@ Then you can use this library as part of your own CMake project as you desire.
 You can follow these simple instructions to build this library:
 
 1. Make sure you have [CMake](https://cmake.org/download/) installed. (version 3.8 or later)
-2. Create and change to a 'build'-directory by running these commands:
+2. Create and change to a `build`-directory by running these commands:
 
     ```console
     cd <path to this directory>
@@ -59,69 +59,69 @@ You can follow these simple instructions to build this library:
     cmake --build .
     ```
 
-After this you can run 'ctest'-command or the resulting 'MinesweeperTests.exe' (which can be found somewhere in 'build/tests/') to run tests.
+After this you can run `ctest`-command or the resulting `MinesweeperTests.exe` (which can be found somewhere in `build/tests/`) to run tests.
 
-Alternatively you can run 'MinesweeperExamples.exe' (which can be found somewhere in 'build/examples/') to run ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp), so that you can follow the examples or play with this library as you please.
+Alternatively you can run `MinesweeperExamples.exe` (which can be found somewhere in `build/examples/`) to run [`minesweeper_examples.cpp`](/examples/minesweeper_examples.cpp), so that you can follow the examples or play with this library as you please.
 
-Naturally, if you make any changes in the code, you have to build the project again by deleting the contents of 'build'-directory and running commands in step 3 again.
+Naturally, if you make any changes in the code, you have to build the project again by deleting the contents of `build`-directory and running commands in step 3 again.
 
 ## How to use
 
-To use this Minesweeper game library, pass your implementation of provided 'IRandom' pure virtual class to 'Game' class or alternatively pass it as an default option to the 'Game' class statically, so that it can be used by all the instances of 'Game' class.
+To use this Minesweeper game library, pass your implementation of provided `IRandom` pure virtual class to `Game` class or alternatively pass it as an default option to the `Game` class statically, so that it can be used by all the instances of `Game` class.
 
-If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass 'Random' (provided implementation of 'IRandom' that uses 'std::mt19937') as instructed above.
+If you are truly lazy, and/or you do not need to have/control randomness elsewhere, you can simply initialise and pass `Random` (provided implementation of `IRandom` that uses `std::mt19937`) as instructed above.
 
-You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp) for more detailed usage explanation and ['game.h'](/include/minesweeper/game.h) for the main interface.
+You can check `examples` function in [`minesweeper_examples.cpp`](/examples/minesweeper_examples.cpp) for more detailed usage explanation and [`game.h`](/include/minesweeper/game.h) for the main interface.
 
 ## External libraries
 
 * [astoeckel/json](https://github.com/astoeckel/json) (v3.9.1) for JSON (de)serialisation
-  * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
+  * This repository is a lightweight copy of the [nlohmann/json](https://github.com/nlohmann/json) header-only library.
 * [google/googletest](https://github.com/google/googletest) for unit tests
 
 ## Version history
 
 ### Version 8.5.3
 
-* Fixed some standard '#include' directives and checked which classes
+* Fixed some standard `#include` directives and checked which classes
   and functions use them.
-* Fixed 'HeaderFilterRegex' for 'clang-tidy'.
-* Excluded some unhelpful 'clang-tidy' checks and also gave explanations
+* Fixed `HeaderFilterRegex` for `clang-tidy`.
+* Excluded some unhelpful `clang-tidy` checks and also gave explanations
   to all of the excludes.
-* Added ['cmake.yml'](/.github/workflows/cmake.yml), ['clang-format.yml'](/.github/workflows/clang-format.yml) and ['clang-tidy.yml'](/.github/workflows/clang-tidy.yml) GitHub
+* Added [`cmake.yml`](/.github/workflows/cmake.yml), [`clang-format.yml`](/.github/workflows/clang-format.yml) and [`clang-tidy.yml`](/.github/workflows/clang-tidy.yml) GitHub
   action workflows.
-  * ['cmake.yml'](/.github/workflows/cmake.yml) builds tests on different platforms.
-  * ['clang-format.yml'](/.github/workflows/clang-format.yml) automatically formats the code using 'clang-format'.
-  * ['clang-tidy.yml'](/.github/workflows/clang-tidy.yml) checks the code for typical programming errors.
+  * [`cmake.yml`](/.github/workflows/cmake.yml) builds tests on different platforms.
+  * [`clang-format.yml`](/.github/workflows/clang-format.yml) automatically formats the code using `clang-format`.
+  * [`clang-tidy.yml`](/.github/workflows/clang-tidy.yml) checks the code for typical programming errors.
 
 ### Version 8.5.2
 
 * Fixed potential stack overflow in large grids caused by recursion
   when checking around input coordinates.
-* Updated external [astoeckel/json](https://github.com/astoeckel/json) submodule from 'v3.8.0' to 'v3.9.1'.
+* Updated external [astoeckel/json](https://github.com/astoeckel/json) submodule from v3.8.0 to v3.9.1.
 
 ### Version 8.5.1
 
 * Changed behaviour of solution visualisation methods.
-  * 'visualiseSolution' and 'visualiseCellSolution' originally returned
+  * `visualiseSolution` and `visualiseCellSolution` originally returned
     visualisation showing every cell either as:
     * a mine (if they contained a mine),
     * a cell with neighbouring mines i.e. a number
       (if they did not have a mine but had neighbouring mines), or
     * an empty cell (if all other options did not apply).
-  * Now these old methods have been renamed into 'visualiseSolutionData'
-    and 'visualiseCellSolutionData', respectively.
-  * The new 'visualiseSolution' and 'visualiseCellSolution' methods now
+  * Now these old methods have been renamed into `visualiseSolutionData`
+    and `visualiseCellSolutionData`, respectively.
+  * The new `visualiseSolution` and `visualiseCellSolution` methods now
     return a visualisation which is identical to the previous one, but
     now show mines as marked instead of bare mines.
   * These changes should represent and emphasise their actual meaning
     much better.
   * In summary:
-    * old 'visualiseSolution' is now 'visualiseSolutionData',
-    * old 'visualiseCellSolution' is now 'visualiseCellSolutionData',
-    * new 'visualiseSolution' is identical to old one,
+    * old `visualiseSolution` is now `visualiseSolutionData`,
+    * old `visualiseCellSolution` is now `visualiseCellSolutionData`,
+    * new `visualiseSolution` is identical to old one,
       but shows mines as marked,
-    * new 'visualiseCellSolution' is identical to old one,
+    * new `visualiseCellSolution` is identical to old one,
       but shows mines as marked.
 
 ### Version 8.5.0
@@ -130,7 +130,7 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
   * Work the same way as normal visualisation methods, except that they
     return the solution information instead of the current visualisation
     information.
-* Added 'completeAroundInputCoordinates' method to automatically
+* Added `completeAroundInputCoordinates` method to automatically
   check/show trivial unchecked cells around chosen coordinates.
   * For example, if we use this on a visible cell that has 2 mines
     around, and we have already marked two mines around this visible
@@ -148,65 +148,65 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 ### Version 8.4.3
 
 * Urgently corrected C++ version required to C++14.
-  * Failed to realise 'std::make_unique' was included in C++14.
+  * Failed to realise `std::make_unique` was included in C++14.
     * Could also be replaced by some C++11 alternative later on, if needed.
-* Removed 'std::'-prefix accidentally left in front of 'void_t<>' in 'type_traits.h'.
+* Removed `std::`-prefix accidentally left in front of `void_t<>` in `type_traits.h`.
 * Added CMake option to build shared libraries within the project
-* Fixed a typo in 'examples/CMakeLists.txt'.
+* Fixed a typo in `examples/CMakeLists.txt`.
 
 ### Version 8.4.2
 
-* Urgent fix for the broken ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule in 'v8.4.1'.
-* Switched from ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent)
-  submodule to ['astoeckel/json'](https://github.com/astoeckel/json) submodule ('v3.8.0').
-  * Both of these repositories are lightweight copies of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
-  * ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent)
-    is mainly meant/supported to be used with CMake's 'FetchContent' (and 'ExternalProject').
-  * ['astoeckel/json'](https://github.com/astoeckel/json) on the other hand is meant/supported to be used with git submodules.
+* Urgent fix for the broken [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule in v8.4.1.
+* Switched from [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent)
+  submodule to [astoeckel/json](https://github.com/astoeckel/json) submodule (v3.8.0).
+  * Both of these repositories are lightweight copies of the [nlohmann/json](https://github.com/nlohmann/json) header-only library.
+  * [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent)
+    is mainly meant/supported to be used with CMake's `FetchContent` (and `ExternalProject`).
+  * [astoeckel/json](https://github.com/astoeckel/json) on the other hand is meant/supported to be used with git submodules.
   * Change necessary to ensure sustainability of previous versions in this library for the releases to come.
-    * Since CMake's 'FetchContent' (and 'ExternalProject') use tags instead of specific hashes, the owner of
-      ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent)
+    * Since CMake's `FetchContent` (and `ExternalProject`) use tags instead of specific hashes, the owner of
+      [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent)
       repository does not mind reassigning tags. (After some updates to their own code.) Hence the previous version/commit,
       'v8.4.1', was too easy for me to break.
 
 ### Version 8.4.1 (Broken submodule)
 
-* Updated external ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule from 'v3.7.3' to 'v3.8.0'.
-  * This repository is a lightweight copy of the ['nlohmann/json'](https://github.com/nlohmann/json) header-only library.
-* Added 'External libraries' and 'Table of contents' sections to 'README.MD'.
+* Updated external [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) submodule from v3.7.3 to v3.8.0.
+  * This repository is a lightweight copy of the [nlohmann/json](https://github.com/nlohmann/json) header-only library.
+* Added `External libraries` and `Table of contents` sections to `README.MD`.
 
 ### Version 8.4.0
 
-* Added 'VisualMinesweeperCell' enum class to represent the visual state
+* Added `VisualMinesweeperCell` enum class to represent the visual state
   of a cell.
-* Added 'visualise' template method to help with getting information
-  needed to visually express the 'Game'.
-  * Uses 'VisualMinesweeperCell' as the underlying information type.
+* Added `visualise` template method to help with getting information
+  needed to visually express the `Game`.
+  * Uses `VisualMinesweeperCell` as the underlying information type.
   * Works with any 1D or 2D container which:
-    * has 'size' and 'push_back' methods, and
-    * uses 'value_type' that supports conversion from
-      'VisualMinesweeperCell' enum class. (eg. 'int')
-  * Works for example with: 'std::vector\<VisualMinesweeperCell\>',
-    'std::vector\<int\>',
-    'std::vector\<std::vector\<VisualMinesweeperCell\>\>' and
-    'std::vector\<std::vector\<int\>\>'.
-* Added 'visualiseCell' template method to help with getting information
+    * has `size` and `push_back` methods, and
+    * uses `value_type` that supports conversion from
+      `VisualMinesweeperCell` enum class. (eg. `int`)
+  * Works for example with: `std::vector\<VisualMinesweeperCell\>`,
+    `std::vector\<int\>`,
+    `std::vector\<std::vector\<VisualMinesweeperCell\>\>` and
+    `std::vector\<std::vector\<int\>\>`.
+* Added `visualiseCell` template method to help with getting information
   needed to visually express a cell.
-  * Uses 'VisualMinesweeperCell' as the underlying information type.
+  * Uses `VisualMinesweeperCell` as the underlying information type.
   * Works with any type that supports conversion from
-    'VisualMinesweeperCell' enum class. (eg. 'int')
+    `VisualMinesweeperCell` enum class. (eg. `int`)
 * Added option to add mines by proportion instead of number.
-  * Added new constructors and 'newGame' overloads to support this.
-* Added 'Game' copy/move constructors, friend swap and
+  * Added new constructors and `newGame` overloads to support this.
+* Added `Game` copy/move constructors, friend swap and
   copy/move assignment operator.
-* Added 'IRandom' default constructors, destructor and
+* Added `IRandom` default constructors, destructor and
   assignment operators.
-* Added 'type_traits' to help with template type checking at
+* Added `type_traits` to help with template type checking at
   compile-time.
 * Prettified headers.
-* Updated ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp).
+* Updated [`minesweeper_examples.cpp`](/examples/minesweeper_examples.cpp).
 * Fixed some throw messages.
-* Made 'clang-tidy' to actually work on headers.
+* Made `clang-tidy` to actually work on headers.
   * Fixed bunch of new warnings/errors identified by this.
 * Removed internal calls to public methods within the same class.
   * Should make possible thread-safe implementation trivial to achieve.
@@ -216,61 +216,61 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 ### Version 8.3.0
 
 * Added reset and newGame methods.
-  * 'reset(bool keepCreatedMines = false)' method keeps current grid size and number of mines parameters and allows to keep currently set mines as well if argument 'keepCreatedMines' is set to true.
-  * 'newGame' methods start completely new game with different grid sizes and number of mines.
+  * `reset(bool keepCreatedMines = false)` method keeps current grid size and number of mines parameters and allows to keep currently set mines as well if argument `keepCreatedMines` is set to true.
+  * `newGame` methods start completely new game with different grid sizes and number of mines.
 * Disabled cell marking for already visible cells. (no throw, just nothing happens)
 * Added argument verifications to various methods and made them throw.
-* Added virtual destructor to 'IRandom'.
-* Formatted code using ['clang-format'](https://clang.llvm.org/docs/ClangFormat.html).
-* Tidied code using ['clang-tidy'](https://clang.llvm.org/extra/clang-tidy/).
+* Added virtual destructor to `IRandom`.
+* Formatted code using [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html).
+* Tidied code using [`clang-tidy`](https://clang.llvm.org/extra/clang-tidy/).
 * Added some tests and test data.
 
 ### Version 8.2.0
 
 * Added serialisation and deserialisation methods.
-  * Using ['nlohmann/json'](https://github.com/nlohmann/json) header-only library to do this in 'json'-form.
-  * Added ['ArthurSonzogni/nlohmann_json_cmake_fetchcontent'](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) as submodule to this project to implement this neatly in lightweight form.
-  * Already considering about using different (faster) 'JSON' library or different serialisation data
+  * Using [nlohmann/json](https://github.com/nlohmann/json) header-only library to do this in `json`-form.
+  * Added [ArthurSonzogni/nlohmann_json_cmake_fetchcontent](https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent) as submodule to this project to implement this neatly in lightweight form.
+  * Already considering about using different (faster) JSON library or different serialisation data
     format since this current method is relatively slow for larger grids.
 * Added some tests.
-* Slightly edited 'README.MD'.
+* Slightly edited `README.MD`.
 
 ### Version 8.1.0
 
-* Made public 'createMinesAndNums(const int initChosenX, const int initChosenY)' redundant.
+* Made public `createMinesAndNums(const int initChosenX, const int initChosenY)` redundant.
   * Can still be called as before, but completely unnecessary (and not recommended) to do this manually from now on.
-* 'markInputCoordinates(const int X, const int Y)' now throws if 'checkInputCoordinates(const int X, const int Y)'
-  or 'createMinesAndNums(const int initChosenX, const int initChosenY)' has not been called before it.
+* `markInputCoordinates(const int X, const int Y)` now throws if `checkInputCoordinates(const int X, const int Y)`
+  or `createMinesAndNums(const int initChosenX, const int initChosenY)` has not been called before it.
 * Added getters for grid height, width and number of mines.
 * Added some tests.
 * Added verifications to some methods.
-* Updated ['minesweeper_examples.cpp'](/examples/minesweeper_examples.cpp).
-* Slightly edited 'README.MD'.
+* Updated [`minesweeper_examples.cpp`](/examples/minesweeper_examples.cpp).
+* Slightly edited `README.MD`.
 
 ### Version 8.0.0
 
-* Renamed the 'Grid' class to 'Game'.
+* Renamed the `Grid` class to `Game`.
   * Might cause historical inconsistencies and confusion, since the original console game version had a class with this name. (v6.1.1 and lower)
   * Should increase clarity for further releases of this library.
-* Changed file naming convention from 'PascalCase' to 'snake_case'.
-* Changed namespace naming convention from 'PascalCase' to 'lowercase'.
-* Added missing '#include\<vector\>' to 'i_random.h'.
-* Slightly edited 'README.MD'.
+* Changed file naming convention from `PascalCase` to `snake_case`.
+* Changed namespace naming convention from `PascalCase` to `lowercase`.
+* Added missing `#include\<vector\>` to `i_random.h`.
+* Slightly edited `README.MD`.
 
 ### Version 7.0.0
 
 * Separated original Minesweeper game (on console) into:
-  * 'minesweeper' (game library) and
-  * ['console-minesweeper'](https://github.com/TimiMakkonen/console-minesweeper) (console version of the game which uses the aforementioned library).
+  * minesweeper (game library) and
+  * [console-minesweeper](https://github.com/TimiMakkonen/console-minesweeper) (console version of the game which uses the aforementioned library).
 * Turned VS solution into CMake library.
-  * Added '(google)testing'. (Not implemented yet.)
-  * Added 'examples' executable to allow showcasing library.
+  * Added (google)testing. (Not implemented yet.)
+  * Added `examples` executable to allow showcasing library.
     * Added some usage instructions and examples.
-* New classes 'IRandom' and 'Random':
-  * Separating randomising part of creating mines from rest of the 'Grid'.
-  * IRandom is an abstract class which provides 'Grid' with ability to shuffle a vector of ints.
-  * You can create your own class which implements 'IRandom' or use provided 'Random' class for simplicity.
-  * You can pass 'IRandom' via constructor or set 'defaultRandom' static property.
+* New classes `IRandom` and `Random`:
+  * Separating randomising part of creating mines from rest of the `Grid`.
+  * IRandom is an abstract class which provides `Grid` with ability to shuffle a vector of ints.
+  * You can create your own class which implements `IRandom` or use provided `Random` class for simplicity.
+  * You can pass `IRandom` via constructor or set `defaultRandom` static property.
     (Class field set by constructor has the priority.)
 * Slightly improved readability of code.
 
@@ -278,17 +278,17 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 
 ### Version 6.1.1
 
-* Added validity check for the number of mines in the constructor of 'Grid'.
-* Created static methods in 'Grid' class to tell the maximum and minimum number of mines allowed in a grid of given size.
+* Added validity check for the number of mines in the constructor of `Grid`.
+* Created static methods in `Grid` class to tell the maximum and minimum number of mines allowed in a grid of given size.
 
 ### Version 6.1.0
 
-* Separated 'gridSize' into 'gridHeight' and 'gridWidth' to allow 'non-square' grids both in 'Grid' and 'Game'.
+* Separated `gridSize` into `gridHeight` and `gridWidth` to allow 'non-square' grids both in `Grid` and `Game`.
 
 ### Version 6.0
 
-* Moved print functionality from 'Grid' to 'Game'.
-* Changed "cerr's" into asserts and throws.
+* Moved print functionality from `Grid` to `Game`.
+* Changed `cerr`'s into asserts and throws.
 * Moved and changed some of the game logic.
 
 ### Version 5.2
@@ -305,17 +305,17 @@ You can check 'examples' functions in ['minesweeper_examples.cpp'](/examples/min
 ### Version 5.0
 
 * Updated program from C-style to OOP.
-  * New 'Game', 'Grid' and 'Cell' classes.
+  * New `Game`, `Grid` and `Cell` classes.
 * Improved readability and efficiency of some parts of code.
   * Changed variable naming convention from pascal to camel and made names easier to understand.
-* Changed pseudo-random number generator from 'rand' to 'std::mt19937' (Mersenne Twister 19937) to improve randomness.
+* Changed pseudo-random number generator from `rand` to `std::mt19937` (Mersenne Twister 19937) to improve randomness.
 
 ### Version 4.0
 
 * Continued with improvements on the input system.
 * Increased maximum size of the grid up to 99x99. (I do not recommend grids larger than 50x50.)
 * Program now shows your last grid spot input.
-* Made function 'TryInputToCoordinates' mostly future proof.
+* Made function `TryInputToCoordinates` mostly future proof.
   * can handle grid sizes up to 675 (overkill tbh)
   * able to give error messages and decide when new input is needed.
 * Improved games structure for all the different possibilities.
@@ -350,7 +350,7 @@ Initial version of the game. Mostly in working condition.
 
 * Add more serialisation options.
 * Add verifications to deserialisation methods to check validity of the given game.
-* Make "Game's" deserialise method safer by guaranteeing that 'Game' is left in valid condition even if if throws.
+* Make `Game`'s deserialise method safer by guaranteeing that `Game` is left in valid condition even if if throws.
 * Add more tests.
 * Implement Pimpl to clear up the public API.
 * Add Doxygen.
