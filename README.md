@@ -81,6 +81,11 @@ You can check `examples` function in [`minesweeper_examples.cpp`](/examples/mine
 
 ## Version history
 
+### Version DEVELOP
+
+* Fixed a clang-tidy typo in [`examples/CMakeLists.txt`](/examples/CMakeLists.txt) and made other
+  minor adjustments to `CMakeLists`-files.
+
 ### Version 8.5.3
 
 * Fixed some standard `#include` directives and checked which classes

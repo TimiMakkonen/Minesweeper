@@ -1,6 +1,6 @@
 set(EXAMPLE_SOURCE_LIST minesweeper_examples.cpp)
 
-set(EXAMPLE_APP_NAME "MinesweeperExamples")
+set(EXAMPLE_APP_NAME "${PROJECT_NAME}Examples")
 add_executable("${EXAMPLE_APP_NAME}" ${EXAMPLE_SOURCE_LIST})
 
 target_link_libraries("${EXAMPLE_APP_NAME}" PRIVATE "${LIBRARY_NAME}")

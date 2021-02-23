@@ -70,7 +70,7 @@ set(TEST_SOURCE_LIST
     "minesweeper_type_traits_tests.cpp")
 
 # Add test executable
-set(TEST_APP_NAME "MinesweeperTests")
+set(TEST_APP_NAME "${PROJECT_NAME}Tests")
 add_executable("${TEST_APP_NAME}" ${TEST_SOURCE_LIST}
                                   "${CMAKE_CURRENT_BINARY_DIR}/test_config.h")
 
@@ -84,7 +84,4 @@ target_compile_features("${TEST_APP_NAME}" PRIVATE cxx_std_14)
 # Link test executable with library and gtest
 target_link_libraries("${TEST_APP_NAME}" gtest_main "${LIBRARY_NAME}")
 
-add_test(NAME "${TEST_APP_NAME}" COMMAND "${TEST_APP_NAME}"
-         # works for ctest, but not for test executable, thus not used
-         # WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/tests/data"
-)
+add_test(NAME "${TEST_APP_NAME}" COMMAND "${TEST_APP_NAME}")
